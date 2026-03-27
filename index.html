@@ -2,61 +2,84 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Financeiro App</title>
+    <title>Financeiro Pro v7</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .item-ok { opacity: 0.3; text-decoration: line-through; }
-        button { cursor: pointer !important; touch-action: manipulation; }
+        body { background-color: #f1f5f9; font-family: sans-serif; overflow: hidden; height: 100vh; }
+        .item-ok { opacity: 0.3; text-decoration: line-through; filter: grayscale(1); }
+        @media print { .no-print { display: none !important; } body { overflow: visible; height: auto; } }
+        /* Transição suave para a barra */
+        .progress-bar { transition: width 0.8s ease-in-out; }
     </style>
 </head>
-<body class="p-4 bg-slate-100 font-sans">
+<body class="p-4">
 
-    <div class="max-w-5xl mx-auto space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="max-w-6xl mx-auto h-full flex flex-col gap-4">
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 shrink-0">
+            <div class="bg-white p-4 rounded shadow border-l-4 border-blue-400">
+                <p class="text-[10px] font-bold text-gray-400 uppercase">Saldo Inicial</p>
+                <input type="text" id="f_saldo_ini" oninput="moneyMask(this); updateSaldoIni()" placeholder="R$ 0,00" class="text-xl font-black text-blue-600 bg-transparent outline-none w-full">
+            </div>
             <div class="bg-white p-4 rounded shadow border-l-4 border-green-500">
-                <p class="text-[10px] font-bold text-gray-400 uppercase">Receber</p>
-                <h2 id="displayReceber" class="text-xl font-black text-green-600">R$ 0,00</h2>
+                <p class="text-[10px] font-bold text-gray-400 uppercase">Entradas (Mês)</p>
+                <h2 id="displayReceber" class="text-xl font-black text-green-600 font-mono">R$ 0,00</h2>
             </div>
             <div class="bg-white p-4 rounded shadow border-l-4 border-red-500">
-                <p class="text-[10px] font-bold text-gray-400 uppercase">Pagar</p>
-                <h2 id="displayPagar" class="text-xl font-black text-red-600">R$ 0,00</h2>
+                <p class="text-[10px] font-bold text-gray-400 uppercase">Saídas (Mês)</p>
+                <h2 id="displayPagar" class="text-xl font-black text-red-600 font-mono">R$ 0,00</h2>
             </div>
-            <div id="boxSaldo" class="bg-blue-600 p-4 rounded shadow text-white">
-                <p class="text-[10px] font-bold uppercase opacity-70">Saldo Final</p>
-                <h2 id="displaySaldo" class="text-xl font-black">R$ 0,00</h2>
+            <div id="boxSaldo" class="bg-slate-800 p-4 rounded shadow text-white">
+                <p class="text-[10px] font-bold uppercase opacity-70">Saldo Final Previsto</p>
+                <h2 id="displaySaldo" class="text-xl font-black font-mono">R$ 0,00</h2>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-            <div class="md:col-span-4 bg-white p-6 rounded shadow space-y-4">
+        <div class="bg-white p-4 rounded shadow shrink-0">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-[10px] font-bold text-gray-500 uppercase">Comprometimento da Renda</span>
+                <span id="percSaude" class="text-xs font-black text-gray-700">0%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+                <div id="barraSaude" class="progress-bar h-full bg-green-500" style="width: 0%"></div>
+            </div>
+            <p id="msgSaude" class="text-[9px] mt-1 text-gray-400 italic">Suas finanças estão saudáveis.</p>
+        </div>
+
+        <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-4 min-h-0">
+            <div class="md:col-span-4 bg-white p-5 rounded shadow space-y-4 no-print shrink-0">
                 <div class="flex gap-2">
-                    <input type="number" id="f_dia" placeholder="Dia" class="w-16 border p-2 rounded font-bold">
-                    <input type="text" id="f_desc" placeholder="DESCRIÇÃO" class="flex-1 border p-2 rounded uppercase text-sm font-bold">
+                    <input type="number" id="f_dia" placeholder="Dia" class="w-16 border p-2 rounded font-bold text-center">
+                    <input type="text" id="f_desc" placeholder="NOME DA CONTA" class="flex-1 border p-2 rounded uppercase text-sm font-bold bg-gray-50">
                 </div>
-                <input type="text" id="f_valor" oninput="moneyMask(this)" placeholder="R$ 0,00" class="w-full border p-2 rounded font-mono font-bold text-lg text-blue-700">
+                <input type="text" id="f_valor" oninput="moneyMask(this)" placeholder="VALOR R$ 0,00" class="w-full border p-3 rounded font-mono font-bold text-xl text-blue-700 bg-gray-50">
                 
                 <div class="flex gap-2">
-                    <button onclick="addItem('R')" class="flex-1 bg-green-500 text-white font-bold py-3 rounded hover:bg-green-600 shadow">ENTRADA</button>
-                    <button onclick="addItem('P')" class="flex-1 bg-red-500 text-white font-bold py-3 rounded hover:bg-red-600 shadow">SAÍDA</button>
+                    <button onclick="addItem('R')" class="flex-1 bg-green-500 text-white font-black py-4 rounded-xl hover:bg-green-600 shadow-md active:scale-95 transition-all uppercase text-xs">Receber</button>
+                    <button onclick="addItem('P')" class="flex-1 bg-red-500 text-white font-black py-4 rounded-xl hover:bg-red-600 shadow-md active:scale-95 transition-all uppercase text-xs">Pagar</button>
                 </div>
-                <button onclick="window.print()" class="w-full border border-gray-300 py-2 rounded text-xs font-bold uppercase">Imprimir Relatório</button>
+                
+                <div class="grid grid-cols-2 gap-2 pt-2">
+                    <button onclick="window.print()" class="border border-gray-300 py-2 rounded font-bold text-[10px] uppercase text-gray-600 hover:bg-gray-50">Imprimir PDF</button>
+                    <button onclick="limparTudo()" class="border border-red-100 py-2 rounded font-bold text-[10px] uppercase text-red-400 hover:bg-red-50">Resetar Mês</button>
+                </div>
             </div>
 
-            <div class="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-white rounded shadow min-h-[200px]">
-                    <div class="bg-green-50 p-2 text-green-700 font-bold text-[10px] uppercase text-center">Entradas</div>
-                    <div id="listR" class="p-2 space-y-1"></div>
+            <div class="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4 h-full overflow-hidden">
+                <div class="bg-white rounded shadow flex flex-col overflow-hidden border-t-4 border-green-400">
+                    <div class="bg-green-50 p-2 text-green-700 font-bold text-[10px] uppercase text-center shrink-0">Entradas</div>
+                    <div id="listR" class="p-2 space-y-1 overflow-y-auto"></div>
                 </div>
-                <div class="bg-white rounded shadow min-h-[200px]">
-                    <div class="bg-red-50 p-2 text-red-700 font-bold text-[10px] uppercase text-center">Contas a Pagar</div>
-                    <div id="listP" class="p-2 space-y-1"></div>
+                <div class="bg-white rounded shadow flex flex-col overflow-hidden border-t-4 border-red-400">
+                    <div class="bg-red-50 p-2 text-red-700 font-bold text-[10px] uppercase text-center shrink-0">Saídas</div>
+                    <div id="listP" class="p-2 space-y-1 overflow-y-auto"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let dataStore = JSON.parse(localStorage.getItem('fin_v6')) || { P: [], R: [] };
+        let ds = JSON.parse(localStorage.getItem('fin_v7')) || { P: [], R: [], saldoIni: 0 };
 
         function moneyMask(i) {
             let v = i.value.replace(/\D/g,'');
@@ -67,16 +90,24 @@
             i.value = 'R$ ' + v;
         }
 
+        function parseMoney(val) {
+            return parseFloat(val.replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
+        }
+
+        function updateSaldoIni() {
+            ds.saldoIni = parseMoney(document.getElementById('f_saldo_ini').value);
+            saveAndRef();
+        }
+
         function addItem(type) {
             const d = document.getElementById('f_dia').value || "0";
             const s = document.getElementById('f_desc').value;
-            const vRaw = document.getElementById('f_valor').value.replace(/[R$\s.]/g, '').replace(',', '.');
-            const v = parseFloat(vRaw);
+            const v = parseMoney(document.getElementById('f_valor').value);
 
-            if(!s || isNaN(v)) return alert("Preencha descrição e valor!");
+            if(!s || v === 0) return;
 
-            dataStore[type].push({ id: Date.now(), dia: parseInt(d), desc: s.toUpperCase(), valor: v, ok: false });
-            dataStore[type].sort((a,b) => a.dia - b.dia);
+            ds[type].push({ id: Date.now(), dia: parseInt(d), desc: s.toUpperCase(), valor: v, ok: false });
+            ds[type].sort((a,b) => a.dia - b.dia);
             
             saveAndRef();
             document.getElementById('f_desc').value = '';
@@ -85,18 +116,26 @@
         }
 
         function delItem(type, id) {
-            dataStore[type] = dataStore[type].filter(i => i.id !== id);
+            ds[type] = ds[type].filter(i => i.id !== id);
             saveAndRef();
         }
 
         function toggleItem(type, id) {
-            const item = dataStore[type].find(i => i.id === id);
+            const item = ds[type].find(i => i.id === id);
             item.ok = !item.ok;
             saveAndRef();
         }
 
+        function limparTudo() {
+            if(confirm("Deseja apagar todos os dados para um novo mês?")) {
+                ds = { P: [], R: [], saldoIni: 0 };
+                document.getElementById('f_saldo_ini').value = '';
+                saveAndRef();
+            }
+        }
+
         function saveAndRef() {
-            localStorage.setItem('fin_v6', JSON.stringify(dataStore));
+            localStorage.setItem('fin_v7', JSON.stringify(ds));
             renderAll();
         }
 
@@ -107,27 +146,49 @@
             let tR = 0, tP = 0;
 
             const draw = (i, type) => `
-                <div class="flex justify-between items-center p-2 bg-slate-50 border rounded ${i.ok ? 'item-ok' : ''}">
+                <div class="flex justify-between items-center p-2 bg-slate-50 border rounded shadow-sm ${i.ok ? 'item-ok' : ''}">
                     <div class="flex items-center gap-2">
-                        <input type="checkbox" ${i.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${i.id})">
-                        <span class="text-[9px] font-mono text-gray-400">${String(i.dia).padStart(2,'0')}</span>
-                        <span class="text-[10px] font-bold text-gray-600">${i.desc}</span>
+                        <input type="checkbox" ${i.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${i.id})" class="cursor-pointer">
+                        <span class="text-[9px] font-bold text-gray-400 bg-white px-1 border rounded">${String(i.dia).padStart(2,'0')}</span>
+                        <span class="text-[10px] font-bold text-gray-700 uppercase">${i.desc}</span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-[11px] font-bold ${type==='R'?'text-green-600':'text-red-600'}">R$ ${i.valor.toLocaleString('pt-br', {minimumFractionDigits:2})}</span>
-                        <button onclick="delItem('${type}', ${i.id})" class="text-gray-300 hover:text-red-400">✕</button>
+                        <span class="text-[11px] font-black font-mono ${type==='R'?'text-green-600':'text-red-600'}">R$ ${i.valor.toLocaleString('pt-br', {minimumFractionDigits:2})}</span>
+                        <button onclick="delItem('${type}', ${i.id})" class="no-print text-gray-300 hover:text-red-400 px-1">✕</button>
                     </div>
                 </div>`;
 
-            dataStore.R.forEach(i => { tR += i.valor; rList.innerHTML += draw(i, 'R'); });
-            dataStore.P.forEach(i => { tP += i.valor; pList.innerHTML += draw(i, 'P'); });
+            ds.R.forEach(i => { tR += i.valor; rList.innerHTML += draw(i, 'R'); });
+            ds.P.forEach(i => { tP += i.valor; pList.innerHTML += draw(i, 'P'); });
 
+            // Atualiza Displays
             document.getElementById('displayReceber').innerText = 'R$ ' + tR.toLocaleString('pt-br', {minimumFractionDigits:2});
             document.getElementById('displayPagar').innerText = 'R$ ' + tP.toLocaleString('pt-br', {minimumFractionDigits:2});
             
-            const saldo = tR - tP;
-            document.getElementById('displaySaldo').innerText = 'R$ ' + saldo.toLocaleString('pt-br', {minimumFractionDigits:2});
-            document.getElementById('boxSaldo').className = (saldo >= 0 ? 'bg-blue-600' : 'bg-red-500') + ' p-4 rounded shadow text-white';
+            const saldoFinal = (ds.saldoIni + tR) - tP;
+            document.getElementById('displaySaldo').innerText = 'R$ ' + saldoFinal.toLocaleString('pt-br', {minimumFractionDigits:2});
+            
+            // Cor do Saldo Final
+            document.getElementById('boxSaldo').className = (saldoFinal >= 0 ? 'bg-slate-800' : 'bg-red-600') + ' p-4 rounded shadow text-white';
+
+            // Lógica da Barra de Saúde
+            const totalEntradas = ds.saldoIni + tR;
+            const perc = totalEntradas > 0 ? Math.min((tP / totalEntradas) * 100, 100) : (tP > 0 ? 100 : 0);
+            const barra = document.getElementById('barraSaude');
+            const percTxt = document.getElementById('percSaude');
+            const msg = document.getElementById('msgSaude');
+
+            barra.style.width = perc + '%';
+            percTxt.innerText = Math.round(perc) + '%';
+
+            if(perc < 50) { barra.className = 'progress-bar h-full bg-green-500'; msg.innerText = "Excelente! Grande parte da renda está livre."; }
+            else if(perc < 80) { barra.className = 'progress-bar h-full bg-yellow-500'; msg.innerText = "Atenção: Mais da metade da renda já está comprometida."; }
+            else { barra.className = 'progress-bar h-full bg-red-500'; msg.innerText = "Cuidado! Margem de segurança muito baixa."; }
+
+            // Mantém o valor do saldo inicial no input
+            if(ds.saldoIni > 0 && !document.activeElement.id.includes('f_saldo_ini')) {
+                document.getElementById('f_saldo_ini').value = 'R$ ' + ds.saldoIni.toLocaleString('pt-br', {minimumFractionDigits:2});
+            }
         }
         renderAll();
     </script>
