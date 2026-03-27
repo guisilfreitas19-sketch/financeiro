@@ -2,99 +2,85 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financeiro Mensal Pro</title>
+    <title>Financeiro v5</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { height: 100vh; background-color: #f8fafc; font-family: sans-serif; overflow: hidden; }
-        .money-input { text-align: right; }
-        .item-pago { opacity: 0.4; text-decoration: line-through; filter: grayscale(1); }
-        
-        /* Ajuste de clique: garante que o botão responda */
-        button { cursor: pointer !important; position: relative; z-index: 50; }
-        input { position: relative; z-index: 50; }
-
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white; overflow: visible; height: auto; }
-            .print-area { grid-column: span 12 / span 12 !important; display: block !important; }
-            .card-container { border: 1px solid #ddd !important; margin-bottom: 20px; box-shadow: none !important; }
-            .print-footer { display: block !important; position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 10px; color: #666; }
-        }
-        .print-footer { display: none; }
+        body { background-color: #f1f5f9; font-family: sans-serif; }
+        .item-pago { opacity: 0.3; text-decoration: line-through; }
+        @media print { .no-print { display: none !important; } }
     </style>
 </head>
-<body class="p-4">
+<body class="p-6">
 
-    <div class="max-w-[1400px] mx-auto h-full flex flex-col gap-4">
-        
-        <div class="grid grid-cols-4 gap-4 h-24 shrink-0">
-            <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-center">
-                <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Total Entradas</span>
-                <span id="totalReceber" class="text-2xl font-black text-green-600 font-mono">R$ 0,00</span>
+    <div class="max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white p-4 rounded shadow border-l-4 border-green-500">
+                <div class="text-xs text-gray-500 font-bold uppercase">Entradas</div>
+                <div id="totalReceber" class="text-xl font-black text-green-600">R$ 0,00</div>
             </div>
-            <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-center">
-                <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Total Saídas</span>
-                <span id="totalPagar" class="text-2xl font-black text-red-600 font-mono">R$ 0,00</span>
+            <div class="bg-white p-4 rounded shadow border-l-4 border-red-500">
+                <div class="text-xs text-gray-500 font-bold uppercase">Saídas</div>
+                <div id="totalPagar" class="text-xl font-black text-red-600">R$ 0,00</div>
             </div>
-            <div id="cardSaldo" class="p-4 rounded-xl shadow-md flex flex-col justify-center transition-colors duration-500 bg-blue-600">
-                <span class="text-[10px] opacity-80 uppercase font-bold tracking-wider text-white">Saldo Previsto</span>
-                <span id="saldoGeral" class="text-2xl font-black text-white font-mono">R$ 0,00</span>
+            <div id="cardSaldo" class="bg-blue-600 p-4 rounded shadow text-white">
+                <div class="text-xs font-bold uppercase opacity-80">Saldo</div>
+                <div id="saldoGeral" class="text-xl font-black">R$ 0,00</div>
             </div>
-            <div class="no-print flex flex-col gap-2 justify-center">
-                <button onclick="window.print()" class="bg-gray-800 text-white font-bold py-2 rounded-lg text-[10px] uppercase hover:bg-black transition-all active:scale-95">🖨️ Gerar Relatório</button>
-                <button onclick="limparMes()" class="bg-white border border-red-100 text-red-400 font-bold py-2 rounded-lg text-[10px] uppercase hover:bg-red-50 transition-all active:scale-95">🗑️ Resetar Mês</button>
+            <div class="no-print flex flex-col gap-2">
+                <button onclick="window.print()" class="bg-gray-700 text-white p-2 rounded text-xs font-bold uppercase hover:bg-black">Imprimir</button>
+                <button onclick="limparTudo()" class="bg-red-100 text-red-600 p-2 rounded text-xs font-bold uppercase hover:bg-red-200">Limpar Mês</button>
             </div>
         </div>
 
-        <div class="flex-1 grid grid-cols-12 gap-4 overflow-hidden min-h-0">
-            
-            <div class="col-span-3 bg-white p-6 rounded-xl border border-gray-200 shadow-sm no-print relative z-10">
-                <h2 class="font-bold text-gray-700 mb-6 border-b pb-2 text-xs uppercase tracking-widest">Novo Registro</h2>
+        <div class="grid grid-cols-12 gap-6">
+            <div class="col-span-12 md:col-span-4 bg-white p-6 rounded shadow no-print">
+                <h3 class="font-bold mb-4 text-gray-700 uppercase text-sm">Novo Lançamento</h3>
                 <div class="space-y-4">
-                    <div class="grid grid-cols-4 gap-2">
-                        <div class="col-span-1">
-                            <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase text-center">Dia</label>
-                            <input type="number" id="dia" min="1" max="31" class="w-full border-b-2 border-gray-100 p-2 text-center focus:border-blue-500 outline-none text-sm font-bold bg-gray-50 rounded">
+                    <div class="flex gap-2">
+                        <div class="w-20">
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase">Dia</label>
+                            <input type="number" id="dia" placeholder="01" class="w-full border p-2 rounded font-bold">
                         </div>
-                        <div class="col-span-3">
-                            <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase">Descrição</label>
-                            <input type="text" id="desc" class="w-full border-b-2 border-gray-100 p-2 focus:border-blue-500 outline-none text-sm font-medium uppercase bg-gray-50 rounded">
+                        <div class="flex-1">
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase">Descrição</label>
+                            <input type="text" id="desc" placeholder="Ex: Aluguel" class="w-full border p-2 rounded uppercase font-semibold">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase">Valor</label>
-                        <input type="text" id="valor" oninput="mascaraMoeda(this)" placeholder="R$ 0,00" class="money-input w-full border-b-2 border-gray-100 p-2 focus:border-blue-500 outline-none font-mono font-bold text-blue-700 text-xl bg-gray-50 rounded">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase">Valor</label>
+                        <input type="text" id="valor" oninput="mascaraMoeda(this)" placeholder="R$ 0,00" class="w-full border p-2 rounded font-mono font-bold text-lg text-blue-700">
                     </div>
-                    <div class="flex gap-2 pt-4">
-                        <button onclick="adicionar('receber')" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-black py-4 rounded-xl text-xs uppercase shadow-md active:translate-y-1 transition-all">Receber</button>
-                        <button onclick="adicionar('pagar')" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-black py-4 rounded-xl text-xs uppercase shadow-md active:translate-y-1 transition-all">Pagar</button>
+                    <div class="flex gap-2 pt-2">
+                        <button onclick="adicionar('receber')" class="flex-1 bg-green-500 text-white font-bold py-3 rounded shadow-lg active:bg-green-700">RECEBER</button>
+                        <button onclick="adicionar('pagar')" class="flex-1 bg-red-500 text-white font-bold py-3 rounded shadow-lg active:bg-red-700">PAGAR</button>
                     </div>
                 </div>
             </div>
 
-            <div class="print-area col-span-9 grid grid-cols-2 gap-4 overflow-hidden h-full">
-                <div class="card-container bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden">
-                    <div class="p-3 bg-green-50 border-b border-green-100 font-black text-green-700 text-[10px] uppercase">Lançamentos de Entrada</div>
-                    <div id="listaReceber" class="flex-1 overflow-y-auto p-3 space-y-2"></div>
+            <div class="col-span-12 md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white rounded shadow overflow-hidden">
+                    <div class="bg-green-50 p-2 text-green-700 font-bold text-[10px] uppercase text-center border-b border-green-100">Entradas</div>
+                    <div id="listaReceber" class="p-2 space-y-2"></div>
                 </div>
-                <div class="card-container bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden">
-                    <div class="p-3 bg-red-50 border-b border-red-100 font-black text-red-700 text-[10px] uppercase">Contas a Pagar</div>
-                    <div id="listaPagar" class="flex-1 overflow-y-auto p-3 space-y-2"></div>
+                <div class="bg-white rounded shadow overflow-hidden">
+                    <div class="bg-red-50 p-2 text-red-700 font-bold text-[10px] uppercase text-center border-b border-red-100">Saídas</div>
+                    <div id="listaPagar" class="p-2 space-y-2"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="print-footer">Relatório Mensal - <span id="dataPrint"></span></div>
-
     <script>
-        // Usando v4 para garantir que o LocalStorage não conflite com versões anteriores travadas
-        let db = JSON.parse(localStorage.getItem('financas_v4')) || { pagar: [], receber: [] };
+        let db = JSON.parse(localStorage.getItem('financas_v5')) || { pagar: [], receber: [] };
 
         function mascaraMoeda(i) {
             let v = i.value.replace(/\D/g,'');
             v = (v/100).toFixed(2) + '';
             v = v.replace(".", ",");
             v = v.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
-            v = v.replace(/
+            v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
+            i.value = 'R$ ' + v;
+        }
+
+        function formatar(v) {
+            return v.toLocaleString('pt-br', {style: 'currency',
