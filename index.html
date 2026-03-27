@@ -83,4 +83,75 @@
         }
 
         function formatar(v) {
-            return v.toLocaleString('pt-br', {style: 'currency',
+            return v.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'});
+        }
+
+        function adicionar(tipo) {
+            const d = document.getElementById('dia').value || "0";
+            const s = document.getElementById('desc').value;
+            const vRaw = document.getElementById('valor').value.replace(/[R$\s.]/g, '').replace(',', '.');
+            const v = parseFloat(vRaw);
+
+            if(!s || isNaN(v)) return alert("Preencha descrição e valor!");
+
+            db[tipo].push({ id: Date.now(), dia: parseInt(d), desc: s.toUpperCase(), valor: v, status: 'p' });
+            db[tipo].sort((a,b) => a.dia - b.dia);
+            salvar();
+            
+            document.getElementById('desc').value = '';
+            document.getElementById('valor').value = '';
+            document.getElementById('dia').value = '';
+        }
+
+        function toggle(tipo, id) {
+            const item = db[tipo].find(i => i.id === id);
+            item.status = item.status === 'ok' ? 'p' : 'ok';
+            salvar();
+        }
+
+        function remover(tipo, id) {
+            db[tipo] = db[tipo].filter(i => i.id !== id);
+            salvar();
+        }
+
+        function limparTudo() {
+            if(confirm("Limpar tudo?")) { db = { pagar: [], receber: [] }; salvar(); }
+        }
+
+        function salvar() {
+            localStorage.setItem('financas_v5', JSON.stringify(db));
+            render();
+        }
+
+        function render() {
+            const r = document.getElementById('listaReceber');
+            const p = document.getElementById('listaPagar');
+            r.innerHTML = p.innerHTML = '';
+            let tR = 0, tP = 0;
+
+            const html = (i, t) => `
+                <div class="flex justify-between items-center p-2 bg-gray-50 border rounded ${i.status === 'ok' ? 'item-pago' : ''}">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" ${i.status === 'ok' ? 'checked' : ''} onclick="toggle('${t}', ${i.id})">
+                        <span class="text-[9px] bg-white px-1 border rounded text-gray-400">${String(i.dia).padStart(2,'0')}</span>
+                        <span class="text-[11px] font-bold text-gray-700">${i.desc}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold ${t==='receber'?'text-green-600':'text-red-600'}">${formatar(i.valor)}</span>
+                        <button onclick="remover('${t}', ${i.id})" class="no-print text-gray-300">✕</button>
+                    </div>
+                </div>`;
+
+            db.receber.forEach(i => { tR += i.valor; r.innerHTML += html(i, 'receber'); });
+            db.pagar.forEach(i => { tP += i.valor; p.innerHTML += html(i, 'pagar'); });
+
+            document.getElementById('totalReceber').innerText = formatar(tR);
+            document.getElementById('totalPagar').innerText = formatar(tP);
+            const saldo = tR - tP;
+            document.getElementById('saldoGeral').innerText = formatar(saldo);
+            document.getElementById('cardSaldo').className = (saldo >= 0 ? 'bg-blue-600' : 'bg-red-500') + ' p-4 rounded shadow text-white';
+        }
+        render();
+    </script>
+</body>
+</html>
