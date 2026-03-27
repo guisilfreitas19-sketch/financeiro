@@ -2,14 +2,15 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Financeiro Pro v7</title>
+    <title>Financeiro Pro v8 - Edição</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #f1f5f9; font-family: sans-serif; overflow: hidden; height: 100vh; }
         .item-ok { opacity: 0.3; text-decoration: line-through; filter: grayscale(1); }
         @media print { .no-print { display: none !important; } body { overflow: visible; height: auto; } }
-        /* Transição suave para a barra */
         .progress-bar { transition: width 0.8s ease-in-out; }
+        .cursor-edit { cursor: pointer; transition: background 0.2s; }
+        .cursor-edit:hover { background-color: #f0f9ff; }
     </style>
 </head>
 <body class="p-4">
@@ -22,15 +23,15 @@
                 <input type="text" id="f_saldo_ini" oninput="moneyMask(this); updateSaldoIni()" placeholder="R$ 0,00" class="text-xl font-black text-blue-600 bg-transparent outline-none w-full">
             </div>
             <div class="bg-white p-4 rounded shadow border-l-4 border-green-500">
-                <p class="text-[10px] font-bold text-gray-400 uppercase">Entradas (Mês)</p>
+                <p class="text-[10px] font-bold text-gray-400 uppercase">Entradas</p>
                 <h2 id="displayReceber" class="text-xl font-black text-green-600 font-mono">R$ 0,00</h2>
             </div>
             <div class="bg-white p-4 rounded shadow border-l-4 border-red-500">
-                <p class="text-[10px] font-bold text-gray-400 uppercase">Saídas (Mês)</p>
+                <p class="text-[10px] font-bold text-gray-400 uppercase">Saídas</p>
                 <h2 id="displayPagar" class="text-xl font-black text-red-600 font-mono">R$ 0,00</h2>
             </div>
             <div id="boxSaldo" class="bg-slate-800 p-4 rounded shadow text-white">
-                <p class="text-[10px] font-bold uppercase opacity-70">Saldo Final Previsto</p>
+                <p class="text-[10px] font-bold uppercase opacity-70">Saldo Final</p>
                 <h2 id="displaySaldo" class="text-xl font-black font-mono">R$ 0,00</h2>
             </div>
         </div>
@@ -40,28 +41,30 @@
                 <span class="text-[10px] font-bold text-gray-500 uppercase">Comprometimento da Renda</span>
                 <span id="percSaude" class="text-xs font-black text-gray-700">0%</span>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
                 <div id="barraSaude" class="progress-bar h-full bg-green-500" style="width: 0%"></div>
             </div>
-            <p id="msgSaude" class="text-[9px] mt-1 text-gray-400 italic">Suas finanças estão saudáveis.</p>
         </div>
 
         <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-4 min-h-0">
-            <div class="md:col-span-4 bg-white p-5 rounded shadow space-y-4 no-print shrink-0">
-                <div class="flex gap-2">
-                    <input type="number" id="f_dia" placeholder="Dia" class="w-16 border p-2 rounded font-bold text-center">
-                    <input type="text" id="f_desc" placeholder="NOME DA CONTA" class="flex-1 border p-2 rounded uppercase text-sm font-bold bg-gray-50">
-                </div>
-                <input type="text" id="f_valor" oninput="moneyMask(this)" placeholder="VALOR R$ 0,00" class="w-full border p-3 rounded font-mono font-bold text-xl text-blue-700 bg-gray-50">
-                
-                <div class="flex gap-2">
-                    <button onclick="addItem('R')" class="flex-1 bg-green-500 text-white font-black py-4 rounded-xl hover:bg-green-600 shadow-md active:scale-95 transition-all uppercase text-xs">Receber</button>
-                    <button onclick="addItem('P')" class="flex-1 bg-red-500 text-white font-black py-4 rounded-xl hover:bg-red-600 shadow-md active:scale-95 transition-all uppercase text-xs">Pagar</button>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-2 pt-2">
-                    <button onclick="window.print()" class="border border-gray-300 py-2 rounded font-bold text-[10px] uppercase text-gray-600 hover:bg-gray-50">Imprimir PDF</button>
-                    <button onclick="limparTudo()" class="border border-red-100 py-2 rounded font-bold text-[10px] uppercase text-red-400 hover:bg-red-50">Resetar Mês</button>
+            <div class="md:col-span-4 bg-white p-5 rounded shadow space-y-4 no-print shrink-0 border-t-4 border-blue-500">
+                <h2 id="formTitle" class="font-bold text-blue-600 text-xs uppercase tracking-widest">Novo Registro</h2>
+                <div class="space-y-4">
+                    <div class="flex gap-2">
+                        <input type="number" id="f_dia" placeholder="Dia" class="w-16 border p-2 rounded font-bold text-center bg-gray-50">
+                        <input type="text" id="f_desc" placeholder="DESCRIÇÃO" class="flex-1 border p-2 rounded uppercase text-sm font-bold bg-gray-50">
+                    </div>
+                    <input type="text" id="f_valor" oninput="moneyMask(this)" placeholder="VALOR R$ 0,00" class="w-full border p-3 rounded font-mono font-bold text-xl text-blue-700 bg-gray-50">
+                    
+                    <div id="btnGroup" class="flex gap-2">
+                        <button id="btnR" onclick="addItem('R')" class="flex-1 bg-green-500 text-white font-black py-4 rounded-xl hover:bg-green-600 shadow active:scale-95 transition-all uppercase text-xs">Receber</button>
+                        <button id="btnP" onclick="addItem('P')" class="flex-1 bg-red-500 text-white font-black py-4 rounded-xl hover:bg-red-600 shadow active:scale-95 transition-all uppercase text-xs">Pagar</button>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-2 pt-2">
+                        <button onclick="window.print()" class="border border-gray-300 py-2 rounded font-bold text-[10px] uppercase text-gray-500">Imprimir</button>
+                        <button onclick="limparTudo()" class="border border-red-100 py-2 rounded font-bold text-[10px] uppercase text-red-300">Resetar</button>
+                    </div>
                 </div>
             </div>
 
@@ -79,7 +82,8 @@
     </div>
 
     <script>
-        let ds = JSON.parse(localStorage.getItem('fin_v7')) || { P: [], R: [], saldoIni: 0 };
+        let ds = JSON.parse(localStorage.getItem('fin_v8')) || { P: [], R: [], saldoIni: 0 };
+        let editId = null;
 
         function moneyMask(i) {
             let v = i.value.replace(/\D/g,'');
@@ -91,7 +95,7 @@
         }
 
         function parseMoney(val) {
-            return parseFloat(val.replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
+            return parseFloat(String(val).replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
         }
 
         function updateSaldoIni() {
@@ -106,18 +110,61 @@
 
             if(!s || v === 0) return;
 
+            if(editId) {
+                // Se estiver editando, remove o antigo antes de adicionar o novo
+                ds.R = ds.R.filter(i => i.id !== editId);
+                ds.P = ds.P.filter(i => i.id !== editId);
+                editId = null;
+                resetFormStyle();
+            }
+
             ds[type].push({ id: Date.now(), dia: parseInt(d), desc: s.toUpperCase(), valor: v, ok: false });
             ds[type].sort((a,b) => a.dia - b.dia);
             
             saveAndRef();
+            clearFields();
+        }
+
+        function prepareEdit(type, id) {
+            const item = ds[type].find(i => i.id === id);
+            editId = id;
+            
+            document.getElementById('f_dia').value = item.dia;
+            document.getElementById('f_desc').value = item.desc;
+            document.getElementById('f_valor').value = 'R$ ' + item.valor.toLocaleString('pt-br', {minimumFractionDigits:2});
+            
+            document.getElementById('formTitle').innerText = "EDITANDO REGISTRO";
+            document.getElementById('formTitle').classList.replace('text-blue-600', 'text-orange-500');
+            document.getElementById('btnR').innerText = "SALVAR ALTERAÇÃO";
+            document.getElementById('btnP').innerText = "CANCELAR";
+            document.getElementById('btnP').setAttribute("onclick", "cancelEdit()");
+        }
+
+        function cancelEdit() {
+            editId = null;
+            clearFields();
+            resetFormStyle();
+        }
+
+        function resetFormStyle() {
+            document.getElementById('formTitle').innerText = "NOVO REGISTRO";
+            document.getElementById('formTitle').classList.replace('text-orange-500', 'text-blue-600');
+            document.getElementById('btnR').innerText = "RECEBER";
+            document.getElementById('btnP').innerText = "PAGAR";
+            document.getElementById('btnP').setAttribute("onclick", "addItem('P')");
+        }
+
+        function clearFields() {
             document.getElementById('f_desc').value = '';
             document.getElementById('f_valor').value = '';
             document.getElementById('f_dia').value = '';
         }
 
         function delItem(type, id) {
-            ds[type] = ds[type].filter(i => i.id !== id);
-            saveAndRef();
+            if(confirm("Excluir item?")) {
+                ds[type] = ds[type].filter(i => i.id !== id);
+                saveAndRef();
+            }
         }
 
         function toggleItem(type, id) {
@@ -127,7 +174,7 @@
         }
 
         function limparTudo() {
-            if(confirm("Deseja apagar todos os dados para um novo mês?")) {
+            if(confirm("Resetar o mês?")) {
                 ds = { P: [], R: [], saldoIni: 0 };
                 document.getElementById('f_saldo_ini').value = '';
                 saveAndRef();
@@ -135,7 +182,7 @@
         }
 
         function saveAndRef() {
-            localStorage.setItem('fin_v7', JSON.stringify(ds));
+            localStorage.setItem('fin_v8', JSON.stringify(ds));
             renderAll();
         }
 
@@ -146,46 +193,35 @@
             let tR = 0, tP = 0;
 
             const draw = (i, type) => `
-                <div class="flex justify-between items-center p-2 bg-slate-50 border rounded shadow-sm ${i.ok ? 'item-ok' : ''}">
-                    <div class="flex items-center gap-2">
-                        <input type="checkbox" ${i.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${i.id})" class="cursor-pointer">
-                        <span class="text-[9px] font-bold text-gray-400 bg-white px-1 border rounded">${String(i.dia).padStart(2,'0')}</span>
-                        <span class="text-[10px] font-bold text-gray-700 uppercase">${i.desc}</span>
+                <div class="flex justify-between items-center p-2 bg-white border border-gray-100 rounded shadow-sm cursor-edit ${i.ok ? 'item-ok' : ''}">
+                    <div class="flex items-center gap-2 overflow-hidden">
+                        <input type="checkbox" ${i.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${i.id})" class="no-print">
+                        <span class="text-[9px] font-bold text-gray-400 bg-gray-50 px-1 border rounded">${String(i.dia).padStart(2,'0')}</span>
+                        <span onclick="prepareEdit('${type}', ${i.id})" class="text-[10px] font-bold text-gray-700 uppercase truncate">${i.desc}</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-[11px] font-black font-mono ${type==='R'?'text-green-600':'text-red-600'}">R$ ${i.valor.toLocaleString('pt-br', {minimumFractionDigits:2})}</span>
-                        <button onclick="delItem('${type}', ${i.id})" class="no-print text-gray-300 hover:text-red-400 px-1">✕</button>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span onclick="prepareEdit('${type}', ${i.id})" class="text-[11px] font-black font-mono ${type==='R'?'text-green-600':'text-red-600'}">R$ ${i.valor.toLocaleString('pt-br', {minimumFractionDigits:2})}</span>
+                        <button onclick="delItem('${type}', ${i.id})" class="no-print text-gray-300 hover:text-red-500 px-1">✕</button>
                     </div>
                 </div>`;
 
             ds.R.forEach(i => { tR += i.valor; rList.innerHTML += draw(i, 'R'); });
             ds.P.forEach(i => { tP += i.valor; pList.innerHTML += draw(i, 'P'); });
 
-            // Atualiza Displays
             document.getElementById('displayReceber').innerText = 'R$ ' + tR.toLocaleString('pt-br', {minimumFractionDigits:2});
             document.getElementById('displayPagar').innerText = 'R$ ' + tP.toLocaleString('pt-br', {minimumFractionDigits:2});
             
             const saldoFinal = (ds.saldoIni + tR) - tP;
             document.getElementById('displaySaldo').innerText = 'R$ ' + saldoFinal.toLocaleString('pt-br', {minimumFractionDigits:2});
-            
-            // Cor do Saldo Final
             document.getElementById('boxSaldo').className = (saldoFinal >= 0 ? 'bg-slate-800' : 'bg-red-600') + ' p-4 rounded shadow text-white';
 
-            // Lógica da Barra de Saúde
             const totalEntradas = ds.saldoIni + tR;
             const perc = totalEntradas > 0 ? Math.min((tP / totalEntradas) * 100, 100) : (tP > 0 ? 100 : 0);
             const barra = document.getElementById('barraSaude');
-            const percTxt = document.getElementById('percSaude');
-            const msg = document.getElementById('msgSaude');
-
             barra.style.width = perc + '%';
-            percTxt.innerText = Math.round(perc) + '%';
+            barra.className = `progress-bar h-full ${perc < 50 ? 'bg-green-500' : perc < 80 ? 'bg-yellow-500' : 'bg-red-500'}`;
+            document.getElementById('percSaude').innerText = Math.round(perc) + '%';
 
-            if(perc < 50) { barra.className = 'progress-bar h-full bg-green-500'; msg.innerText = "Excelente! Grande parte da renda está livre."; }
-            else if(perc < 80) { barra.className = 'progress-bar h-full bg-yellow-500'; msg.innerText = "Atenção: Mais da metade da renda já está comprometida."; }
-            else { barra.className = 'progress-bar h-full bg-red-500'; msg.innerText = "Cuidado! Margem de segurança muito baixa."; }
-
-            // Mantém o valor do saldo inicial no input
             if(ds.saldoIni > 0 && !document.activeElement.id.includes('f_saldo_ini')) {
                 document.getElementById('f_saldo_ini').value = 'R$ ' + ds.saldoIni.toLocaleString('pt-br', {minimumFractionDigits:2});
             }
