@@ -2,78 +2,63 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Financeiro v5</title>
+    <title>Financeiro App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #f1f5f9; font-family: sans-serif; }
-        .item-pago { opacity: 0.3; text-decoration: line-through; }
-        @media print { .no-print { display: none !important; } }
+        .item-ok { opacity: 0.3; text-decoration: line-through; }
+        button { cursor: pointer !important; touch-action: manipulation; }
     </style>
 </head>
-<body class="p-6">
+<body class="p-4 bg-slate-100 font-sans">
 
-    <div class="max-w-6xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="max-w-5xl mx-auto space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-white p-4 rounded shadow border-l-4 border-green-500">
-                <div class="text-xs text-gray-500 font-bold uppercase">Entradas</div>
-                <div id="totalReceber" class="text-xl font-black text-green-600">R$ 0,00</div>
+                <p class="text-[10px] font-bold text-gray-400 uppercase">Receber</p>
+                <h2 id="displayReceber" class="text-xl font-black text-green-600">R$ 0,00</h2>
             </div>
             <div class="bg-white p-4 rounded shadow border-l-4 border-red-500">
-                <div class="text-xs text-gray-500 font-bold uppercase">Saídas</div>
-                <div id="totalPagar" class="text-xl font-black text-red-600">R$ 0,00</div>
+                <p class="text-[10px] font-bold text-gray-400 uppercase">Pagar</p>
+                <h2 id="displayPagar" class="text-xl font-black text-red-600">R$ 0,00</h2>
             </div>
-            <div id="cardSaldo" class="bg-blue-600 p-4 rounded shadow text-white">
-                <div class="text-xs font-bold uppercase opacity-80">Saldo</div>
-                <div id="saldoGeral" class="text-xl font-black">R$ 0,00</div>
-            </div>
-            <div class="no-print flex flex-col gap-2">
-                <button onclick="window.print()" class="bg-gray-700 text-white p-2 rounded text-xs font-bold uppercase hover:bg-black">Imprimir</button>
-                <button onclick="limparTudo()" class="bg-red-100 text-red-600 p-2 rounded text-xs font-bold uppercase hover:bg-red-200">Limpar Mês</button>
+            <div id="boxSaldo" class="bg-blue-600 p-4 rounded shadow text-white">
+                <p class="text-[10px] font-bold uppercase opacity-70">Saldo Final</p>
+                <h2 id="displaySaldo" class="text-xl font-black">R$ 0,00</h2>
             </div>
         </div>
 
-        <div class="grid grid-cols-12 gap-6">
-            <div class="col-span-12 md:col-span-4 bg-white p-6 rounded shadow no-print">
-                <h3 class="font-bold mb-4 text-gray-700 uppercase text-sm">Novo Lançamento</h3>
-                <div class="space-y-4">
-                    <div class="flex gap-2">
-                        <div class="w-20">
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase">Dia</label>
-                            <input type="number" id="dia" placeholder="01" class="w-full border p-2 rounded font-bold">
-                        </div>
-                        <div class="flex-1">
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase">Descrição</label>
-                            <input type="text" id="desc" placeholder="Ex: Aluguel" class="w-full border p-2 rounded uppercase font-semibold">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase">Valor</label>
-                        <input type="text" id="valor" oninput="mascaraMoeda(this)" placeholder="R$ 0,00" class="w-full border p-2 rounded font-mono font-bold text-lg text-blue-700">
-                    </div>
-                    <div class="flex gap-2 pt-2">
-                        <button onclick="adicionar('receber')" class="flex-1 bg-green-500 text-white font-bold py-3 rounded shadow-lg active:bg-green-700">RECEBER</button>
-                        <button onclick="adicionar('pagar')" class="flex-1 bg-red-500 text-white font-bold py-3 rounded shadow-lg active:bg-red-700">PAGAR</button>
-                    </div>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div class="md:col-span-4 bg-white p-6 rounded shadow space-y-4">
+                <div class="flex gap-2">
+                    <input type="number" id="f_dia" placeholder="Dia" class="w-16 border p-2 rounded font-bold">
+                    <input type="text" id="f_desc" placeholder="DESCRIÇÃO" class="flex-1 border p-2 rounded uppercase text-sm font-bold">
                 </div>
+                <input type="text" id="f_valor" oninput="moneyMask(this)" placeholder="R$ 0,00" class="w-full border p-2 rounded font-mono font-bold text-lg text-blue-700">
+                
+                <div class="flex gap-2">
+                    <button onclick="addItem('R')" class="flex-1 bg-green-500 text-white font-bold py-3 rounded hover:bg-green-600 shadow">ENTRADA</button>
+                    <button onclick="addItem('P')" class="flex-1 bg-red-500 text-white font-bold py-3 rounded hover:bg-red-600 shadow">SAÍDA</button>
+                </div>
+                <button onclick="window.print()" class="w-full border border-gray-300 py-2 rounded text-xs font-bold uppercase">Imprimir Relatório</button>
             </div>
 
-            <div class="col-span-12 md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-white rounded shadow overflow-hidden">
-                    <div class="bg-green-50 p-2 text-green-700 font-bold text-[10px] uppercase text-center border-b border-green-100">Entradas</div>
-                    <div id="listaReceber" class="p-2 space-y-2"></div>
+            <div class="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white rounded shadow min-h-[200px]">
+                    <div class="bg-green-50 p-2 text-green-700 font-bold text-[10px] uppercase text-center">Entradas</div>
+                    <div id="listR" class="p-2 space-y-1"></div>
                 </div>
-                <div class="bg-white rounded shadow overflow-hidden">
-                    <div class="bg-red-50 p-2 text-red-700 font-bold text-[10px] uppercase text-center border-b border-red-100">Saídas</div>
-                    <div id="listaPagar" class="p-2 space-y-2"></div>
+                <div class="bg-white rounded shadow min-h-[200px]">
+                    <div class="bg-red-50 p-2 text-red-700 font-bold text-[10px] uppercase text-center">Contas a Pagar</div>
+                    <div id="listP" class="p-2 space-y-1"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('financas_v5')) || { pagar: [], receber: [] };
+        let dataStore = JSON.parse(localStorage.getItem('fin_v6')) || { P: [], R: [] };
 
-        function mascaraMoeda(i) {
+        function moneyMask(i) {
             let v = i.value.replace(/\D/g,'');
             v = (v/100).toFixed(2) + '';
             v = v.replace(".", ",");
@@ -82,76 +67,69 @@
             i.value = 'R$ ' + v;
         }
 
-        function formatar(v) {
-            return v.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'});
-        }
-
-        function adicionar(tipo) {
-            const d = document.getElementById('dia').value || "0";
-            const s = document.getElementById('desc').value;
-            const vRaw = document.getElementById('valor').value.replace(/[R$\s.]/g, '').replace(',', '.');
+        function addItem(type) {
+            const d = document.getElementById('f_dia').value || "0";
+            const s = document.getElementById('f_desc').value;
+            const vRaw = document.getElementById('f_valor').value.replace(/[R$\s.]/g, '').replace(',', '.');
             const v = parseFloat(vRaw);
 
             if(!s || isNaN(v)) return alert("Preencha descrição e valor!");
 
-            db[tipo].push({ id: Date.now(), dia: parseInt(d), desc: s.toUpperCase(), valor: v, status: 'p' });
-            db[tipo].sort((a,b) => a.dia - b.dia);
-            salvar();
+            dataStore[type].push({ id: Date.now(), dia: parseInt(d), desc: s.toUpperCase(), valor: v, ok: false });
+            dataStore[type].sort((a,b) => a.dia - b.dia);
             
-            document.getElementById('desc').value = '';
-            document.getElementById('valor').value = '';
-            document.getElementById('dia').value = '';
+            saveAndRef();
+            document.getElementById('f_desc').value = '';
+            document.getElementById('f_valor').value = '';
+            document.getElementById('f_dia').value = '';
         }
 
-        function toggle(tipo, id) {
-            const item = db[tipo].find(i => i.id === id);
-            item.status = item.status === 'ok' ? 'p' : 'ok';
-            salvar();
+        function delItem(type, id) {
+            dataStore[type] = dataStore[type].filter(i => i.id !== id);
+            saveAndRef();
         }
 
-        function remover(tipo, id) {
-            db[tipo] = db[tipo].filter(i => i.id !== id);
-            salvar();
+        function toggleItem(type, id) {
+            const item = dataStore[type].find(i => i.id === id);
+            item.ok = !item.ok;
+            saveAndRef();
         }
 
-        function limparTudo() {
-            if(confirm("Limpar tudo?")) { db = { pagar: [], receber: [] }; salvar(); }
+        function saveAndRef() {
+            localStorage.setItem('fin_v6', JSON.stringify(dataStore));
+            renderAll();
         }
 
-        function salvar() {
-            localStorage.setItem('financas_v5', JSON.stringify(db));
-            render();
-        }
-
-        function render() {
-            const r = document.getElementById('listaReceber');
-            const p = document.getElementById('listaPagar');
-            r.innerHTML = p.innerHTML = '';
+        function renderAll() {
+            const rList = document.getElementById('listR');
+            const pList = document.getElementById('listP');
+            rList.innerHTML = pList.innerHTML = '';
             let tR = 0, tP = 0;
 
-            const html = (i, t) => `
-                <div class="flex justify-between items-center p-2 bg-gray-50 border rounded ${i.status === 'ok' ? 'item-pago' : ''}">
+            const draw = (i, type) => `
+                <div class="flex justify-between items-center p-2 bg-slate-50 border rounded ${i.ok ? 'item-ok' : ''}">
                     <div class="flex items-center gap-2">
-                        <input type="checkbox" ${i.status === 'ok' ? 'checked' : ''} onclick="toggle('${t}', ${i.id})">
-                        <span class="text-[9px] bg-white px-1 border rounded text-gray-400">${String(i.dia).padStart(2,'0')}</span>
-                        <span class="text-[11px] font-bold text-gray-700">${i.desc}</span>
+                        <input type="checkbox" ${i.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${i.id})">
+                        <span class="text-[9px] font-mono text-gray-400">${String(i.dia).padStart(2,'0')}</span>
+                        <span class="text-[10px] font-bold text-gray-600">${i.desc}</span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-xs font-bold ${t==='receber'?'text-green-600':'text-red-600'}">${formatar(i.valor)}</span>
-                        <button onclick="remover('${t}', ${i.id})" class="no-print text-gray-300">✕</button>
+                        <span class="text-[11px] font-bold ${type==='R'?'text-green-600':'text-red-600'}">R$ ${i.valor.toLocaleString('pt-br', {minimumFractionDigits:2})}</span>
+                        <button onclick="delItem('${type}', ${i.id})" class="text-gray-300 hover:text-red-400">✕</button>
                     </div>
                 </div>`;
 
-            db.receber.forEach(i => { tR += i.valor; r.innerHTML += html(i, 'receber'); });
-            db.pagar.forEach(i => { tP += i.valor; p.innerHTML += html(i, 'pagar'); });
+            dataStore.R.forEach(i => { tR += i.valor; rList.innerHTML += draw(i, 'R'); });
+            dataStore.P.forEach(i => { tP += i.valor; pList.innerHTML += draw(i, 'P'); });
 
-            document.getElementById('totalReceber').innerText = formatar(tR);
-            document.getElementById('totalPagar').innerText = formatar(tP);
+            document.getElementById('displayReceber').innerText = 'R$ ' + tR.toLocaleString('pt-br', {minimumFractionDigits:2});
+            document.getElementById('displayPagar').innerText = 'R$ ' + tP.toLocaleString('pt-br', {minimumFractionDigits:2});
+            
             const saldo = tR - tP;
-            document.getElementById('saldoGeral').innerText = formatar(saldo);
-            document.getElementById('cardSaldo').className = (saldo >= 0 ? 'bg-blue-600' : 'bg-red-500') + ' p-4 rounded shadow text-white';
+            document.getElementById('displaySaldo').innerText = 'R$ ' + saldo.toLocaleString('pt-br', {minimumFractionDigits:2});
+            document.getElementById('boxSaldo').className = (saldo >= 0 ? 'bg-blue-600' : 'bg-red-500') + ' p-4 rounded shadow text-white';
         }
-        render();
+        renderAll();
     </script>
 </body>
 </html>
