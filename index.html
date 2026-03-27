@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Financeiro Pro v8 - Ajustado</title>
+    <title>Financeiro Pro v9 - Realizado</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #f1f5f9; font-family: sans-serif; overflow: hidden; height: 100vh; }
@@ -23,25 +23,40 @@
                 <input type="text" id="f_saldo_ini" oninput="moneyMask(this); updateSaldoIni()" placeholder="R$ 0,00" class="text-xl font-black text-blue-600 bg-transparent outline-none w-full">
             </div>
             <div class="bg-white p-4 rounded shadow border-l-4 border-green-500">
-                <p class="text-[10px] font-bold text-gray-400 uppercase">Entradas</p>
+                <p class="text-[10px] font-bold text-gray-400 uppercase">Total Entradas (Previsto)</p>
                 <h2 id="displayReceber" class="text-xl font-black text-green-600 font-mono">R$ 0,00</h2>
             </div>
             <div class="bg-white p-4 rounded shadow border-l-4 border-red-500">
-                <p class="text-[10px] font-bold text-gray-400 uppercase">Saídas</p>
+                <p class="text-[10px] font-bold text-gray-400 uppercase">Total Saídas (Previsto)</p>
                 <h2 id="displayPagar" class="text-xl font-black text-red-600 font-mono">R$ 0,00</h2>
             </div>
             <div id="boxSaldo" class="bg-slate-800 p-4 rounded shadow text-white">
-                <p class="text-[10px] font-bold uppercase opacity-70">Saldo Final</p>
+                <p class="text-[10px] font-bold uppercase opacity-70">Saldo Final Previsto</p>
                 <h2 id="displaySaldo" class="text-xl font-black font-mono">R$ 0,00</h2>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0 bg-slate-200 p-2 rounded-lg border border-slate-300">
+            <div class="flex items-center justify-between px-4 py-1 bg-white rounded shadow-sm">
+                <span class="text-[9px] font-black text-slate-400 uppercase">Já Recebido:</span>
+                <span id="realRecebido" class="text-sm font-bold text-green-600 font-mono">R$ 0,00</span>
+            </div>
+            <div class="flex items-center justify-between px-4 py-1 bg-white rounded shadow-sm">
+                <span class="text-[9px] font-black text-slate-400 uppercase">Já Pago:</span>
+                <span id="realPago" class="text-sm font-bold text-red-600 font-mono">R$ 0,00</span>
+            </div>
+            <div class="flex items-center justify-between px-4 py-1 bg-slate-700 rounded shadow-sm">
+                <span class="text-[9px] font-black text-slate-300 uppercase italic">Saldo em Mão:</span>
+                <span id="realSaldo" class="text-sm font-bold text-white font-mono">R$ 0,00</span>
             </div>
         </div>
 
         <div class="bg-white p-4 rounded shadow shrink-0">
             <div class="flex justify-between items-center mb-2">
-                <span class="text-[10px] font-bold text-gray-500 uppercase">Comprometimento da Renda</span>
+                <span class="text-[10px] font-bold text-gray-500 uppercase">Comprometimento da Renda (Previsto)</span>
                 <span id="percSaude" class="text-xs font-black text-gray-700">0%</span>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+            <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                 <div id="barraSaude" class="progress-bar h-full bg-green-500" style="width: 0%"></div>
             </div>
         </div>
@@ -82,7 +97,7 @@
     </div>
 
     <script>
-        let ds = JSON.parse(localStorage.getItem('fin_v8')) || { P: [], R: [], saldoIni: 0 };
+        let ds = JSON.parse(localStorage.getItem('fin_v9')) || { P: [], R: [], saldoIni: 0 };
         let editId = null;
 
         function moneyMask(i) {
@@ -140,90 +155,4 @@
         function cancelEdit() {
             editId = null;
             clearFields();
-            resetFormStyle();
-        }
-
-        function resetFormStyle() {
-            document.getElementById('formTitle').innerText = "NOVO REGISTRO";
-            document.getElementById('formTitle').classList.replace('text-orange-500', 'text-blue-600');
-            document.getElementById('btnR').innerText = "RECEBER";
-            document.getElementById('btnP').innerText = "PAGAR";
-            document.getElementById('btnP').setAttribute("onclick", "addItem('P')");
-        }
-
-        function clearFields() {
-            document.getElementById('f_desc').value = '';
-            document.getElementById('f_valor').value = '';
-            document.getElementById('f_dia').value = '';
-        }
-
-        function delItem(type, id) {
-            if(confirm("Excluir item?")) {
-                ds[type] = ds[type].filter(i => i.id !== id);
-                saveAndRef();
-            }
-        }
-
-        function toggleItem(type, id) {
-            const item = ds[type].find(i => i.id === id);
-            item.ok = !item.ok;
-            saveAndRef();
-        }
-
-        function limparTudo() {
-            if(confirm("Resetar o mês?")) {
-                ds = { P: [], R: [], saldoIni: 0 };
-                document.getElementById('f_saldo_ini').value = '';
-                saveAndRef();
-            }
-        }
-
-        function saveAndRef() {
-            localStorage.setItem('fin_v8', JSON.stringify(ds));
-            renderAll();
-        }
-
-        function renderAll() {
-            const rList = document.getElementById('listR');
-            const pList = document.getElementById('listP');
-            rList.innerHTML = pList.innerHTML = '';
-            let tR = 0, tP = 0;
-
-            const draw = (i, type) => `
-                <div class="flex justify-between items-center p-2 bg-white border border-gray-100 rounded shadow-sm cursor-edit ${i.ok ? 'item-ok' : ''}">
-                    <div class="flex items-center gap-2 overflow-hidden">
-                        <input type="checkbox" ${i.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${i.id})" class="no-print">
-                        <span class="text-[9px] font-bold text-gray-400 bg-gray-50 px-1 border rounded">${String(i.dia).padStart(2,'0')}</span>
-                        <span onclick="prepareEdit('${type}', ${i.id})" class="text-[10px] font-bold text-gray-700 uppercase truncate">${i.desc}</span>
-                    </div>
-                    <div class="flex items-center gap-2 shrink-0">
-                        <span onclick="prepareEdit('${type}', ${i.id})" class="text-[11px] font-black font-mono ${type==='R'?'text-green-600':'text-red-600'}">R$ ${i.valor.toLocaleString('pt-br', {minimumFractionDigits:2})}</span>
-                        <button onclick="delItem('${type}', ${i.id})" class="no-print text-gray-300 hover:text-red-500 px-1">✕</button>
-                    </div>
-                </div>`;
-
-            ds.R.forEach(i => { tR += i.valor; rList.innerHTML += draw(i, 'R'); });
-            ds.P.forEach(i => { tP += i.valor; pList.innerHTML += draw(i, 'P'); });
-
-            document.getElementById('displayReceber').innerText = 'R$ ' + tR.toLocaleString('pt-br', {minimumFractionDigits:2});
-            document.getElementById('displayPagar').innerText = 'R$ ' + tP.toLocaleString('pt-br', {minimumFractionDigits:2});
-            
-            const saldoFinal = (ds.saldoIni + tR) - tP;
-            document.getElementById('displaySaldo').innerText = 'R$ ' + saldoFinal.toLocaleString('pt-br', {minimumFractionDigits:2});
-            document.getElementById('boxSaldo').className = (saldoFinal >= 0 ? 'bg-slate-800' : 'bg-red-600') + ' p-4 rounded shadow text-white';
-
-            const totalEntradas = ds.saldoIni + tR;
-            const perc = totalEntradas > 0 ? Math.min((tP / totalEntradas) * 100, 100) : (tP > 0 ? 100 : 0);
-            const barra = document.getElementById('barraSaude');
-            barra.style.width = perc + '%';
-            barra.className = `progress-bar h-full ${perc < 50 ? 'bg-green-500' : perc < 80 ? 'bg-yellow-500' : 'bg-red-500'}`;
-            document.getElementById('percSaude').innerText = Math.round(perc) + '%';
-
-            if(ds.saldoIni > 0 && !document.activeElement.id.includes('f_saldo_ini')) {
-                document.getElementById('f_saldo_ini').value = 'R$ ' + ds.saldoIni.toLocaleString('pt-br', {minimumFractionDigits:2});
-            }
-        }
-        renderAll();
-    </script>
-</body>
-</html>
+            reset
