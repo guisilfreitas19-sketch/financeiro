@@ -2,104 +2,110 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Financeiro Pro v9.2</title>
+    <title>Financeiro Pro v10 - Fluxo Real</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #f1f5f9; font-family: sans-serif; overflow: hidden; height: 100vh; }
-        .item-ok { opacity: 0.3; text-decoration: line-through; filter: grayscale(1); }
         @media print { .no-print { display: none !important; } body { overflow: visible; height: auto; } }
         .progress-bar { transition: width 0.8s ease-in-out; }
         .cursor-edit { cursor: pointer; transition: background 0.2s; }
         .cursor-edit:hover { background-color: #f0f9ff; }
-        button { cursor: pointer !important; touch-action: manipulation; }
+        .item-confirmado { border-left: 4px solid #10b981; background-color: #f8fafc; opacity: 0.8; }
+        /* Scroll elegante para as listas */
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body class="p-4">
 
     <div class="max-w-6xl mx-auto h-full flex flex-col gap-4">
         
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 shrink-0">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 shrink-0 font-bold">
             <div class="bg-white p-4 rounded shadow border-l-4 border-blue-400">
-                <p class="text-[10px] font-bold text-gray-400 uppercase">Saldo Inicial</p>
-                <input type="text" id="f_saldo_ini" oninput="moneyMask(this); updateSaldoIni()" placeholder="R$ 0,00" class="text-xl font-black text-blue-600 bg-transparent outline-none w-full">
+                <p class="text-[10px] text-gray-400 uppercase">Saldo Inicial</p>
+                <input type="text" id="f_saldo_ini" oninput="moneyMask(this); updateSaldoIni()" placeholder="R$ 0,00" class="text-xl text-blue-600 bg-transparent outline-none w-full font-black">
             </div>
             <div class="bg-white p-4 rounded shadow border-l-4 border-green-500">
-                <p class="text-[10px] font-bold text-gray-400 uppercase">Total Entradas</p>
-                <h2 id="displayReceber" class="text-xl font-black text-green-600 font-mono">R$ 0,00</h2>
+                <p class="text-[10px] text-gray-400 uppercase">Total Entradas</p>
+                <h2 id="displayReceber" class="text-xl text-green-600 font-black font-mono">R$ 0,00</h2>
             </div>
             <div class="bg-white p-4 rounded shadow border-l-4 border-red-500">
-                <p class="text-[10px] font-bold text-gray-400 uppercase">Total Saídas</p>
-                <h2 id="displayPagar" class="text-xl font-black text-red-600 font-mono">R$ 0,00</h2>
+                <p class="text-[10px] text-gray-400 uppercase">Total Saídas</p>
+                <h2 id="displayPagar" class="text-xl text-red-600 font-black font-mono">R$ 0,00</h2>
             </div>
-            <div id="boxSaldo" class="bg-slate-800 p-4 rounded shadow text-white">
-                <p class="text-[10px] font-bold uppercase opacity-70">Saldo Final</p>
+            <div id="boxSaldo" class="bg-slate-800 p-4 rounded shadow text-white border-l-4 border-slate-500">
+                <p class="text-[10px] uppercase opacity-70">Saldo Final Previsto</p>
                 <h2 id="displaySaldo" class="text-xl font-black font-mono">R$ 0,00</h2>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0 bg-slate-200 p-2 rounded-lg border border-slate-300">
-            <div class="flex items-center justify-between px-4 py-1 bg-white rounded shadow-sm">
-                <span class="text-[9px] font-black text-slate-400 uppercase font-bold">Já Recebido:</span>
-                <span id="realRecebido" class="text-sm font-bold text-green-600 font-mono">R$ 0,00</span>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0 bg-slate-800 p-2 rounded-lg shadow-inner">
+            <div class="flex items-center justify-between px-4 py-1 border-r border-slate-700">
+                <span class="text-[9px] font-black text-green-400 uppercase">RECEBIDO:</span>
+                <span id="realRecebido" class="text-sm font-bold text-white font-mono">R$ 0,00</span>
             </div>
-            <div class="flex items-center justify-between px-4 py-1 bg-white rounded shadow-sm">
-                <span class="text-[9px] font-black text-slate-400 uppercase font-bold">Já Pago:</span>
-                <span id="realPago" class="text-sm font-bold text-red-600 font-mono">R$ 0,00</span>
+            <div class="flex items-center justify-between px-4 py-1 border-r border-slate-700">
+                <span class="text-[9px] font-black text-red-400 uppercase">PAGO:</span>
+                <span id="realPago" class="text-sm font-bold text-white font-mono">R$ 0,00</span>
             </div>
-            <div class="flex items-center justify-between px-4 py-1 bg-slate-700 rounded shadow-sm">
-                <span class="text-[9px] font-black text-slate-300 uppercase italic font-bold">Saldo em Mão:</span>
+            <div class="flex items-center justify-between px-4 py-1">
+                <span class="text-[9px] font-black text-blue-300 uppercase italic">SALDO EM MÃO:</span>
                 <span id="realSaldo" class="text-sm font-bold text-white font-mono">R$ 0,00</span>
             </div>
         </div>
 
         <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-4 min-h-0">
-            <div class="md:col-span-4 bg-white p-5 rounded shadow space-y-4 no-print shrink-0 border-t-4 border-blue-500">
-                <div class="flex justify-between items-center border-b pb-2">
-                    <span class="text-[10px] font-black text-blue-800 uppercase">Financeiro App</span>
-                    <span class="text-[9px] font-bold bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">v9.2</span>
-                </div>
-
-                <h2 id="formTitle" class="font-bold text-blue-600 text-[10px] uppercase tracking-widest">Novo Registro</h2>
-                
-                <div class="flex gap-2">
-                    <input type="number" id="f_dia" placeholder="DIA" class="w-16 border p-2 rounded font-bold text-center bg-gray-50 uppercase">
-                    <input type="text" id="f_desc" placeholder="DESCRIÇÃO" class="flex-1 border p-2 rounded uppercase text-sm font-bold bg-gray-50">
-                </div>
-                <input type="text" id="f_valor" oninput="moneyMask(this)" placeholder="VALOR R$ 0,00" class="w-full border p-3 rounded font-mono font-bold text-xl text-blue-700 bg-gray-50">
-                
-                <div class="flex gap-2">
-                    <button id="btnR" onclick="addItem('R')" class="flex-1 bg-green-500 text-white font-black py-4 rounded hover:bg-green-600 shadow uppercase text-[10px]">Receber</button>
-                    <button id="btnP" onclick="addItem('P')" class="flex-1 bg-red-500 text-white font-black py-4 rounded hover:bg-red-600 shadow uppercase text-[10px]">Pagar</button>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="window.print()" class="border py-2 rounded font-bold text-[9px] uppercase text-gray-500">PDF</button>
-                    <button onclick="limparTudo()" class="border py-2 rounded font-bold text-[9px] uppercase text-red-300">Reset</button>
-                </div>
-
-                <div class="pt-2">
-                    <div class="w-full bg-gray-100 rounded-full h-1">
-                        <div id="barraSaude" class="progress-bar h-full bg-green-500" style="width: 0%"></div>
+            <div class="md:col-span-3 bg-white p-5 rounded shadow space-y-4 no-print border-t-4 border-blue-500 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-center border-b pb-2 mb-4 text-[10px] font-black text-blue-900 uppercase">
+                        <span>Financeiro App</span>
+                        <span class="bg-blue-100 px-2 rounded-full">v10</span>
                     </div>
+
+                    <h2 id="formTitle" class="font-bold text-blue-600 text-[10px] uppercase tracking-widest mb-2">Novo Registro</h2>
+                    <div class="space-y-3">
+                        <div class="flex gap-2">
+                            <input type="number" id="f_dia" placeholder="DIA" class="w-16 border p-2 rounded font-black text-center bg-gray-50 uppercase placeholder:text-gray-300">
+                            <input type="text" id="f_desc" placeholder="DESCRIÇÃO" class="flex-1 border p-2 rounded uppercase text-sm font-bold bg-gray-50 placeholder:text-gray-300">
+                        </div>
+                        <input type="text" id="f_valor" oninput="moneyMask(this)" placeholder="VALOR R$ 0,00" class="w-full border p-3 rounded font-mono font-bold text-xl text-blue-700 bg-gray-50">
+                        
+                        <div class="flex gap-2">
+                            <button id="btnR" onclick="addItem('R')" class="flex-1 bg-green-500 text-white font-black py-4 rounded hover:bg-green-600 shadow uppercase text-[10px]">Receber</button>
+                            <button id="btnP" onclick="addItem('P')" class="flex-1 bg-red-500 text-white font-black py-4 rounded hover:bg-red-600 shadow uppercase text-[10px]">Pagar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2 pt-4 border-t">
+                    <button onclick="window.print()" class="w-full border py-2 rounded font-bold text-[9px] uppercase text-gray-500 hover:bg-gray-50">Gerar PDF</button>
+                    <button onclick="limparTudo()" class="w-full border py-2 rounded font-bold text-[9px] uppercase text-red-300 hover:bg-red-50">Resetar Mês</button>
                 </div>
             </div>
 
-            <div class="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4 h-full overflow-hidden">
-                <div class="bg-white rounded shadow flex flex-col overflow-hidden border-t-4 border-green-400">
-                    <div class="bg-green-50 p-2 text-green-700 font-bold text-[10px] uppercase text-center shrink-0 font-bold">Entradas</div>
-                    <div id="listR" class="p-2 space-y-1 overflow-y-auto"></div>
+            <div class="md:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-4 h-full min-h-0 overflow-hidden">
+                <div class="flex flex-col gap-2 h-full min-h-0">
+                    <div class="bg-green-600 p-1 text-white font-black text-[10px] uppercase text-center rounded shadow shrink-0 tracking-tighter">Entradas (A Confirmar)</div>
+                    <div id="listR_pendente" class="flex-1 bg-white rounded shadow-sm overflow-y-auto p-2 space-y-1 custom-scroll"></div>
+                    
+                    <div class="bg-slate-500 p-1 text-white font-black text-[10px] uppercase text-center rounded shadow shrink-0 tracking-tighter">Entradas (Confirmadas)</div>
+                    <div id="listR_confirmado" class="flex-1 bg-slate-100 rounded shadow-sm overflow-y-auto p-2 space-y-1 border-2 border-dashed border-slate-200 custom-scroll"></div>
                 </div>
-                <div class="bg-white rounded shadow flex flex-col overflow-hidden border-t-4 border-red-400">
-                    <div class="bg-red-50 p-2 text-red-700 font-bold text-[10px] uppercase text-center shrink-0 font-bold">Saídas</div>
-                    <div id="listP" class="p-2 space-y-1 overflow-y-auto"></div>
+
+                <div class="flex flex-col gap-2 h-full min-h-0">
+                    <div class="bg-red-600 p-1 text-white font-black text-[10px] uppercase text-center rounded shadow shrink-0 tracking-tighter">Saídas (A Confirmar)</div>
+                    <div id="listP_pendente" class="flex-1 bg-white rounded shadow-sm overflow-y-auto p-2 space-y-1 custom-scroll"></div>
+                    
+                    <div class="bg-slate-500 p-1 text-white font-black text-[10px] uppercase text-center rounded shadow shrink-0 tracking-tighter">Saídas (Confirmadas)</div>
+                    <div id="listP_confirmado" class="flex-1 bg-slate-100 rounded shadow-sm overflow-y-auto p-2 space-y-1 border-2 border-dashed border-slate-200 custom-scroll"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Usei uma chave nova para garantir que não haja conflito de dados corrompidos
-        let ds = JSON.parse(localStorage.getItem('fin_v9_2')) || { P: [], R: [], saldoIni: 0 };
+        let ds = JSON.parse(localStorage.getItem('fin_v10')) || { P: [], R: [], saldoIni: 0 };
         let editId = null;
 
         function moneyMask(i) {
@@ -121,11 +127,11 @@
         }
 
         function addItem(type) {
-            const d = document.getElementById('f_dia').value || "0";
+            const d = document.getElementById('f_dia').value || "01";
             const s = document.getElementById('f_desc').value;
             const v = parseMoney(document.getElementById('f_valor').value);
 
-            if(!s || v === 0) return alert("Preencha Descrição e Valor!");
+            if(!s || v === 0) return alert("Preencha descrição e valor!");
 
             if(editId) {
                 ds.R = ds.R.filter(i => i.id !== editId);
@@ -141,6 +147,12 @@
             document.getElementById('f_desc').value = '';
             document.getElementById('f_valor').value = '';
             document.getElementById('f_dia').value = '';
+        }
+
+        function toggleItem(type, id) {
+            const item = ds[type].find(i => i.id === id);
+            item.ok = !item.ok;
+            saveAndRef();
         }
 
         function prepareEdit(type, id) {
@@ -171,20 +183,14 @@
         }
 
         function delItem(type, id) {
-            if(confirm("Excluir?")) {
+            if(confirm("Excluir definitivamente?")) {
                 ds[type] = ds[type].filter(i => i.id !== id);
                 saveAndRef();
             }
         }
 
-        function toggleItem(type, id) {
-            const item = ds[type].find(i => i.id === id);
-            item.ok = !item.ok;
-            saveAndRef();
-        }
-
         function limparTudo() {
-            if(confirm("Limpar tudo?")) {
+            if(confirm("Deseja apagar todos os lançamentos do mês?")) {
                 ds = { P: [], R: [], saldoIni: 0 };
                 document.getElementById('f_saldo_ini').value = '';
                 saveAndRef();
@@ -192,50 +198,58 @@
         }
 
         function saveAndRef() {
-            localStorage.setItem('fin_v9_2', JSON.stringify(ds));
+            localStorage.setItem('fin_v10', JSON.stringify(ds));
             renderAll();
         }
 
         function renderAll() {
-            const rList = document.getElementById('listR');
-            const pList = document.getElementById('listP');
-            rList.innerHTML = pList.innerHTML = '';
+            const lists = {
+                R_pendente: document.getElementById('listR_pendente'),
+                R_confirmado: document.getElementById('listR_confirmado'),
+                P_pendente: document.getElementById('listP_pendente'),
+                P_confirmado: document.getElementById('listP_confirmado')
+            };
+            
+            Object.values(lists).forEach(l => l.innerHTML = '');
+            
             let tR = 0, tP = 0, realR = 0, realP = 0;
 
             const draw = (i, type) => {
+                const targetList = i.ok ? lists[type + '_confirmado'] : lists[type + '_pendente'];
                 if(i.ok) { if(type === 'R') realR += i.valor; else realP += i.valor; }
-                return `
-                <div class="flex justify-between items-center p-2 bg-white border rounded shadow-sm cursor-edit ${i.ok ? 'item-ok' : ''}">
+                tR += (type==='R' ? i.valor : 0);
+                tP += (type==='P' ? i.valor : 0);
+
+                targetList.innerHTML += `
+                <div class="flex justify-between items-center p-2 bg-white border rounded shadow-sm ${i.ok ? 'item-confirmado' : 'cursor-edit border-gray-100'}">
                     <div class="flex items-center gap-2 overflow-hidden">
-                        <input type="checkbox" ${i.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${i.id})" class="no-print">
-                        <span class="text-[9px] font-bold text-gray-400 border px-1 rounded">${String(i.dia).padStart(2,'0')}</span>
-                        <span onclick="prepareEdit('${type}', ${i.id})" class="text-[10px] font-bold uppercase truncate">${i.desc}</span>
+                        <input type="checkbox" ${i.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${i.id})" class="w-4 h-4 cursor-pointer">
+                        <span class="text-[9px] font-black text-gray-400 bg-gray-50 px-1 border rounded">${String(i.dia).padStart(2,'0')}</span>
+                        <span onclick="prepareEdit('${type}', ${i.id})" class="text-[10px] font-black uppercase truncate text-slate-700">${i.desc}</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span onclick="prepareEdit('${type}', ${i.id})" class="text-[11px] font-black ${type==='R'?'text-green-600':'text-red-600'}">R$ ${i.valor.toLocaleString('pt-br', {minimumFractionDigits:2})}</span>
-                        <button onclick="delItem('${type}', ${i.id})" class="no-print text-gray-300 hover:text-red-500 px-1">✕</button>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span onclick="prepareEdit('${type}', ${i.id})" class="text-[11px] font-black font-mono ${type==='R'?'text-green-600':'text-red-600'}">R$ ${i.valor.toLocaleString('pt-br', {minimumFractionDigits:2})}</span>
+                        <button onclick="delItem('${type}', ${i.id})" class="no-print text-gray-200 hover:text-red-500 font-bold px-1 text-xs">✕</button>
                     </div>
                 </div>`;
             };
 
-            ds.R.forEach(i => { tR += i.valor; rList.innerHTML += draw(i, 'R'); });
-            ds.P.forEach(i => { tP += i.valor; pList.innerHTML += draw(i, 'P'); });
+            ds.R.forEach(i => draw(i, 'R'));
+            ds.P.forEach(i => draw(i, 'P'));
 
+            // DASHBOARD TOPO
             document.getElementById('displayReceber').innerText = 'R$ ' + tR.toLocaleString('pt-br', {minimumFractionDigits:2});
             document.getElementById('displayPagar').innerText = 'R$ ' + tP.toLocaleString('pt-br', {minimumFractionDigits:2});
             const saldoFinal = (ds.saldoIni + tR) - tP;
             document.getElementById('displaySaldo').innerText = 'R$ ' + saldoFinal.toLocaleString('pt-br', {minimumFractionDigits:2});
-            document.getElementById('boxSaldo').className = (saldoFinal >= 0 ? 'bg-slate-800' : 'bg-red-600') + ' p-4 rounded shadow text-white';
+            document.getElementById('boxSaldo').className = (saldoFinal >= 0 ? 'bg-slate-800' : 'bg-red-700') + ' p-4 rounded shadow text-white border-l-4 border-slate-500 font-bold';
 
+            // DASHBOARD REALIZADO
             document.getElementById('realRecebido').innerText = 'R$ ' + realR.toLocaleString('pt-br', {minimumFractionDigits:2});
             document.getElementById('realPago').innerText = 'R$ ' + realP.toLocaleString('pt-br', {minimumFractionDigits:2});
             const saldoReal = (ds.saldoIni + realR) - realP;
             document.getElementById('realSaldo').innerText = 'R$ ' + saldoReal.toLocaleString('pt-br', {minimumFractionDigits:2});
 
-            const total = ds.saldoIni + tR;
-            const perc = total > 0 ? (tP / total) * 100 : 0;
-            document.getElementById('barraSaude').style.width = Math.min(perc, 100) + '%';
-            
             if(ds.saldoIni > 0 && !document.activeElement.id.includes('f_saldo_ini')) {
                 document.getElementById('f_saldo_ini').value = 'R$ ' + ds.saldoIni.toLocaleString('pt-br', {minimumFractionDigits:2});
             }
