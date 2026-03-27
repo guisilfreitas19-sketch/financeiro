@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Financeiro Pro v8 - Edição</title>
+    <title>Financeiro Pro v8 - Ajustado</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #f1f5f9; font-family: sans-serif; overflow: hidden; height: 100vh; }
@@ -51,7 +51,7 @@
                 <h2 id="formTitle" class="font-bold text-blue-600 text-xs uppercase tracking-widest">Novo Registro</h2>
                 <div class="space-y-4">
                     <div class="flex gap-2">
-                        <input type="number" id="f_dia" placeholder="Dia" class="w-16 border p-2 rounded font-bold text-center bg-gray-50">
+                        <input type="number" id="f_dia" placeholder="DIA" class="w-16 border p-2 rounded font-bold text-center bg-gray-50 uppercase placeholder:text-gray-400">
                         <input type="text" id="f_desc" placeholder="DESCRIÇÃO" class="flex-1 border p-2 rounded uppercase text-sm font-bold bg-gray-50">
                     </div>
                     <input type="text" id="f_valor" oninput="moneyMask(this)" placeholder="VALOR R$ 0,00" class="w-full border p-3 rounded font-mono font-bold text-xl text-blue-700 bg-gray-50">
@@ -111,7 +111,6 @@
             if(!s || v === 0) return;
 
             if(editId) {
-                // Se estiver editando, remove o antigo antes de adicionar o novo
                 ds.R = ds.R.filter(i => i.id !== editId);
                 ds.P = ds.P.filter(i => i.id !== editId);
                 editId = null;
@@ -128,11 +127,9 @@
         function prepareEdit(type, id) {
             const item = ds[type].find(i => i.id === id);
             editId = id;
-            
             document.getElementById('f_dia').value = item.dia;
             document.getElementById('f_desc').value = item.desc;
             document.getElementById('f_valor').value = 'R$ ' + item.valor.toLocaleString('pt-br', {minimumFractionDigits:2});
-            
             document.getElementById('formTitle').innerText = "EDITANDO REGISTRO";
             document.getElementById('formTitle').classList.replace('text-blue-600', 'text-orange-500');
             document.getElementById('btnR').innerText = "SALVAR ALTERAÇÃO";
