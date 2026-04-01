@@ -26,7 +26,7 @@ interface Transaction {
   day: number;
   description: string;
   value: number;
-  type: 'R' | 'P'; // R = Receber (Entrada), P = Pagar (Saída)
+  type: 'R' | 'P'; // R = Receber (Inflow), P = Pagar (Outflow)
   confirmed: boolean;
 }
 
@@ -37,6 +37,63 @@ interface AppData {
 
 const STORAGE_KEY = 'financeiro_pro_v11';
 
+interface TransactionItemProps {
+  key?: string;
+  t: Transaction;
+  toggleConfirm: (id: string) => void;
+  editTransaction: (t: Transaction) => void;
+  deleteTransaction: (id: string) => void;
+  formatCurrency: (val: number) => string;
+}
+
+const TransactionItem = ({ t, toggleConfirm, editTransaction, deleteTransaction, formatCurrency }: TransactionItemProps) => (
+  <motion.div
+    layout
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, scale: 0.95 }}
+    className={`group flex justify-between items-center p-3 bg-white border rounded-xl shadow-sm transition-all hover:shadow-md ${
+      t.confirmed ? 'border-l-4 border-l-emerald-500 bg-emerald-50/30' : 'border-gray-100'
+    }`}
+  >
+    <div className="flex items-center gap-3 overflow-hidden">
+      <button 
+        onClick={() => toggleConfirm(t.id)}
+        className={`transition-colors ${t.confirmed ? 'text-emerald-600' : 'text-gray-300 hover:text-gray-400'}`}
+      >
+        {t.confirmed ? <CheckCircle2 size={20} /> : <Circle size={20} />}
+      </button>
+      <span className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md border border-gray-200 tabular-nums">
+        {String(t.day).padStart(2, '0')}
+      </span>
+      <span 
+        onClick={() => editTransaction(t)}
+        className={`text-xs font-semibold uppercase truncate cursor-pointer transition-colors ${
+          t.confirmed ? 'text-emerald-900' : 'text-slate-700 hover:text-blue-600'
+        }`}
+      >
+        {t.description}
+      </span>
+    </div>
+    <div className="flex items-center gap-3 shrink-0 ml-2">
+      <span 
+        onClick={() => editTransaction(t)}
+        className={`text-sm font-bold font-mono cursor-pointer ${
+          t.type === 'R' ? 'text-emerald-600' : 'text-rose-600'
+        }`}
+      >
+        {t.type === 'R' ? '+' : '-'}{formatCurrency(t.value)}
+      </span>
+      <button 
+        onClick={() => deleteTransaction(t.id)}
+        className="text-gray-300 hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100"
+      >
+        <Trash2 size={16} />
+      </button>
+    </div>
+  </motion.div>
+);
+
 export default function App() {
   const [data, setData] = useState<AppData>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -44,7 +101,7 @@ export default function App() {
       try {
         return JSON.parse(saved);
       } catch (e) {
-        console.error("Erro ao carregar dados", e);
+        console.error("Failed to parse storage", e);
       }
     }
     return { transactions: [], initialBalance: 0 };
@@ -61,7 +118,7 @@ export default function App() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }, [data]);
 
-  // Formatadores
+  // Formatting helpers
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -86,7 +143,7 @@ export default function App() {
     setData(prev => ({ ...prev, initialBalance: numeric }));
   };
 
-  // Cálculos
+  // Calculations
   const stats = useMemo(() => {
     const totalInflows = data.transactions
       .filter(t => t.type === 'R')
@@ -117,7 +174,7 @@ export default function App() {
     };
   }, [data]);
 
-  // Ações
+  // Actions
   const addTransaction = (type: 'R' | 'P') => {
     const numericValue = parseCurrencyInput(form.value);
     if (!form.description || numericValue <= 0) return;
@@ -180,54 +237,6 @@ export default function App() {
       setData({ transactions: [], initialBalance: 0 });
     }
   };
-
-  const TransactionItem = ({ t }: { t: Transaction }) => (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      className={`group flex justify-between items-center p-3 bg-white border rounded-xl shadow-sm transition-all hover:shadow-md ${
-        t.confirmed ? 'border-l-4 border-l-emerald-500 bg-emerald-50/30' : 'border-gray-100'
-      }`}
-    >
-      <div className="flex items-center gap-3 overflow-hidden">
-        <button 
-          onClick={() => toggleConfirm(t.id)}
-          className={`transition-colors ${t.confirmed ? 'text-emerald-600' : 'text-gray-300 hover:text-gray-400'}`}
-        >
-          {t.confirmed ? <CheckCircle2 size={20} /> : <Circle size={20} />}
-        </button>
-        <span className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md border border-gray-200 tabular-nums">
-          {String(t.day).padStart(2, '0')}
-        </span>
-        <span 
-          onClick={() => editTransaction(t)}
-          className={`text-xs font-semibold uppercase truncate cursor-pointer transition-colors ${
-            t.confirmed ? 'text-emerald-900' : 'text-slate-700 hover:text-blue-600'
-          }`}
-        >
-          {t.description}
-        </span>
-      </div>
-      <div className="flex items-center gap-3 shrink-0 ml-2">
-        <span 
-          onClick={() => editTransaction(t)}
-          className={`text-sm font-bold font-mono cursor-pointer ${
-            t.type === 'R' ? 'text-emerald-600' : 'text-rose-600'
-          }`}
-        >
-          {t.type === 'R' ? '+' : '-'}{formatCurrency(t.value)}
-        </span>
-        <button 
-          onClick={() => deleteTransaction(t.id)}
-          className="text-gray-300 hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100"
-        >
-          <Trash2 size={16} />
-        </button>
-      </div>
-    </motion.div>
-  );
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-blue-100">
@@ -395,19 +404,29 @@ export default function App() {
             </div>
           </div>
 
-          {/* Listas */}
+          {/* Lists Container */}
           <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-6 h-full min-h-0 overflow-hidden">
             
-            {/* Coluna de Entradas */}
+            {/* Inflows Column */}
             <div className="flex flex-col gap-4 h-full min-h-0">
               <div className="flex flex-col gap-3 h-1/2 min-h-0">
                 <div className="flex items-center justify-between px-2">
                   <h3 className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em]">Entradas Pendentes</h3>
+                  <span className="bg-emerald-100 text-emerald-700 text-[9px] font-bold px-2 py-0.5 rounded-full">
+                    {data.transactions.filter(t => t.type === 'R' && !t.confirmed).length}
+                  </span>
                 </div>
                 <div className="flex-1 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-y-auto p-3 space-y-2 custom-scrollbar">
                   <AnimatePresence mode="popLayout">
                     {data.transactions.filter(t => t.type === 'R' && !t.confirmed).map(t => (
-                      <TransactionItem key={t.id} t={t} />
+                      <TransactionItem 
+                        key={t.id} 
+                        t={t} 
+                        toggleConfirm={toggleConfirm}
+                        editTransaction={editTransaction}
+                        deleteTransaction={deleteTransaction}
+                        formatCurrency={formatCurrency}
+                      />
                     ))}
                   </AnimatePresence>
                 </div>
@@ -416,27 +435,47 @@ export default function App() {
               <div className="flex flex-col gap-3 h-1/2 min-h-0">
                 <div className="flex items-center justify-between px-2">
                   <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Entradas Confirmadas</h3>
+                  <span className="bg-slate-100 text-slate-500 text-[9px] font-bold px-2 py-0.5 rounded-full">
+                    {data.transactions.filter(t => t.type === 'R' && t.confirmed).length}
+                  </span>
                 </div>
                 <div className="flex-1 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200 overflow-y-auto p-3 space-y-2 custom-scrollbar">
                   <AnimatePresence mode="popLayout">
                     {data.transactions.filter(t => t.type === 'R' && t.confirmed).map(t => (
-                      <TransactionItem key={t.id} t={t} />
+                      <TransactionItem 
+                        key={t.id} 
+                        t={t} 
+                        toggleConfirm={toggleConfirm}
+                        editTransaction={editTransaction}
+                        deleteTransaction={deleteTransaction}
+                        formatCurrency={formatCurrency}
+                      />
                     ))}
                   </AnimatePresence>
                 </div>
               </div>
             </div>
 
-            {/* Coluna de Saídas */}
+            {/* Outflows Column */}
             <div className="flex flex-col gap-4 h-full min-h-0">
               <div className="flex flex-col gap-3 h-1/2 min-h-0">
                 <div className="flex items-center justify-between px-2">
                   <h3 className="text-[10px] font-black text-rose-600 uppercase tracking-[0.2em]">Saídas Pendentes</h3>
+                  <span className="bg-rose-100 text-rose-700 text-[9px] font-bold px-2 py-0.5 rounded-full">
+                    {data.transactions.filter(t => t.type === 'P' && !t.confirmed).length}
+                  </span>
                 </div>
                 <div className="flex-1 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-y-auto p-3 space-y-2 custom-scrollbar">
                   <AnimatePresence mode="popLayout">
                     {data.transactions.filter(t => t.type === 'P' && !t.confirmed).map(t => (
-                      <TransactionItem key={t.id} t={t} />
+                      <TransactionItem 
+                        key={t.id} 
+                        t={t} 
+                        toggleConfirm={toggleConfirm}
+                        editTransaction={editTransaction}
+                        deleteTransaction={deleteTransaction}
+                        formatCurrency={formatCurrency}
+                      />
                     ))}
                   </AnimatePresence>
                 </div>
@@ -445,11 +484,21 @@ export default function App() {
               <div className="flex flex-col gap-3 h-1/2 min-h-0">
                 <div className="flex items-center justify-between px-2">
                   <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Saídas Confirmadas</h3>
+                  <span className="bg-slate-100 text-slate-500 text-[9px] font-bold px-2 py-0.5 rounded-full">
+                    {data.transactions.filter(t => t.type === 'P' && t.confirmed).length}
+                  </span>
                 </div>
                 <div className="flex-1 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200 overflow-y-auto p-3 space-y-2 custom-scrollbar">
                   <AnimatePresence mode="popLayout">
                     {data.transactions.filter(t => t.type === 'P' && t.confirmed).map(t => (
-                      <TransactionItem key={t.id} t={t} />
+                      <TransactionItem 
+                        key={t.id} 
+                        t={t} 
+                        toggleConfirm={toggleConfirm}
+                        editTransaction={editTransaction}
+                        deleteTransaction={deleteTransaction}
+                        formatCurrency={formatCurrency}
+                      />
                     ))}
                   </AnimatePresence>
                 </div>
