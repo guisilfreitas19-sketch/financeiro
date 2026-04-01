@@ -1,526 +1,347 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  PlusCircle, 
-  ArrowUpCircle, 
-  ArrowDownCircle, 
-  Wallet, 
-  CheckCircle2, 
-  Circle, 
-  Trash2, 
-  Printer, 
-  RotateCcw,
-  TrendingUp,
-  TrendingDown,
-  DollarSign,
-  Calendar
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-
-interface Transaction {
-  id: string;
-  day: number;
-  description: string;
-  value: number;
-  type: 'R' | 'P'; // R = Receber (Inflow), P = Pagar (Outflow)
-  confirmed: boolean;
-}
-
-interface AppData {
-  transactions: Transaction[];
-  initialBalance: number;
-}
-
-const STORAGE_KEY = 'financeiro_pro_v11';
-
-interface TransactionItemProps {
-  key?: string;
-  t: Transaction;
-  toggleConfirm: (id: string) => void;
-  editTransaction: (t: Transaction) => void;
-  deleteTransaction: (id: string) => void;
-  formatCurrency: (val: number) => string;
-}
-
-const TransactionItem = ({ t, toggleConfirm, editTransaction, deleteTransaction, formatCurrency }: TransactionItemProps) => (
-  <motion.div
-    layout
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, scale: 0.95 }}
-    className={`group flex justify-between items-center p-3 bg-white border rounded-xl shadow-sm transition-all hover:shadow-md ${
-      t.confirmed ? 'border-l-4 border-l-emerald-500 bg-emerald-50/30' : 'border-gray-100'
-    }`}
-  >
-    <div className="flex items-center gap-3 overflow-hidden">
-      <button 
-        onClick={() => toggleConfirm(t.id)}
-        className={`transition-colors ${t.confirmed ? 'text-emerald-600' : 'text-gray-300 hover:text-gray-400'}`}
-      >
-        {t.confirmed ? <CheckCircle2 size={20} /> : <Circle size={20} />}
-      </button>
-      <span className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md border border-gray-200 tabular-nums">
-        {String(t.day).padStart(2, '0')}
-      </span>
-      <span 
-        onClick={() => editTransaction(t)}
-        className={`text-xs font-semibold uppercase truncate cursor-pointer transition-colors ${
-          t.confirmed ? 'text-emerald-900' : 'text-slate-700 hover:text-blue-600'
-        }`}
-      >
-        {t.description}
-      </span>
-    </div>
-    <div className="flex items-center gap-3 shrink-0 ml-2">
-      <span 
-        onClick={() => editTransaction(t)}
-        className={`text-sm font-bold font-mono cursor-pointer ${
-          t.type === 'R' ? 'text-emerald-600' : 'text-rose-600'
-        }`}
-      >
-        {t.type === 'R' ? '+' : '-'}{formatCurrency(t.value)}
-      </span>
-      <button 
-        onClick={() => deleteTransaction(t.id)}
-        className="text-gray-300 hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100"
-      >
-        <Trash2 size={16} />
-      </button>
-    </div>
-  </motion.div>
-);
-
-export default function App() {
-  const [data, setData] = useState<AppData>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error("Failed to parse storage", e);
-      }
-    }
-    return { transactions: [], initialBalance: 0 };
-  });
-
-  const [form, setForm] = useState({
-    day: new Date().getDate(),
-    description: '',
-    value: '',
-    editingId: null as string | null
-  });
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }, [data]);
-
-  // Formatting helpers
-  const formatCurrency = (val: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(val);
-  };
-
-  const parseCurrencyInput = (val: string) => {
-    const cleanValue = val.replace(/\D/g, '');
-    return Number(cleanValue) / 100;
-  };
-
-  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    const numeric = parseCurrencyInput(val);
-    setForm(prev => ({ ...prev, value: formatCurrency(numeric) }));
-  };
-
-  const handleInitialBalanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    const numeric = parseCurrencyInput(val);
-    setData(prev => ({ ...prev, initialBalance: numeric }));
-  };
-
-  // Calculations
-  const stats = useMemo(() => {
-    const totalInflows = data.transactions
-      .filter(t => t.type === 'R')
-      .reduce((acc, t) => acc + t.value, 0);
-    
-    const totalOutflows = data.transactions
-      .filter(t => t.type === 'P')
-      .reduce((acc, t) => acc + t.value, 0);
-
-    const confirmedInflows = data.transactions
-      .filter(t => t.type === 'R' && t.confirmed)
-      .reduce((acc, t) => acc + t.value, 0);
-
-    const confirmedOutflows = data.transactions
-      .filter(t => t.type === 'P' && t.confirmed)
-      .reduce((acc, t) => acc + t.value, 0);
-
-    const predictedBalance = data.initialBalance + totalInflows - totalOutflows;
-    const realBalance = data.initialBalance + confirmedInflows - confirmedOutflows;
-
-    return {
-      totalInflows,
-      totalOutflows,
-      confirmedInflows,
-      confirmedOutflows,
-      predictedBalance,
-      realBalance
-    };
-  }, [data]);
-
-  // Actions
-  const addTransaction = (type: 'R' | 'P') => {
-    const numericValue = parseCurrencyInput(form.value);
-    if (!form.description || numericValue <= 0) return;
-
-    const newTransaction: Transaction = {
-      id: form.editingId || crypto.randomUUID(),
-      day: form.day,
-      description: form.description.toUpperCase(),
-      value: numericValue,
-      type,
-      confirmed: false
-    };
-
-    setData(prev => {
-      const filtered = form.editingId 
-        ? prev.transactions.filter(t => t.id !== form.editingId)
-        : prev.transactions;
-      
-      const updated = [...filtered, newTransaction].sort((a, b) => a.day - b.day);
-      return { ...prev, transactions: updated };
-    });
-
-    setForm({
-      day: new Date().getDate(),
-      description: '',
-      value: '',
-      editingId: null
-    });
-  };
-
-  const toggleConfirm = (id: string) => {
-    setData(prev => ({
-      ...prev,
-      transactions: prev.transactions.map(t => 
-        t.id === id ? { ...t, confirmed: !t.confirmed } : t
-      )
-    }));
-  };
-
-  const deleteTransaction = (id: string) => {
-    if (window.confirm("Deseja realmente excluir este item?")) {
-      setData(prev => ({
-        ...prev,
-        transactions: prev.transactions.filter(t => t.id !== id)
-      }));
-    }
-  };
-
-  const editTransaction = (t: Transaction) => {
-    setForm({
-      day: t.day,
-      description: t.description,
-      value: formatCurrency(t.value),
-      editingId: t.id
-    });
-  };
-
-  const resetAll = () => {
-    if (window.confirm("Atenção: Isso apagará TODOS os lançamentos. Confirmar?")) {
-      setData({ transactions: [], initialBalance: 0 });
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-blue-100">
-      <div className="max-w-7xl mx-auto p-4 md:p-8 flex flex-col gap-6 h-screen max-h-screen overflow-hidden">
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financeiro Pro v11.0</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap');
         
-        {/* Header Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-blue-500 mb-1">
-              <Wallet size={16} />
-              <span className="text-[10px] font-bold uppercase tracking-wider">Saldo Inicial</span>
-            </div>
-            <input 
-              type="text" 
-              value={formatCurrency(data.initialBalance)}
-              onChange={handleInitialBalanceChange}
-              className="text-2xl font-black text-slate-800 bg-transparent outline-none w-full focus:text-blue-600 transition-colors"
-            />
-          </div>
-
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-emerald-500 mb-1">
-              <TrendingUp size={16} />
-              <span className="text-[10px] font-bold uppercase tracking-wider">Total Entradas</span>
-            </div>
-            <h2 className="text-2xl font-black text-emerald-600 font-mono tracking-tight">
-              {formatCurrency(stats.totalInflows)}
-            </h2>
-          </div>
-
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-rose-500 mb-1">
-              <TrendingDown size={16} />
-              <span className="text-[10px] font-bold uppercase tracking-wider">Total Saídas</span>
-            </div>
-            <h2 className="text-2xl font-black text-rose-600 font-mono tracking-tight">
-              {formatCurrency(stats.totalOutflows)}
-            </h2>
-          </div>
-
-          <div className={`p-5 rounded-2xl shadow-lg transition-colors flex flex-col gap-1 ${
-            stats.predictedBalance >= 0 ? 'bg-slate-900 text-white' : 'bg-rose-700 text-white'
-          }`}>
-            <div className="flex items-center gap-2 opacity-70 mb-1">
-              <DollarSign size={16} />
-              <span className="text-[10px] font-bold uppercase tracking-wider">Saldo Previsto</span>
-            </div>
-            <h2 className="text-2xl font-black font-mono tracking-tight">
-              {formatCurrency(stats.predictedBalance)}
-            </h2>
-          </div>
-        </div>
-
-        {/* Real Balance Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0 bg-slate-900 p-4 rounded-2xl shadow-inner text-white">
-          <div className="flex items-center justify-between px-4 border-r border-slate-800">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Recebido</span>
-            </div>
-            <span className="text-lg font-bold font-mono">{formatCurrency(stats.confirmedInflows)}</span>
-          </div>
-          <div className="flex items-center justify-between px-4 border-r border-slate-800">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
-              <span className="text-[10px] font-black text-rose-400 uppercase tracking-widest">Pago</span>
-            </div>
-            <span className="text-lg font-bold font-mono">{formatCurrency(stats.confirmedOutflows)}</span>
-          </div>
-          <div className="flex items-center justify-between px-4">
-            <span className="text-[10px] font-black text-blue-300 uppercase tracking-widest italic">Saldo em Mãos</span>
-            <span className="text-lg font-bold font-mono text-blue-300">{formatCurrency(stats.realBalance)}</span>
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
-          
-          {/* Sidebar Form */}
-          <div className="lg:col-span-3 bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col gap-6 no-print">
-            <div className="flex justify-between items-center border-b border-slate-50 pb-4">
-              <div className="flex items-center gap-2">
-                <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
-                  <PlusCircle size={20} />
-                </div>
-                <h2 className="font-black text-slate-800 text-xs uppercase tracking-widest">
-                  {form.editingId ? 'Editar Registro' : 'Novo Registro'}
-                </h2>
-              </div>
-              <span className="bg-blue-50 px-2 py-1 rounded-full text-[10px] font-bold text-blue-600">v11.0</span>
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <div className="flex gap-3">
-                <div className="flex flex-col gap-1.5 w-20">
-                  <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Dia</label>
-                  <div className="relative">
-                    <Calendar size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                    <input 
-                      type="number" 
-                      min="1" 
-                      max="31"
-                      value={form.day}
-                      onChange={e => setForm(prev => ({ ...prev, day: parseInt(e.target.value) || 1 }))}
-                      className="w-full border border-slate-200 p-2.5 pl-8 rounded-xl font-bold text-center bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all text-sm"
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1.5 flex-1">
-                  <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Descrição</label>
-                  <input 
-                    type="text" 
-                    placeholder="EX: ALUGUEL"
-                    value={form.description}
-                    onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
-                    className="w-full border border-slate-200 p-2.5 rounded-xl uppercase text-sm font-bold bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all"
-                  />
-                </div>
-              </div>
-              
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Valor</label>
-                <input 
-                  type="text" 
-                  value={form.value}
-                  onChange={handleValueChange}
-                  placeholder="R$ 0,00"
-                  className="w-full border border-slate-200 p-4 rounded-2xl font-mono font-black text-2xl text-blue-600 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all text-center"
-                />
-              </div>
-              
-              <div className="flex gap-3 pt-2">
-                <button 
-                  onClick={() => addTransaction('R')}
-                  className="flex-1 bg-emerald-500 text-white font-black py-4 rounded-2xl hover:bg-emerald-600 shadow-lg shadow-emerald-100 transition-all flex flex-col items-center gap-1 group"
-                >
-                  <ArrowUpCircle size={20} className="group-hover:-translate-y-0.5 transition-transform" />
-                  <span className="text-[10px] uppercase tracking-tighter">Receber</span>
-                </button>
-                <button 
-                  onClick={() => addTransaction('P')}
-                  className="flex-1 bg-rose-500 text-white font-black py-4 rounded-2xl hover:bg-rose-600 shadow-lg shadow-rose-100 transition-all flex flex-col items-center gap-1 group"
-                >
-                  <ArrowDownCircle size={20} className="group-hover:translate-y-0.5 transition-transform" />
-                  <span className="text-[10px] uppercase tracking-tighter">Pagar</span>
-                </button>
-              </div>
-            </div>
-
-            <div className="mt-auto pt-6 border-t border-slate-50 flex gap-3">
-              <button 
-                onClick={() => window.print()}
-                className="flex-1 border border-slate-200 py-3 rounded-xl font-bold text-[10px] uppercase text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-all flex items-center justify-center gap-2"
-              >
-                <Printer size={14} />
-                Relatório
-              </button>
-              <button 
-                onClick={resetAll}
-                className="flex-1 border border-slate-200 py-3 rounded-xl font-bold text-[10px] uppercase text-rose-300 hover:bg-rose-50 hover:text-rose-500 transition-all flex items-center justify-center gap-2"
-              >
-                <RotateCcw size={14} />
-                Limpar
-              </button>
-            </div>
-          </div>
-
-          {/* Lists Container */}
-          <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-6 h-full min-h-0 overflow-hidden">
-            
-            {/* Inflows Column */}
-            <div className="flex flex-col gap-4 h-full min-h-0">
-              <div className="flex flex-col gap-3 h-1/2 min-h-0">
-                <div className="flex items-center justify-between px-2">
-                  <h3 className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em]">Entradas Pendentes</h3>
-                  <span className="bg-emerald-100 text-emerald-700 text-[9px] font-bold px-2 py-0.5 rounded-full">
-                    {data.transactions.filter(t => t.type === 'R' && !t.confirmed).length}
-                  </span>
-                </div>
-                <div className="flex-1 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-y-auto p-3 space-y-2 custom-scrollbar">
-                  <AnimatePresence mode="popLayout">
-                    {data.transactions.filter(t => t.type === 'R' && !t.confirmed).map(t => (
-                      <TransactionItem 
-                        key={t.id} 
-                        t={t} 
-                        toggleConfirm={toggleConfirm}
-                        editTransaction={editTransaction}
-                        deleteTransaction={deleteTransaction}
-                        formatCurrency={formatCurrency}
-                      />
-                    ))}
-                  </AnimatePresence>
-                </div>
-              </div>
-              
-              <div className="flex flex-col gap-3 h-1/2 min-h-0">
-                <div className="flex items-center justify-between px-2">
-                  <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Entradas Confirmadas</h3>
-                  <span className="bg-slate-100 text-slate-500 text-[9px] font-bold px-2 py-0.5 rounded-full">
-                    {data.transactions.filter(t => t.type === 'R' && t.confirmed).length}
-                  </span>
-                </div>
-                <div className="flex-1 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200 overflow-y-auto p-3 space-y-2 custom-scrollbar">
-                  <AnimatePresence mode="popLayout">
-                    {data.transactions.filter(t => t.type === 'R' && t.confirmed).map(t => (
-                      <TransactionItem 
-                        key={t.id} 
-                        t={t} 
-                        toggleConfirm={toggleConfirm}
-                        editTransaction={editTransaction}
-                        deleteTransaction={deleteTransaction}
-                        formatCurrency={formatCurrency}
-                      />
-                    ))}
-                  </AnimatePresence>
-                </div>
-              </div>
-            </div>
-
-            {/* Outflows Column */}
-            <div className="flex flex-col gap-4 h-full min-h-0">
-              <div className="flex flex-col gap-3 h-1/2 min-h-0">
-                <div className="flex items-center justify-between px-2">
-                  <h3 className="text-[10px] font-black text-rose-600 uppercase tracking-[0.2em]">Saídas Pendentes</h3>
-                  <span className="bg-rose-100 text-rose-700 text-[9px] font-bold px-2 py-0.5 rounded-full">
-                    {data.transactions.filter(t => t.type === 'P' && !t.confirmed).length}
-                  </span>
-                </div>
-                <div className="flex-1 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-y-auto p-3 space-y-2 custom-scrollbar">
-                  <AnimatePresence mode="popLayout">
-                    {data.transactions.filter(t => t.type === 'P' && !t.confirmed).map(t => (
-                      <TransactionItem 
-                        key={t.id} 
-                        t={t} 
-                        toggleConfirm={toggleConfirm}
-                        editTransaction={editTransaction}
-                        deleteTransaction={deleteTransaction}
-                        formatCurrency={formatCurrency}
-                      />
-                    ))}
-                  </AnimatePresence>
-                </div>
-              </div>
-              
-              <div className="flex flex-col gap-3 h-1/2 min-h-0">
-                <div className="flex items-center justify-between px-2">
-                  <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Saídas Confirmadas</h3>
-                  <span className="bg-slate-100 text-slate-500 text-[9px] font-bold px-2 py-0.5 rounded-full">
-                    {data.transactions.filter(t => t.type === 'P' && t.confirmed).length}
-                  </span>
-                </div>
-                <div className="flex-1 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200 overflow-y-auto p-3 space-y-2 custom-scrollbar">
-                  <AnimatePresence mode="popLayout">
-                    {data.transactions.filter(t => t.type === 'P' && t.confirmed).map(t => (
-                      <TransactionItem 
-                        key={t.id} 
-                        t={t} 
-                        toggleConfirm={toggleConfirm}
-                        editTransaction={editTransaction}
-                        deleteTransaction={deleteTransaction}
-                        formatCurrency={formatCurrency}
-                      />
-                    ))}
-                  </AnimatePresence>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      <style>{`
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #CBD5E1; }
-        @media print {
-          .no-print { display: none !important; }
-          body { background: white; overflow: visible; height: auto; }
-          .max-h-screen { max-height: none !important; height: auto !important; overflow: visible !important; }
-          .overflow-y-auto { overflow: visible !important; }
+        body { 
+            background-color: #F8FAFC; 
+            font-family: 'Inter', sans-serif; 
+            overflow: hidden; 
+            height: 100vh; 
         }
-      `}</style>
+        
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        @media print { 
+            .no-print { display: none !important; } 
+            body { overflow: visible; height: auto; background: white; } 
+            .max-h-screen { max-height: none !important; height: auto !important; }
+        }
+
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
+        
+        .item-card { transition: all 0.2s ease; }
+        .item-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        
+        input:focus { ring: 2px; ring-color: #DBEAFE; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto h-full flex flex-col gap-6 overflow-hidden">
+        
+        <!-- Dashboard de Saldos -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-1">
+                <div class="flex items-center gap-2 text-blue-500 mb-1">
+                    <i data-lucide="wallet" class="w-4 h-4"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-wider">Saldo Inicial</span>
+                </div>
+                <input type="text" id="f_saldo_ini" oninput="moneyMask(this); updateData()" placeholder="R$ 0,00" 
+                    class="text-2xl font-black text-slate-800 bg-transparent outline-none w-full focus:text-blue-600 transition-colors">
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-1">
+                <div class="flex items-center gap-2 text-emerald-500 mb-1">
+                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-wider">Total Entradas</span>
+                </div>
+                <h2 id="displayReceber" class="text-2xl font-black text-emerald-600 font-mono tracking-tight">R$ 0,00</h2>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-1">
+                <div class="flex items-center gap-2 text-rose-500 mb-1">
+                    <i data-lucide="trending-down" class="w-4 h-4"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-wider">Total Saídas</span>
+                </div>
+                <h2 id="displayPagar" class="text-2xl font-black text-rose-600 font-mono tracking-tight">R$ 0,00</h2>
+            </div>
+
+            <div id="boxSaldo" class="bg-slate-900 p-5 rounded-2xl shadow-lg text-white flex flex-col gap-1 transition-colors">
+                <div class="flex items-center gap-2 opacity-70 mb-1">
+                    <i data-lucide="dollar-sign" class="w-4 h-4"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-wider">Saldo Previsto</span>
+                </div>
+                <h2 id="displaySaldo" class="text-2xl font-black font-mono tracking-tight">R$ 0,00</h2>
+            </div>
+        </div>
+
+        <!-- Barra de Saldo Real (Confirmados) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0 bg-slate-900 p-4 rounded-2xl shadow-inner text-white no-print">
+            <div class="flex items-center justify-between px-4 border-r border-slate-800">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                    <span class="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Recebido</span>
+                </div>
+                <span id="realRecebido" class="text-lg font-bold font-mono">R$ 0,00</span>
+            </div>
+            <div class="flex items-center justify-between px-4 border-r border-slate-800">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-rose-400"></div>
+                    <span class="text-[10px] font-black text-rose-400 uppercase tracking-widest">Pago</span>
+                </div>
+                <span id="realPago" class="text-lg font-bold font-mono">R$ 0,00</span>
+            </div>
+            <div class="flex items-center justify-between px-4">
+                <span class="text-[10px] font-black text-blue-300 uppercase tracking-widest italic">Saldo em Mãos</span>
+                <span id="realSaldo" class="text-lg font-bold font-mono text-blue-300">R$ 0,00</span>
+            </div>
+        </div>
+
+        <!-- Área Principal -->
+        <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
+            
+            <!-- Formulário Lateral -->
+            <div class="lg:col-span-3 bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col gap-6 no-print">
+                <div class="flex justify-between items-center border-b border-slate-50 pb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="p-2 bg-blue-50 rounded-lg text-blue-600">
+                            <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                        </div>
+                        <h2 id="formTitle" class="font-black text-slate-800 text-xs uppercase tracking-widest">Novo Registro</h2>
+                    </div>
+                    <span class="bg-blue-50 px-2 py-1 rounded-full text-[10px] font-bold text-blue-600">v11.0</span>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <div class="flex gap-3">
+                        <div class="flex flex-col gap-1.5 w-20">
+                            <label class="text-[9px] font-bold text-slate-400 uppercase ml-1">Dia</label>
+                            <input type="number" id="f_dia" min="1" max="31" placeholder="01" 
+                                class="w-full border border-slate-200 p-2.5 rounded-xl font-bold text-center bg-slate-50 outline-none text-sm">
+                        </div>
+                        <div class="flex flex-col gap-1.5 flex-1">
+                            <label class="text-[9px] font-bold text-slate-400 uppercase ml-1">Descrição</label>
+                            <input type="text" id="f_desc" placeholder="EX: ALUGUEL" 
+                                class="w-full border border-slate-200 p-2.5 rounded-xl uppercase text-sm font-bold bg-slate-50 outline-none">
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[9px] font-bold text-slate-400 uppercase ml-1">Valor</label>
+                        <input type="text" id="f_valor" oninput="moneyMask(this)" placeholder="R$ 0,00" 
+                            class="w-full border border-slate-200 p-4 rounded-2xl font-mono font-black text-2xl text-blue-600 bg-slate-50 outline-none text-center">
+                    </div>
+                    
+                    <div class="flex gap-3 pt-2">
+                        <button onclick="addItem('R')" class="flex-1 bg-emerald-500 text-white font-black py-4 rounded-2xl hover:bg-emerald-600 shadow-lg shadow-emerald-100 transition-all flex flex-col items-center gap-1">
+                            <i data-lucide="arrow-up-circle" class="w-5 h-5"></i>
+                            <span class="text-[10px] uppercase">Receber</span>
+                        </button>
+                        <button onclick="addItem('P')" class="flex-1 bg-rose-500 text-white font-black py-4 rounded-2xl hover:bg-rose-600 shadow-lg shadow-rose-100 transition-all flex flex-col items-center gap-1">
+                            <i data-lucide="arrow-down-circle" class="w-5 h-5"></i>
+                            <span class="text-[10px] uppercase">Pagar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-auto pt-6 border-t border-slate-50 flex gap-3">
+                    <button onclick="window.print()" class="flex-1 border border-slate-200 py-3 rounded-xl font-bold text-[10px] uppercase text-slate-400 hover:bg-slate-50 flex items-center justify-center gap-2">
+                        <i data-lucide="printer" class="w-4 h-4"></i> Relatório
+                    </button>
+                    <button onclick="limparTudo()" class="flex-1 border border-slate-200 py-3 rounded-xl font-bold text-[10px] uppercase text-rose-300 hover:bg-rose-50 flex items-center justify-center gap-2">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Listas de Lançamentos -->
+            <div class="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-6 h-full min-h-0 overflow-hidden">
+                
+                <!-- Coluna Entradas -->
+                <div class="flex flex-col gap-4 h-full min-h-0">
+                    <div class="flex flex-col gap-3 h-1/2 min-h-0">
+                        <h3 class="text-[10px] font-black text-emerald-600 uppercase tracking-widest px-2">Entradas Pendentes</h3>
+                        <div id="listR_pendente" class="flex-1 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-y-auto p-3 space-y-2 custom-scroll"></div>
+                    </div>
+                    <div class="flex flex-col gap-3 h-1/2 min-h-0">
+                        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Entradas Confirmadas</h3>
+                        <div id="listR_confirmado" class="flex-1 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200 overflow-y-auto p-3 space-y-2 custom-scroll"></div>
+                    </div>
+                </div>
+
+                <!-- Coluna Saídas -->
+                <div class="flex flex-col gap-4 h-full min-h-0">
+                    <div class="flex flex-col gap-3 h-1/2 min-h-0">
+                        <h3 class="text-[10px] font-black text-rose-600 uppercase tracking-widest px-2">Saídas Pendentes</h3>
+                        <div id="listP_pendente" class="flex-1 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-y-auto p-3 space-y-2 custom-scroll"></div>
+                    </div>
+                    <div class="flex flex-col gap-3 h-1/2 min-h-0">
+                        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Saídas Confirmadas</h3>
+                        <div id="listP_confirmado" class="flex-1 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200 overflow-y-auto p-3 space-y-2 custom-scroll"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  );
-}
+
+    <script>
+        // Estado Global
+        let ds = JSON.parse(localStorage.getItem('fin_pro_v11')) || { P: [], R: [], saldoIni: 0 };
+        let editId = null;
+
+        // Inicialização de Ícones
+        lucide.createIcons();
+
+        function moneyMask(i) {
+            let v = i.value.replace(/\D/g,'');
+            v = (v/100).toFixed(2) + '';
+            v = v.replace(".", ",");
+            v = v.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
+            v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
+            i.value = 'R$ ' + v;
+        }
+
+        function parseMoney(val) {
+            if (!val) return 0;
+            return parseFloat(String(val).replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
+        }
+
+        function updateData() {
+            ds.saldoIni = parseMoney(document.getElementById('f_saldo_ini').value);
+            saveAndRef();
+        }
+
+        function addItem(type) {
+            const d = document.getElementById('f_dia').value || new Date().getDate();
+            const s = document.getElementById('f_desc').value;
+            const v = parseMoney(document.getElementById('f_valor').value);
+
+            if(!s || v === 0) return;
+
+            if(editId) {
+                ds.R = ds.R.filter(i => i.id !== editId);
+                ds.P = ds.P.filter(i => i.id !== editId);
+                editId = null;
+                document.getElementById('formTitle').innerText = "Novo Registro";
+            }
+
+            ds[type].push({ id: Date.now(), dia: parseInt(d), desc: s.toUpperCase(), valor: v, ok: false });
+            ds[type].sort((a,b) => a.dia - b.dia);
+            
+            saveAndRef();
+            document.getElementById('f_desc').value = '';
+            document.getElementById('f_valor').value = '';
+            document.getElementById('f_dia').value = '';
+        }
+
+        function toggleItem(type, id) {
+            const item = ds[type].find(i => i.id === id);
+            if(item) {
+                item.ok = !item.ok;
+                saveAndRef();
+            }
+        }
+
+        function prepareEdit(type, id) {
+            const item = ds[type].find(i => i.id === id);
+            if(!item) return;
+            editId = id;
+            document.getElementById('f_dia').value = item.dia;
+            document.getElementById('f_desc').value = item.desc;
+            document.getElementById('f_valor').value = 'R$ ' + item.valor.toLocaleString('pt-br', {minimumFractionDigits:2});
+            document.getElementById('formTitle').innerText = "EDITANDO...";
+            document.getElementById('f_desc').focus();
+        }
+
+        function delItem(type, id) {
+            if(confirm("Excluir este item?")) {
+                ds[type] = ds[type].filter(i => i.id !== id);
+                saveAndRef();
+            }
+        }
+
+        function limparTudo() {
+            if(confirm("Apagar todos os dados?")) {
+                ds = { P: [], R: [], saldoIni: 0 };
+                document.getElementById('f_saldo_ini').value = '';
+                saveAndRef();
+            }
+        }
+
+        function saveAndRef() {
+            localStorage.setItem('fin_pro_v11', JSON.stringify(ds));
+            renderAll();
+        }
+
+        function renderAll() {
+            const lists = {
+                R_pendente: document.getElementById('listR_pendente'),
+                R_confirmado: document.getElementById('listR_confirmado'),
+                P_pendente: document.getElementById('listP_pendente'),
+                P_confirmado: document.getElementById('listP_confirmado')
+            };
+            
+            Object.values(lists).forEach(l => l.innerHTML = '');
+            
+            let tR = 0, tP = 0, realR = 0, realP = 0;
+
+            const draw = (i, type) => {
+                const isR = type === 'R';
+                const html = `
+                <div class="item-card flex justify-between items-center p-3 bg-white border rounded-xl shadow-sm ${i.ok ? 'border-l-4 border-l-emerald-500 bg-emerald-50/30' : 'border-gray-100'}">
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <input type="checkbox" ${i.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${i.id})" 
+                            class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
+                        <span class="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md border border-gray-200">${String(i.dia).padStart(2,'0')}</span>
+                        <span onclick="prepareEdit('${type}', ${i.id})" class="text-xs font-semibold uppercase truncate cursor-pointer text-slate-700">${i.desc}</span>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0 ml-2">
+                        <span class="text-sm font-bold font-mono ${isR ? 'text-emerald-600' : 'text-rose-600'}">
+                            ${isR ? '+' : '-'}R$ ${i.valor.toLocaleString('pt-br', {minimumFractionDigits:2})}
+                        </span>
+                        <button onclick="delItem('${type}', ${i.id})" class="text-gray-300 hover:text-rose-500 transition-colors no-print">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>`;
+                
+                if(isR) {
+                    tR += i.valor;
+                    if(i.ok) { realR += i.valor; lists.R_confirmado.innerHTML += html; }
+                    else { lists.R_pendente.innerHTML += html; }
+                } else {
+                    tP += i.valor;
+                    if(i.ok) { realP += i.valor; lists.P_confirmado.innerHTML += html; }
+                    else { lists.P_pendente.innerHTML += html; }
+                }
+            };
+
+            ds.R.forEach(i => draw(i, 'R'));
+            ds.P.forEach(i => draw(i, 'P'));
+
+            // Atualiza Dashboard
+            document.getElementById('displayReceber').innerText = 'R$ ' + tR.toLocaleString('pt-br', {minimumFractionDigits:2});
+            document.getElementById('displayPagar').innerText = 'R$ ' + tP.toLocaleString('pt-br', {minimumFractionDigits:2});
+            
+            const saldoFinal = (ds.saldoIni + tR) - tP;
+            document.getElementById('displaySaldo').innerText = 'R$ ' + saldoFinal.toLocaleString('pt-br', {minimumFractionDigits:2});
+            document.getElementById('boxSaldo').className = (saldoFinal >= 0 ? 'bg-slate-900' : 'bg-rose-700') + ' p-5 rounded-2xl shadow-lg text-white flex flex-col gap-1';
+
+            // Atualiza Saldo Real
+            document.getElementById('realRecebido').innerText = 'R$ ' + realR.toLocaleString('pt-br', {minimumFractionDigits:2});
+            document.getElementById('realPago').innerText = 'R$ ' + realP.toLocaleString('pt-br', {minimumFractionDigits:2});
+            const saldoReal = (ds.saldoIni + realR) - realP;
+            document.getElementById('realSaldo').innerText = 'R$ ' + saldoReal.toLocaleString('pt-br', {minimumFractionDigits:2});
+
+            if(ds.saldoIni > 0 && document.activeElement.id !== 'f_saldo_ini') {
+                document.getElementById('f_saldo_ini').value = 'R$ ' + ds.saldoIni.toLocaleString('pt-br', {minimumFractionDigits:2});
+            }
+
+            lucide.createIcons();
+        }
+
+        renderAll();
+    </script>
+</body>
+</html>
