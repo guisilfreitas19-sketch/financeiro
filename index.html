@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financeiro Pro - Compact Cloud</title>
+    <title>Financeiro Pro - Compact Cloud v2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -16,64 +16,63 @@
         @media print { .no-print { display: none !important; } }
         input[type="checkbox"] { appearance: none; width: 16px; height: 16px; border: 2px solid var(--border); border-radius: 4px; cursor: pointer; position: relative; }
         input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
-        input[type="checkbox"]:checked::after { content: '✓'; position: absolute; color: white; font-size: 10px; left: 2px; top: -1px; }
+        input[type="checkbox"]:checked::after { content: '✓'; position: absolute; color: white; font-size: 10px; left: 2.5px; top: -1px; }
     </style>
 </head>
-<body class="p-2 md:p-4"> <!-- Reduzi o padding do body -->
+<body class="p-2 md:p-4">
 
-<div class="max-w-7xl mx-auto flex flex-col gap-3"> <!-- Reduzi o gap geral de 6 para 3 -->
+<div class="max-w-7xl mx-auto flex flex-col gap-3">
     
-    <!-- HEADER COMPACTO -->
+    <!-- HEADER -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b pb-3 no-print">
         <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-100">
+            <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg">
                 <i data-lucide="cloud-lightning" class="w-5 h-5 text-white"></i>
             </div>
             <div>
                 <h1 class="font-display text-lg text-slate-900 font-bold leading-none">Financeiro Pro</h1>
                 <div class="flex items-center gap-2 mt-1">
                     <span id="statusSync" class="bg-emerald-100 text-emerald-700 text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase">Sincronizado</span>
-                    <span class="text-slate-400 text-[9px] font-medium italic">Backup Ativo</span>
                 </div>
             </div>
         </div>
         
-        <div class="flex items-center gap-1 bg-white p-1 rounded-xl border shadow-sm scale-90 md:scale-100 origin-right">
-            <select id="f_mes" class="bg-transparent text-xs font-bold px-3 py-1 outline-none cursor-pointer hover:text-blue-600"></select>
-            <select id="f_ano" class="bg-transparent text-xs font-bold px-3 py-1 outline-none border-l cursor-pointer hover:text-blue-600"></select>
+        <div class="flex items-center gap-1 bg-white p-1 rounded-xl border shadow-sm scale-90 md:scale-100">
+            <select id="f_mes" class="bg-transparent text-xs font-bold px-3 py-1 outline-none cursor-pointer"></select>
+            <select id="f_ano" class="bg-transparent text-xs font-bold px-3 py-1 outline-none border-l cursor-pointer"></select>
         </div>
     </div>
 
-    <!-- DASHBOARD COMPACTO -->
+    <!-- DASHBOARD -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3" id="dashboard">
         <div class="card-shadow p-3 border-b-2 border-b-slate-300">
-            <span class="text-[8px] font-bold uppercase text-slate-400 block mb-1 tracking-widest">Saldo Inicial</span>
-            <input type="text" id="f_saldo_ini" placeholder="R$ 0,00" class="text-base font-mono font-bold w-full bg-transparent outline-none text-slate-800">
+            <span class="text-[8px] font-bold uppercase text-slate-400 block mb-1">Saldo Inicial</span>
+            <input type="text" id="f_saldo_ini" placeholder="R$ 0,00" class="text-base font-mono font-bold w-full bg-transparent outline-none">
         </div>
         <div class="card-shadow p-3 border-b-2 border-b-emerald-400 text-emerald-600">
-            <span class="text-[8px] font-bold uppercase block mb-1 tracking-widest text-emerald-400">Entradas</span>
+            <span class="text-[8px] font-bold uppercase block mb-1 text-emerald-400">Entradas</span>
             <div id="totalR" class="text-base font-mono font-bold">R$ 0,00</div>
         </div>
         <div class="card-shadow p-3 border-b-2 border-b-rose-400 text-rose-600">
-            <span class="text-[8px] font-bold uppercase block mb-1 tracking-widest text-rose-400">Saídas</span>
+            <span class="text-[8px] font-bold uppercase block mb-1 text-rose-400">Saídas</span>
             <div id="totalP" class="text-base font-mono font-bold">R$ 0,00</div>
         </div>
         <div class="card-shadow p-3 bg-slate-900 text-white">
-            <span class="text-[8px] font-bold uppercase text-slate-400 block mb-1 tracking-widest">Balanço Final</span>
+            <span class="text-[8px] font-bold uppercase text-slate-400 block mb-1">Balanço Final</span>
             <div id="totalSaldo" class="text-base font-mono font-bold">R$ 0,00</div>
         </div>
     </div>
 
-    <!-- BOTÕES DE AÇÃO COMPACTOS -->
-    <div class="flex flex-wrap gap-2 no-print items-center">
-        <button id="btnRelatorio" class="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-[10px] font-bold hover:bg-blue-700 transition-all shadow-md shadow-blue-100">
-            <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i> Relatório Anual
+    <!-- BOTÕES -->
+    <div class="flex flex-wrap gap-2 no-print">
+        <button id="btnRelatorio" class="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-[10px] font-bold flex items-center gap-1.5">
+            <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i> Relatório
         </button>
-        <button id="btnExportExcel" class="flex items-center gap-2 px-3 py-1.5 bg-white border rounded-lg text-[10px] font-bold text-slate-600 hover:bg-slate-50 transition-all">
-            <i data-lucide="download" class="w-3.5 h-3.5"></i> Exportar Excel
+        <button id="btnExportExcel" class="px-3 py-1.5 bg-white border rounded-lg text-[10px] font-bold text-slate-600 flex items-center gap-1.5">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i> Excel
         </button>
-        <button id="btnImportJSON" class="flex items-center gap-2 px-3 py-1.5 bg-amber-50 text-amber-700 border border-amber-100 rounded-lg text-[10px] font-bold hover:bg-amber-100 transition-all">
-            <i data-lucide="database" class="w-3.5 h-3.5"></i> Backup JSON
+        <button id="btnImportJSON" class="px-3 py-1.5 bg-amber-50 text-amber-700 border border-amber-100 rounded-lg text-[10px] font-bold flex items-center gap-1.5">
+            <i data-lucide="database" class="w-3.5 h-3.5"></i> Backup
         </button>
     </div>
 
@@ -82,64 +81,54 @@
         
         <!-- FORMULÁRIO -->
         <div class="lg:col-span-4 no-print space-y-4">
-            <div class="card-shadow p-4 space-y-3 sticky top-4">
-                <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-800 flex items-center gap-2">
-                    <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-blue-600"></i> Lançamento
-                </h3>
-                
+            <div class="card-shadow p-4 space-y-3">
+                <h3 class="text-[10px] font-black uppercase text-slate-800">Lançamento</h3>
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="text-[8px] font-bold text-slate-400 uppercase ml-1">Dia</label>
-                        <input type="number" id="f_dia" placeholder="01" class="w-full p-2 bg-slate-50 rounded-lg font-mono text-xs outline-none border border-transparent focus:border-blue-200">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[8px] font-bold text-slate-400 uppercase ml-1">Parcelas</label>
-                        <input type="number" id="f_parc" placeholder="1" value="1" class="w-full p-2 bg-slate-50 rounded-lg font-mono text-xs outline-none border border-transparent focus:border-blue-200">
-                    </div>
+                    <input type="number" id="f_dia" placeholder="Dia" class="p-2 bg-slate-50 rounded-lg text-xs font-mono outline-none border border-transparent focus:border-blue-200">
+                    <input type="number" id="f_parc" placeholder="Parc." value="1" class="p-2 bg-slate-50 rounded-lg text-xs font-mono outline-none border border-transparent focus:border-blue-200">
                 </div>
-
-                <div class="space-y-1">
-                    <label class="text-[8px] font-bold text-slate-400 uppercase ml-1">Descrição</label>
-                    <input type="text" id="f_desc" placeholder="DESCRIÇÃO" class="w-full p-2 bg-slate-50 rounded-lg font-bold text-xs uppercase outline-none border border-transparent focus:border-blue-200">
-                </div>
-
-                <div class="space-y-1">
-                    <label class="text-[8px] font-bold text-slate-400 uppercase ml-1">Valor</label>
-                    <input type="text" id="f_valor" placeholder="R$ 0,00" class="w-full p-3 bg-slate-50 rounded-xl font-mono font-bold text-xl text-center text-slate-800 outline-none border border-transparent focus:border-blue-200">
-                </div>
-
-                <div class="grid grid-cols-2 gap-2 pt-1">
-                    <button id="btnAddR" class="bg-emerald-500 text-white py-3 rounded-xl font-bold text-[10px] uppercase hover:bg-emerald-600 transition-all flex items-center justify-center gap-2">
-                        <i data-lucide="trending-up" class="w-4 h-4"></i> Receber
-                    </button>
-                    <button id="btnAddP" class="bg-rose-500 text-white py-3 rounded-xl font-bold text-[10px] uppercase hover:bg-rose-600 transition-all flex items-center justify-center gap-2">
-                        <i data-lucide="trending-down" class="w-4 h-4"></i> Pagar
-                    </button>
+                <input type="text" id="f_desc" placeholder="DESCRIÇÃO" class="w-full p-2 bg-slate-50 rounded-lg font-bold text-xs uppercase outline-none border border-transparent focus:border-blue-200">
+                <input type="text" id="f_valor" placeholder="R$ 0,00" class="w-full p-3 bg-slate-50 rounded-xl font-mono font-bold text-xl text-center outline-none border border-transparent focus:border-blue-200">
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="btnAddR" class="bg-emerald-500 text-white py-3 rounded-xl font-bold text-[10px] uppercase flex items-center justify-center gap-1">RECEBER</button>
+                    <button id="btnAddP" class="bg-rose-500 text-white py-3 rounded-xl font-bold text-[10px] uppercase flex items-center justify-center gap-1">PAGAR</button>
                 </div>
             </div>
 
             <div class="card-shadow bg-blue-600 p-4 text-white">
-                <span class="text-[8px] font-bold text-blue-200 uppercase block mb-1 tracking-widest">Saldo em Mãos</span>
+                <span class="text-[8px] font-bold text-blue-200 uppercase block mb-1">Saldo em Mãos</span>
                 <div id="realMao" class="text-2xl font-mono font-bold">R$ 0,00</div>
             </div>
         </div>
 
         <!-- LISTAGEM -->
-        <div class="lg:col-span-8 space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="space-y-3">
-                    <h4 class="text-[9px] font-black text-emerald-600 uppercase tracking-widest px-1 flex items-center gap-2">
-                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> Entradas
-                    </h4>
+        <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- COLUNA ENTRADAS -->
+            <div class="space-y-4">
+                <h4 class="text-[9px] font-black text-emerald-600 uppercase tracking-widest px-1">Entradas</h4>
+                
+                <div class="space-y-1">
+                    <span class="text-[7px] font-bold text-slate-400 uppercase ml-1">A Receber</span>
                     <div id="listR_pend" class="space-y-1.5"></div>
-                    <div id="listR_conf" class="space-y-1.5 opacity-60"></div>
                 </div>
 
-                <div class="space-y-3">
-                    <h4 class="text-[9px] font-black text-rose-600 uppercase tracking-widest px-1 flex items-center gap-2">
-                        <div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div> Saídas
-                    </h4>
+                <div class="space-y-1">
+                    <span class="text-[7px] font-bold text-emerald-400 uppercase ml-1">Confirmadas</span>
+                    <div id="listR_conf" class="space-y-1.5 opacity-60"></div>
+                </div>
+            </div>
+
+            <!-- COLUNA SAÍDAS -->
+            <div class="space-y-4">
+                <h4 class="text-[9px] font-black text-rose-600 uppercase tracking-widest px-1">Saídas</h4>
+
+                <div class="space-y-1">
+                    <span class="text-[7px] font-bold text-slate-400 uppercase ml-1">A Pagar</span>
                     <div id="listP_pend" class="space-y-1.5"></div>
+                </div>
+
+                <div class="space-y-1">
+                    <span class="text-[7px] font-bold text-rose-400 uppercase ml-1">Efetuadas</span>
                     <div id="listP_conf" class="space-y-1.5 opacity-60"></div>
                 </div>
             </div>
@@ -150,18 +139,12 @@
     <div id="sectionAnual" class="hidden card-shadow p-6">
         <div class="flex justify-between items-center mb-4 border-b pb-2">
             <h2 class="font-display text-xl font-bold">Resumo Anual <span id="labelAnoReport" class="text-blue-600"></span></h2>
-            <button id="btnCloseAnual" class="p-1.5 bg-slate-100 rounded-full hover:bg-slate-200 transition-all text-slate-500"><i data-lucide="x" class="w-4 h-4"></i></button>
+            <button id="btnCloseAnual" class="p-1.5 bg-slate-100 rounded-full"><i data-lucide="x" class="w-4 h-4"></i></button>
         </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-left">
-                <thead>
-                    <tr class="text-[9px] uppercase text-slate-400 border-b">
-                        <th class="pb-2">Mês</th><th class="pb-2">Entradas</th><th class="pb-2">Saídas</th><th class="pb-2">Balanço</th><th class="pb-2 text-right">Ação</th>
-                    </tr>
-                </thead>
-                <tbody id="bodyRelatorioAnual" class="text-xs"></tbody>
-            </table>
-        </div>
+        <table class="w-full text-left">
+            <thead><tr class="text-[9px] uppercase text-slate-400 border-b"><th class="pb-2">Mês</th><th class="pb-2">Entradas</th><th class="pb-2">Saídas</th><th class="pb-2">Balanço</th><th class="pb-2 text-right">Ação</th></tr></thead>
+            <tbody id="bodyRelatorioAnual" class="text-xs"></tbody>
+        </table>
     </div>
 
 </div>
@@ -185,40 +168,23 @@
     const mesesNomes = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
     async function init() {
-        lucide.createIcons();
-        setupSelectors();
-        await loadData();
-        verificarBackupAutomatico();
-        render();
+        lucide.createIcons(); setupSelectors(); await loadData(); verificarBackupAutomatico(); render();
     }
 
     function setupSelectors() {
-        const mSel = document.getElementById('f_mes');
-        const aSel = document.getElementById('f_ano');
-        mesesNomes.forEach((m, i) => {
-            const o = document.createElement('option'); o.value = i; o.textContent = m; mSel.appendChild(o);
-        });
+        const mSel = document.getElementById('f_mes'), aSel = document.getElementById('f_ano');
+        mesesNomes.forEach((m, i) => { const o = document.createElement('option'); o.value = i; o.textContent = m; mSel.appendChild(o); });
         const now = new Date();
-        for (let y = now.getFullYear() + 5; y >= 2023; y--) {
-            const o = document.createElement('option'); o.value = y; o.textContent = y; aSel.appendChild(o);
-        }
+        for (let y = now.getFullYear() + 5; y >= 2023; y--) { const o = document.createElement('option'); o.value = y; o.textContent = y; aSel.appendChild(o); }
         mSel.value = now.getMonth(); aSel.value = now.getFullYear();
         mSel.onchange = render; aSel.onchange = render;
     }
 
     async function loadData() {
-        try {
-            const snap = await getDocs(collection(db_fire, "financeiro"));
-            snap.forEach(d => db[d.id] = d.data());
-            const st = document.getElementById('statusSync');
-            st.innerText = "Nuvem Sincronizada";
-        } catch (e) { console.error(e); }
+        try { const snap = await getDocs(collection(db_fire, "financeiro")); snap.forEach(d => db[d.id] = d.data()); document.getElementById('statusSync').innerText = "Nuvem Sincronizada"; } catch (e) { console.error(e); }
     }
 
-    async function sync(id) {
-        if (!db[id]) return;
-        await setDoc(doc(db_fire, "financeiro", id), db[id]);
-    }
+    async function sync(id) { if (!db[id]) return; await setDoc(doc(db_fire, "financeiro", id), db[id]); }
 
     function render() {
         const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
@@ -240,9 +206,7 @@
                     <span class="text-[8px] font-mono font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded">${String(item.dia).padStart(2,'0')}</span>
                     <span class="flex-1 text-[10px] font-bold text-slate-700 truncate ${item.ok ? 'line-through opacity-40' : ''}">${item.desc}</span>
                     <span class="text-[10px] font-mono font-bold ${isR ? 'text-emerald-600' : 'text-rose-600'}">${item.valor.toFixed(2)}</span>
-                    <button onclick="delItem('${type}', ${item.id})" class="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-rose-500">
-                        <i data-lucide="trash-2" class="w-3 h-3"></i>
-                    </button>
+                    <button onclick="delItem('${type}', ${item.id})" class="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-rose-500"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
                 </div>`;
             if (isR) { tR += item.valor; if(item.ok) { rR += item.valor; lists.Rc.innerHTML += html; } else { lists.Rp.innerHTML += html; } }
             else { tP += item.valor; if(item.ok) { rP += item.valor; lists.Pc.innerHTML += html; } else { lists.Pp.innerHTML += html; } }
@@ -260,16 +224,14 @@
 
     window.toggleItem = async (type, itemId) => {
         const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const item = db[id][type].find(i => i.id == itemId);
-        if (item) item.ok = !item.ok;
+        const item = db[id][type].find(i => i.id == itemId); if (item) item.ok = !item.ok;
         render(); await sync(id);
     };
 
     window.delItem = async (type, itemId) => {
         if(!confirm("Excluir?")) return;
         const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        db[id][type] = db[id][type].filter(i => i.id != itemId);
-        render(); await sync(id);
+        db[id][type] = db[id][type].filter(i => i.id != itemId); render(); await sync(id);
     };
 
     document.getElementById('f_saldo_ini').onblur = async (e) => {
@@ -279,19 +241,13 @@
     };
 
     const addItem = async (type) => {
-        const desc = document.getElementById('f_desc').value.trim().toUpperCase();
-        const valor = parseFloat(document.getElementById('f_valor').value.replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
-        const dia = parseInt(document.getElementById('f_dia').value) || new Date().getDate();
-        const parc = parseInt(document.getElementById('f_parc').value) || 1;
+        const desc = document.getElementById('f_desc').value.trim().toUpperCase(), valor = parseFloat(document.getElementById('f_valor').value.replace(/[R$\s.]/g, '').replace(',', '.')) || 0, dia = parseInt(document.getElementById('f_dia').value) || new Date().getDate(), parc = parseInt(document.getElementById('f_parc').value) || 1;
         if(!desc || valor <= 0) return;
-        let m = parseInt(document.getElementById('f_mes').value);
-        let a = parseInt(document.getElementById('f_ano').value);
+        let m = parseInt(document.getElementById('f_mes').value), a = parseInt(document.getElementById('f_ano').value);
         for (let i = 0; i < parc; i++) {
-            const mesId = `${m}_${a}`;
-            if(!db[mesId]) db[mesId] = { R: [], P: [], saldoIni: 0 };
+            const mesId = `${m}_${a}`; if(!db[mesId]) db[mesId] = { R: [], P: [], saldoIni: 0 };
             db[mesId][type].push({ id: Date.now() + i + Math.random(), dia, desc: parc > 1 ? `${desc} (${i+1}/${parc})` : desc, valor, ok: false });
-            await sync(mesId);
-            m++; if(m > 11) { m = 0; a++; }
+            await sync(mesId); m++; if(m > 11) { m = 0; a++; }
         }
         document.getElementById('f_desc').value = ''; document.getElementById('f_valor').value = ''; render();
     };
@@ -300,8 +256,7 @@
     document.getElementById('btnAddP').onclick = () => addItem('P');
 
     document.getElementById('f_valor').oninput = (e) => {
-        let v = e.target.value.replace(/\D/g, '');
-        v = (v / 100).toFixed(2) + ''; v = v.replace('.', ',');
+        let v = e.target.value.replace(/\D/g, ''); v = (v / 100).toFixed(2) + ''; v = v.replace('.', ',');
         v = v.replace(/(\d)(\d{3})(\d{3}),/g, '$1.$2.$3,'); v = v.replace(/(\d)(\d{3}),/g, '$1.$2,');
         e.target.value = v === 'NaN' ? '' : 'R$ ' + v;
     };
@@ -313,8 +268,7 @@
         data.R.forEach(i => csv += `Entrada;${i.dia};${i.desc};${i.valor};${i.ok?'OK':'Pendente'}\n`);
         data.P.forEach(i => csv += `Saida;${i.dia};${i.desc};${i.valor};${i.ok?'OK':'Pendente'}\n`);
         const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob); link.download = (filename || `Financeiro_${id}`) + ".csv"; link.click();
+        const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = (filename || `Financeiro_${id}`) + ".csv"; link.click();
     }
 
     function verificarBackupAutomatico() {
@@ -325,30 +279,21 @@
     }
 
     document.getElementById('btnExportExcel').onclick = () => exportarCSV();
-
     document.getElementById('btnImportJSON').onclick = () => {
         const input = document.createElement('input'); input.type = 'file'; input.accept = '.json';
         input.onchange = e => {
-            const reader = new FileReader();
-            reader.onload = async ev => {
+            const reader = new FileReader(); reader.onload = async ev => {
                 const imported = JSON.parse(ev.target.result);
-                if(confirm("Restaurar backup?")) {
-                    for(const [key, val] of Object.entries(imported)) { db[key] = val; await setDoc(doc(db_fire, "financeiro", key), val); }
-                    render(); alert("OK!");
-                }
-            };
-            reader.readAsText(e.target.files[0]);
-        };
-        input.click();
+                if(confirm("Restaurar?")) { for(const [key, val] of Object.entries(imported)) { db[key] = val; await setDoc(doc(db_fire, "financeiro", key), val); } render(); }
+            }; reader.readAsText(e.target.files[0]);
+        }; input.click();
     };
 
     document.getElementById('btnRelatorio').onclick = () => {
-        const ano = document.getElementById('f_ano').value;
-        document.getElementById('labelAnoReport').innerText = ano;
+        const ano = document.getElementById('f_ano').value; document.getElementById('labelAnoReport').innerText = ano;
         const body = document.getElementById('bodyRelatorioAnual'); body.innerHTML = '';
         for(let m=0; m<12; m++){
-            const d = db[`${m}_${ano}`] || { R:[], P:[], saldoIni:0 };
-            const ent = d.R.reduce((a,b)=>a+b.valor,0); const sai = d.P.reduce((a,b)=>a+b.valor,0);
+            const d = db[`${m}_${ano}`] || { R:[], P:[], saldoIni:0 }; const ent = d.R.reduce((a,b)=>a+b.valor,0), sai = d.P.reduce((a,b)=>a+b.valor,0);
             body.innerHTML += `<tr class="border-b"><td class="py-2 font-bold">${mesesNomes[m]}</td><td class="text-emerald-600">${ent.toFixed(2)}</td><td class="text-rose-600">${sai.toFixed(2)}</td><td class="font-bold">${(ent-sai).toFixed(2)}</td><td class="text-right"><button onclick="window.irParaMes(${m})" class="bg-slate-100 px-2 py-0.5 rounded text-[9px]">Ver</button></td></tr>`;
         }
         document.getElementById('mainContent').classList.add('hidden'); document.getElementById('dashboard').classList.add('hidden'); document.getElementById('sectionAnual').classList.remove('hidden');
