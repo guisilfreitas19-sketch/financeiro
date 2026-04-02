@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financeiro Pro v19 - Premium Edition</title>
+    <title>Financeiro Pro - Sistema Oficial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -15,24 +15,25 @@
         input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
         input[type="checkbox"]:checked::after { content: '✓'; position: absolute; color: white; font-size: 10px; left: 2.5px; top: -1px; }
         .negative-balance { color: #EF4444 !important; }
-        .positive-balance { color: #10B981 !important; }
         .loading-dot { animation: blink 1s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        /* Impede cliques enquanto não sincroniza */
+        .syncing { pointer-events: none; opacity: 0.6; }
     </style>
 </head>
 <body class="p-2 md:p-4">
 
-<div class="max-w-7xl mx-auto flex flex-col gap-4">
+<div id="appContainer" class="max-w-[1600px] mx-auto flex flex-col gap-4 syncing">
     
-    <!-- HEADER MINI -->
+    <!-- HEADER -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-200 pb-3 no-print">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center shadow-lg">
-                <i data-lucide="zap" class="w-5 h-5 text-blue-400"></i>
+                <i data-lucide="shield-check" class="w-5 h-5 text-blue-400"></i>
             </div>
             <div>
-                <h1 class="text-lg font-black tracking-tighter text-slate-800">FINANCEIRO<span class="text-blue-600">PRO</span></h1>
-                <div id="statusSync" class="text-[7px] font-black uppercase text-emerald-500 tracking-[0.2em]">Nuvem Sincronizada</div>
+                <h1 class="text-lg font-black tracking-tighter text-slate-800 uppercase">Financeiro<span class="text-blue-600">Pro</span></h1>
+                <div id="statusSync" class="text-[7px] font-black uppercase text-amber-500 tracking-[0.2em]">Conectando ao Google...</div>
             </div>
         </div>
         
@@ -42,155 +43,94 @@
         </div>
     </div>
 
-    <!-- DASHBOARD REFINADO -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="dashboard">
+    <!-- DASHBOARD -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" id="dashboard">
         <div class="card-shadow p-3 border-t-4 border-t-slate-400">
             <span class="text-[8px] font-bold uppercase text-slate-400 block mb-1 tracking-widest">Saldo Inicial</span>
-            <input type="text" id="f_saldo_ini" placeholder="R$ 0,00" class="text-base font-mono font-bold w-full bg-transparent outline-none text-slate-700">
+            <input type="text" id="f_saldo_ini" placeholder="R$ 0,00" class="text-sm font-mono font-bold w-full bg-transparent outline-none text-slate-700">
         </div>
         <div class="card-shadow p-3 border-t-4 border-t-emerald-400">
             <span class="text-[8px] font-bold uppercase text-emerald-500 block mb-1 tracking-widest">Entradas</span>
-            <div id="totalR" class="text-base font-mono font-bold text-emerald-600">R$ 0,00</div>
+            <div id="totalR" class="text-sm font-mono font-bold text-emerald-600">R$ 0,00</div>
         </div>
         <div class="card-shadow p-3 border-t-4 border-t-rose-400">
             <span class="text-[8px] font-bold uppercase text-rose-500 block mb-1 tracking-widest">Saídas</span>
-            <div id="totalP" class="text-base font-mono font-bold text-rose-600">R$ 0,00</div>
+            <div id="totalP" class="text-sm font-mono font-bold text-rose-600">R$ 0,00</div>
         </div>
-        <div class="card-shadow p-3 bg-slate-900 shadow-xl shadow-slate-200">
-            <span class="text-[8px] font-bold uppercase text-slate-500 block mb-1 tracking-widest">Balanço Final</span>
-            <div id="totalSaldo" class="text-base font-mono font-bold text-white tracking-tighter">R$ 0,00</div>
+        <div class="card-shadow p-3 border-t-4 border-t-blue-500 bg-blue-50/30">
+            <span class="text-[8px] font-bold uppercase text-blue-600 block mb-1 tracking-widest">Saldo Real (Mãos)</span>
+            <div id="realMao" class="text-sm font-mono font-bold text-blue-700">R$ 0,00</div>
+        </div>
+        <div class="card-shadow p-3 bg-slate-900">
+            <span class="text-[8px] font-bold uppercase text-slate-500 block mb-1 tracking-widest">Previsão Final</span>
+            <div id="totalSaldo" class="text-sm font-mono font-bold text-white tracking-tighter">R$ 0,00</div>
         </div>
     </div>
 
-    <!-- BOTÕES COMPACTOS -->
+    <!-- BOTÕES -->
     <div class="flex flex-wrap gap-2 no-print items-center">
-        <button id="btnRelatorio" class="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-blue-700 transition-all shadow-md shadow-blue-100">
+        <button id="btnRelatorio" class="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-blue-700 transition-all">
             <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i> Relatório
         </button>
-        <button id="btnExportExcel" class="px-4 py-1.5 bg-white border border-slate-200 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50 transition-all">
+        <button id="btnExportExcel" class="px-4 py-1.5 bg-white border border-slate-200 text-slate-600 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50 transition-all">
             <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Excel
         </button>
-        <button id="btnImportJSON" class="px-4 py-1.5 bg-amber-50 border border-amber-100 text-amber-600 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-amber-100 transition-all">
+        <button id="btnImportJSON" class="px-4 py-1.5 bg-amber-50 border border-amber-100 text-amber-600 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-amber-100 transition-all">
             <i data-lucide="database" class="w-3.5 h-3.5"></i> Backup
         </button>
     </div>
 
     <!-- MAIN GRID -->
     <div id="mainContent" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
-        <!-- COLUNA ESQUERDA: FORMULÁRIO -->
-        <div class="lg:col-span-4 no-print space-y-4">
-            <div class="card-shadow p-5 space-y-4 bg-white/50 backdrop-blur-sm border-blue-50">
+        <!-- FORMULÁRIO -->
+        <div class="lg:col-span-3 no-print space-y-4">
+            <div class="card-shadow p-5 space-y-4 bg-white/50 backdrop-blur-sm sticky top-4">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                    <h3 class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Novo Lançamento</h3>
-                    <div class="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
-                        <i data-lucide="plus" class="w-3.5 h-3.5 text-blue-500"></i>
-                    </div>
+                    <h3 class="text-[9px] font-black uppercase text-slate-400 tracking-[0.2em]">Novo Registro</h3>
+                    <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-blue-500"></i>
                 </div>
-                
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="text-[8px] font-bold text-slate-400 uppercase ml-1">Dia</label>
-                        <input type="number" id="f_dia" placeholder="01" class="w-full p-2.5 bg-slate-50 rounded-xl text-xs font-mono outline-none focus:ring-2 ring-blue-50">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[8px] font-bold text-slate-400 uppercase ml-1">Parc.</label>
-                        <input type="number" id="f_parc" placeholder="1" value="1" class="w-full p-2.5 bg-slate-50 rounded-xl text-xs font-mono outline-none focus:ring-2 ring-blue-50">
-                    </div>
+                    <input type="number" id="f_dia" placeholder="Dia" class="w-full p-2 bg-slate-50 rounded-xl text-xs font-mono outline-none border border-transparent focus:border-blue-200">
+                    <input type="number" id="f_parc" placeholder="Parc." value="1" class="w-full p-2 bg-slate-50 rounded-xl text-xs font-mono outline-none border border-transparent focus:border-blue-200">
                 </div>
-
-                <div class="space-y-1">
-                    <label class="text-[8px] font-bold text-slate-400 uppercase ml-1">Descrição</label>
-                    <input type="text" id="f_desc" placeholder="Ex: Aluguel, Salário..." class="w-full p-2.5 bg-slate-50 rounded-xl font-bold text-xs uppercase outline-none focus:ring-2 ring-blue-50">
-                </div>
-
-                <div class="space-y-1">
-                    <label class="text-[8px] font-bold text-slate-400 uppercase ml-1">Valor do Lançamento</label>
-                    <input type="text" id="f_valor" placeholder="R$ 0,00" class="w-full p-4 bg-slate-100 rounded-2xl font-mono font-bold text-2xl text-center text-slate-800 border-none outline-none focus:bg-white transition-all">
-                </div>
-
-                <div class="grid grid-cols-2 gap-2 pt-1">
-                    <button id="btnAddR" class="bg-emerald-500 text-white py-3.5 rounded-2xl font-black text-[10px] uppercase shadow-lg shadow-emerald-100 hover:scale-[1.02] active:scale-95 transition-all">RECEBER</button>
-                    <button id="btnAddP" class="bg-rose-500 text-white py-3.5 rounded-2xl font-black text-[10px] uppercase shadow-lg shadow-rose-100 hover:scale-[1.02] active:scale-95 transition-all">PAGAR</button>
-                </div>
-            </div>
-
-            <!-- SALDO EM MÃOS COMPACTO -->
-            <div class="bg-blue-600 p-4 rounded-3xl text-white shadow-xl shadow-blue-100 flex items-center justify-between">
-                <div>
-                    <span class="text-[8px] font-black uppercase text-blue-200 tracking-widest block mb-1">Saldo em Mãos</span>
-                    <div id="realMao" class="text-2xl font-mono font-bold leading-none">R$ 0,00</div>
-                </div>
-                <div class="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center">
-                    <i data-lucide="wallet" class="w-5 h-5 text-blue-100"></i>
+                <input type="text" id="f_desc" placeholder="Ex: Aluguel..." class="w-full p-2 bg-slate-50 rounded-xl font-bold text-xs uppercase outline-none border border-transparent focus:border-blue-200">
+                <input type="text" id="f_valor" placeholder="R$ 0,00" class="w-full p-3 bg-slate-100 rounded-xl font-mono font-bold text-xl text-center text-slate-800 outline-none">
+                <div class="grid grid-cols-1 gap-2 pt-1">
+                    <button id="btnAddR" class="bg-emerald-500 text-white py-3 rounded-xl font-black text-[10px] uppercase hover:bg-emerald-600 transition-all">Lançar Recebimento</button>
+                    <button id="btnAddP" class="bg-rose-500 text-white py-3 rounded-xl font-black text-[10px] uppercase hover:bg-rose-600 transition-all">Lançar Pagamento</button>
                 </div>
             </div>
         </div>
 
-        <!-- COLUNA DIREITA: LISTAGENS -->
-        <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-            
-            <!-- COLUNA ENTRADAS -->
+        <!-- LISTAGENS -->
+        <div class="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="space-y-6">
-                <div class="border-l-4 border-l-emerald-500 pl-3">
-                    <h4 class="text-[11px] font-black text-slate-800 uppercase tracking-widest">Entradas</h4>
-                    <span class="text-[8px] text-slate-400 font-bold uppercase">Previsão Mensal</span>
-                </div>
-
+                <div class="border-l-4 border-l-emerald-500 pl-3"><h4 class="text-[11px] font-black text-slate-800 uppercase tracking-widest">Entradas</h4></div>
                 <div class="space-y-4">
-                    <div>
-                        <div class="flex items-center justify-between mb-2 px-1">
-                            <span class="text-[8px] font-black text-slate-400 uppercase tracking-tighter">A Receber</span>
-                        </div>
-                        <div id="listR_pend" class="space-y-2"></div>
-                    </div>
-                    
-                    <div class="pt-4 border-t border-slate-100">
-                        <div class="flex items-center justify-between mb-2 px-1">
-                            <span class="text-[8px] font-black text-emerald-500 uppercase tracking-tighter">Confirmadas</span>
-                        </div>
-                        <div id="listR_conf" class="space-y-2 opacity-70 italic"></div>
-                    </div>
+                    <div><span class="text-[8px] font-black text-slate-400 uppercase ml-2 mb-2 block">A Receber</span><div id="listR_pend" class="space-y-1.5"></div></div>
+                    <div class="pt-4 border-t border-slate-100"><span class="text-[8px] font-black text-emerald-500 uppercase ml-2 mb-2 block">Efetivado</span><div id="listR_conf" class="space-y-1.5 opacity-60 italic"></div></div>
                 </div>
             </div>
-
-            <!-- COLUNA SAÍDAS -->
             <div class="space-y-6">
-                <div class="border-l-4 border-l-rose-500 pl-3">
-                    <h4 class="text-[11px] font-black text-slate-800 uppercase tracking-widest">Saídas</h4>
-                    <span class="text-[8px] text-slate-400 font-bold uppercase">Custos do Mês</span>
-                </div>
-
+                <div class="border-l-4 border-l-rose-500 pl-3"><h4 class="text-[11px] font-black text-slate-800 uppercase tracking-widest">Saídas</h4></div>
                 <div class="space-y-4">
-                    <div>
-                        <div class="flex items-center justify-between mb-2 px-1">
-                            <span class="text-[8px] font-black text-slate-400 uppercase tracking-tighter">A Pagar</span>
-                        </div>
-                        <div id="listP_pend" class="space-y-2"></div>
-                    </div>
-                    
-                    <div class="pt-4 border-t border-slate-100">
-                        <div class="flex items-center justify-between mb-2 px-1">
-                            <span class="text-[8px] font-black text-rose-500 uppercase tracking-tighter">Quitadas</span>
-                        </div>
-                        <div id="listP_conf" class="space-y-2 opacity-70 italic"></div>
-                    </div>
+                    <div><span class="text-[8px] font-black text-slate-400 uppercase ml-2 mb-2 block">A Pagar</span><div id="listP_pend" class="space-y-1.5"></div></div>
+                    <div class="pt-4 border-t border-slate-100"><span class="text-[8px] font-black text-rose-500 uppercase ml-2 mb-2 block">Quitadas</span><div id="listP_conf" class="space-y-1.5 opacity-60 italic"></div></div>
                 </div>
             </div>
-
         </div>
     </div>
 
     <!-- RELATÓRIO ANUAL (HIDDEN) -->
     <div id="sectionAnual" class="hidden card-shadow p-8 bg-white border-2 border-blue-50">
         <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-            <h2 class="font-display text-2xl font-bold">Relatório Consolidado <span id="labelAnoReport" class="text-blue-600"></span></h2>
-            <button id="btnCloseAnual" class="p-2 bg-slate-50 rounded-xl hover:bg-rose-50 hover:text-rose-600 transition-all"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <h2 class="font-display text-2xl font-bold">Resumo Anual <span id="labelAnoReport" class="text-blue-600"></span></h2>
+            <button id="btnCloseAnual" class="p-2 bg-slate-50 rounded-xl hover:bg-rose-100 hover:text-rose-600 transition-all"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full text-left">
-                <thead><tr class="text-[10px] uppercase text-slate-400 border-b font-black tracking-[0.2em]"><th class="pb-3">Período</th><th class="pb-3">Entradas</th><th class="pb-3">Saídas</th><th class="pb-3">Saldo</th><th class="pb-3 text-right">Ação</th></tr></thead>
-                <tbody id="bodyRelatorioAnual" class="text-xs font-semibold text-slate-600 italic"></tbody>
+            <table class="w-full text-left border-collapse">
+                <thead><tr class="text-[10px] uppercase text-slate-400 border-b font-black tracking-[0.2em]"><th class="pb-3">Mês</th><th class="pb-3">Entradas</th><th class="pb-3">Saídas</th><th class="pb-3">Resultado</th><th class="pb-3 text-right">Ação</th></tr></thead>
+                <tbody id="bodyRelatorioAnual" class="text-xs font-semibold text-slate-600"></tbody>
             </table>
         </div>
     </div>
@@ -236,16 +176,24 @@
 
     async function loadData() {
         try { 
-            const snap = await getDocs(collection(db_fire, "financeiro")); snap.forEach(d => db[d.id] = d.data()); 
+            const snap = await getDocs(collection(db_fire, "financeiro")); 
+            snap.forEach(d => db[d.id] = d.data()); 
             document.getElementById('statusSync').innerText = "Nuvem Sincronizada";
-        } catch (e) { console.error(e); }
+            document.getElementById('statusSync').classList.replace('text-amber-500', 'text-emerald-500');
+            document.getElementById('appContainer').classList.remove('syncing'); // Libera o app
+        } catch (e) { 
+            console.error(e); 
+            document.getElementById('statusSync').innerText = "Erro ao carregar dados";
+        }
     }
 
     async function sync(id) { 
         if (!db[id]) return;
-        document.getElementById('statusSync').innerHTML = `<span class="loading-dot text-blue-500 italic">Sincronizando...</span>`;
-        try { await setDoc(doc(db_fire, "financeiro", id), db[id]); document.getElementById('statusSync').innerText = "Nuvem Sincronizada"; } 
-        catch (e) { document.getElementById('statusSync').innerText = "Erro ao Salvar"; }
+        document.getElementById('statusSync').innerHTML = `<span class="loading-dot">Salvando...</span>`;
+        try { 
+            await setDoc(doc(db_fire, "financeiro", id), db[id]); 
+            document.getElementById('statusSync').innerText = "Nuvem Sincronizada";
+        } catch (e) { document.getElementById('statusSync').innerText = "Erro Sync"; }
     }
 
     function render() {
@@ -263,10 +211,10 @@
         const createRow = (item, type) => {
             const isR = type === 'R';
             const html = `
-                <div class="flex items-center gap-2 p-2.5 bg-white border border-slate-100 rounded-xl shadow-sm group hover:border-blue-200 transition-all">
+                <div class="flex items-center gap-2 p-2 bg-white border border-slate-100 rounded-xl shadow-sm group hover:border-blue-200 transition-all">
                     <input type="checkbox" ${item.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${item.id})">
-                    <span class="text-[8px] font-mono font-bold text-slate-400 bg-slate-50 px-1.5 py-1 rounded-lg">${String(item.dia).padStart(2,'0')}</span>
-                    <span class="flex-1 text-[10px] font-bold text-slate-700 truncate ${item.ok ? 'line-through opacity-40 italic' : ''}">${item.desc}</span>
+                    <span class="text-[8px] font-mono font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded">${String(item.dia).padStart(2,'0')}</span>
+                    <span class="flex-1 text-[10px] font-bold text-slate-700 truncate ${item.ok ? 'line-through opacity-40' : ''}">${item.desc}</span>
                     <span class="text-[10px] font-mono font-bold ${isR ? 'text-emerald-600' : 'text-rose-600'}">${item.valor.toFixed(2)}</span>
                     <button onclick="delItem('${type}', ${item.id}, '${item.desc}')" class="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-rose-500 transition-all"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
                 </div>`;
@@ -283,7 +231,7 @@
         document.getElementById('totalR').innerText = tR.toLocaleString('pt-br', {style:'currency', currency:'BRL'});
         document.getElementById('totalP').innerText = tP.toLocaleString('pt-br', {style:'currency', currency:'BRL'});
         totalSaldoEl.innerText = totalSaldo.toLocaleString('pt-br', {style:'currency', currency:'BRL'});
-        totalSaldoEl.className = `text-base font-mono font-bold tracking-tighter ${totalSaldo < 0 ? 'negative-balance' : 'text-white'}`;
+        totalSaldoEl.className = `text-sm font-mono font-bold tracking-tighter ${totalSaldo < 0 ? 'negative-balance' : 'text-white'}`;
         
         document.getElementById('realMao').innerText = (data.saldoIni + rR - rP).toLocaleString('pt-br', {style:'currency', currency:'BRL'});
         lucide.createIcons();
@@ -308,7 +256,7 @@
         const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         const match = desc.match(/(.+)\s\(\d+\/\d+\)$/);
         if (match && confirm(`Apagar TODAS as parcelas de "${match[1]}"?`)) {
-            Object.keys(db).forEach(k => { db[k][type] = db[k][type].filter(i => !i.desc.startsWith(match[1])); sync(k); });
+            Object.keys(db).forEach(k => { if(db[k]) { db[k][type] = db[k][type].filter(i => !i.desc.startsWith(match[1])); sync(k); } });
         } else if (confirm("Excluir?")) { db[id][type] = db[id][type].filter(i => i.id != itemId); sync(id); }
         render();
     };
@@ -358,7 +306,7 @@
         const body = document.getElementById('bodyRelatorioAnual'); body.innerHTML = '';
         for(let m=0; m<12; m++){
             const d = db[`${m}_${ano}`] || { R:[], P:[], saldoIni:0 }; const ent = d.R.reduce((a,b)=>a+b.valor,0), sai = d.P.reduce((a,b)=>a+b.valor,0);
-            body.innerHTML += `<tr class="border-b hover:bg-slate-50 transition-all"><td class="py-3 font-bold">${mesesNomes[m]}</td><td class="text-emerald-600">R$ ${ent.toFixed(2)}</td><td class="text-rose-600">R$ ${sai.toFixed(2)}</td><td class="font-bold text-slate-700">R$ ${(ent-sai).toFixed(2)}</td><td class="text-right"><button onclick="window.irParaMes(${m})" class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[9px] font-black uppercase hover:bg-blue-600 hover:text-white transition-all">Abrir</button></td></tr>`;
+            body.innerHTML += `<tr class="border-b hover:bg-slate-50 transition-all"><td class="py-3 font-bold text-slate-600">${mesesNomes[m]}</td><td class="text-emerald-600">R$ ${ent.toFixed(2)}</td><td class="text-rose-600">R$ ${sai.toFixed(2)}</td><td class="font-bold text-slate-700">R$ ${(ent-sai).toFixed(2)}</td><td class="text-right"><button onclick="window.irParaMes(${m})" class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[9px] font-black uppercase hover:bg-blue-600 hover:text-white transition-all">Abrir</button></td></tr>`;
         }
         document.getElementById('mainContent').classList.add('hidden'); document.getElementById('dashboard').classList.add('hidden'); document.getElementById('sectionAnual').classList.remove('hidden');
     };
