@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financeiro Pro v17 - Ultra Fast</title>
+    <title>Financeiro Pro v18 - Refined</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #F8FAFC; --surface: #FFFFFF; --border: #E2E8F0; --accent: #2563EB; }
         body { background-color: var(--bg); font-family: 'Inter', sans-serif; color: #0F172A; -webkit-font-smoothing: antialiased; }
-        .card-shadow { box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border); border-radius: 1rem; background: var(--surface); }
+        .card-shadow { box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border); border-radius: 1rem; background: var(--surface); transition: all 0.2s; }
+        .card-shadow:hover { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         input[type="checkbox"] { appearance: none; width: 16px; height: 16px; border: 2px solid var(--border); border-radius: 4px; cursor: pointer; position: relative; }
         input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
         input[type="checkbox"]:checked::after { content: '✓'; position: absolute; color: white; font-size: 10px; left: 2.5px; top: -1px; }
-        .loading-dot { animation: blink 1s infinite; }
+        .loading-dot { animation: blink 1s infinite; font-size: 8px; font-weight: bold; color: #10B981; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
@@ -22,41 +23,39 @@
 
 <div class="max-w-7xl mx-auto flex flex-col gap-3">
     
-    <!-- HEADER COMPACTO -->
+    <!-- HEADER -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b pb-3 no-print">
         <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg">
-                <i data-lucide="zap" class="w-5 h-5 text-white"></i>
+            <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-100">
+                <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
             </div>
             <div>
-                <h1 class="font-display text-lg font-bold leading-none">Financeiro Pro</h1>
-                <div class="flex items-center gap-2 mt-1">
-                    <span id="statusSync" class="bg-emerald-100 text-emerald-700 text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase">Conectado</span>
-                </div>
+                <h1 class="font-display text-xl font-bold leading-none text-slate-800">Financeiro Pro</h1>
+                <div id="statusSync" class="text-[8px] font-black uppercase mt-1 text-emerald-500 tracking-widest">Nuvem Conectada</div>
             </div>
         </div>
         
-        <div class="flex items-center gap-1 bg-white p-1 rounded-xl border shadow-sm scale-90 md:scale-100">
-            <select id="f_mes" class="bg-transparent text-xs font-bold px-3 py-1 outline-none cursor-pointer"></select>
-            <select id="f_ano" class="bg-transparent text-xs font-bold px-3 py-1 outline-none border-l cursor-pointer"></select>
+        <div class="flex items-center gap-1 bg-white p-1 rounded-xl border shadow-sm">
+            <select id="f_mes" class="bg-transparent text-xs font-bold px-3 py-1 outline-none cursor-pointer hover:text-blue-600"></select>
+            <select id="f_ano" class="bg-transparent text-xs font-bold px-3 py-1 outline-none border-l cursor-pointer hover:text-blue-600"></select>
         </div>
     </div>
 
     <!-- DASHBOARD -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3" id="dashboard">
-        <div class="card-shadow p-3 border-b-2 border-b-slate-300">
+        <div class="card-shadow p-3 border-l-4 border-l-slate-400">
             <span class="text-[8px] font-bold uppercase text-slate-400 block mb-1">Saldo Inicial</span>
-            <input type="text" id="f_saldo_ini" placeholder="R$ 0,00" class="text-base font-mono font-bold w-full bg-transparent outline-none">
+            <input type="text" id="f_saldo_ini" placeholder="R$ 0,00" class="text-base font-mono font-bold w-full bg-transparent outline-none text-slate-700">
         </div>
-        <div class="card-shadow p-3 border-b-2 border-b-emerald-400 text-emerald-600">
-            <span class="text-[8px] font-bold uppercase block mb-1 text-emerald-400">Entradas</span>
-            <div id="totalR" class="text-base font-mono font-bold">R$ 0,00</div>
+        <div class="card-shadow p-3 border-l-4 border-l-emerald-400">
+            <span class="text-[8px] font-bold uppercase text-emerald-500 block mb-1">Entradas</span>
+            <div id="totalR" class="text-base font-mono font-bold text-emerald-600">R$ 0,00</div>
         </div>
-        <div class="card-shadow p-3 border-b-2 border-b-rose-400 text-rose-600">
-            <span class="text-[8px] font-bold uppercase block mb-1 text-rose-400">Saídas</span>
-            <div id="totalP" class="text-base font-mono font-bold">R$ 0,00</div>
+        <div class="card-shadow p-3 border-l-4 border-l-rose-400">
+            <span class="text-[8px] font-bold uppercase text-rose-500 block mb-1">Saídas</span>
+            <div id="totalP" class="text-base font-mono font-bold text-rose-600">R$ 0,00</div>
         </div>
-        <div class="card-shadow p-3 bg-slate-900 text-white">
+        <div class="card-shadow p-3 bg-slate-900 text-white shadow-xl shadow-slate-200">
             <span class="text-[8px] font-bold uppercase text-slate-400 block mb-1">Balanço Final</span>
             <div id="totalSaldo" class="text-base font-mono font-bold">R$ 0,00</div>
         </div>
@@ -64,80 +63,95 @@
 
     <!-- BOTÕES -->
     <div class="flex flex-wrap gap-2 no-print items-center">
-        <button id="btnRelatorio" class="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-[10px] font-bold flex items-center gap-1.5 hover:bg-blue-700">
-            <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i> Relatório
+        <button id="btnRelatorio" class="px-4 py-1.5 bg-white border border-blue-100 text-blue-600 rounded-lg text-[10px] font-black uppercase tracking-tighter flex items-center gap-2 hover:bg-blue-50 transition-all">
+            <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i> Relatório Anual
         </button>
-        <button id="btnExportExcel" class="px-3 py-1.5 bg-white border rounded-lg text-[10px] font-bold text-slate-600 flex items-center gap-1.5">
-            <i data-lucide="download" class="w-3.5 h-3.5"></i> Excel
+        <button id="btnExportExcel" class="px-4 py-1.5 bg-white border border-slate-200 text-slate-500 rounded-lg text-[10px] font-black uppercase tracking-tighter flex items-center gap-2 hover:bg-slate-50 transition-all">
+            <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Excel
         </button>
-        <button id="btnImportJSON" class="px-3 py-1.5 bg-amber-50 text-amber-700 border border-amber-100 rounded-lg text-[10px] font-bold flex items-center gap-1.5">
+        <button id="btnImportJSON" class="px-4 py-1.5 bg-amber-50 border border-amber-100 text-amber-600 rounded-lg text-[10px] font-black uppercase tracking-tighter flex items-center gap-2 hover:bg-amber-100 transition-all">
             <i data-lucide="database" class="w-3.5 h-3.5"></i> Backup JSON
         </button>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div id="mainContent" class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+    <!-- MAIN -->
+    <div id="mainContent" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
         <!-- FORMULÁRIO -->
         <div class="lg:col-span-4 no-print space-y-4">
-            <div class="card-shadow p-4 space-y-3 sticky top-4">
-                <h3 class="text-[10px] font-black uppercase text-slate-800 flex items-center gap-2">
-                    <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-blue-600"></i> Lançamento
-                </h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <input type="number" id="f_dia" placeholder="Dia" class="p-2 bg-slate-50 rounded-lg text-xs font-mono outline-none">
-                    <input type="number" id="f_parc" placeholder="Parc." value="1" class="p-2 bg-slate-50 rounded-lg text-xs font-mono outline-none">
+            <div class="card-shadow p-5 space-y-4 sticky top-4 bg-white/80 backdrop-blur-sm">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Novo Lançamento</h3>
+                    <i data-lucide="plus-circle" class="w-4 h-4 text-blue-500"></i>
                 </div>
-                <input type="text" id="f_desc" placeholder="DESCRIÇÃO" class="w-full p-2 bg-slate-50 rounded-lg font-bold text-xs uppercase outline-none">
-                <input type="text" id="f_valor" placeholder="R$ 0,00" class="w-full p-3 bg-slate-50 rounded-xl font-mono font-bold text-xl text-center outline-none">
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" id="f_dia" placeholder="Dia" class="p-2.5 bg-slate-50 rounded-xl text-xs font-mono outline-none focus:ring-2 ring-blue-50">
+                    <input type="number" id="f_parc" placeholder="Parc." value="1" class="p-2.5 bg-slate-50 rounded-xl text-xs font-mono outline-none focus:ring-2 ring-blue-50">
+                </div>
+                <input type="text" id="f_desc" placeholder="O QUE FOI LANÇADO?" class="w-full p-2.5 bg-slate-50 rounded-xl font-bold text-xs uppercase outline-none focus:ring-2 ring-blue-50">
+                <input type="text" id="f_valor" placeholder="R$ 0,00" class="w-full p-4 bg-blue-50/50 rounded-2xl font-mono font-bold text-2xl text-center text-blue-600 outline-none">
+                
                 <div class="grid grid-cols-2 gap-2">
-                    <button id="btnAddR" class="bg-emerald-500 text-white py-3 rounded-xl font-bold text-[10px] uppercase hover:shadow-lg transition-all">RECEBER</button>
-                    <button id="btnAddP" class="bg-rose-500 text-white py-3 rounded-xl font-bold text-[10px] uppercase hover:shadow-lg transition-all">PAGAR</button>
+                    <button id="btnAddR" class="bg-emerald-500 text-white py-3.5 rounded-2xl font-black text-[10px] uppercase hover:bg-emerald-600 shadow-lg shadow-emerald-100 transition-all">RECEBER</button>
+                    <button id="btnAddP" class="bg-rose-500 text-white py-3.5 rounded-2xl font-black text-[10px] uppercase hover:bg-rose-600 shadow-lg shadow-rose-100 transition-all">PAGAR</button>
                 </div>
             </div>
 
-            <div class="card-shadow bg-blue-600 p-4 text-white">
-                <span class="text-[8px] font-bold text-blue-200 uppercase block mb-1">Saldo em Mãos</span>
-                <div id="realMao" class="text-2xl font-mono font-bold">R$ 0,00</div>
+            <!-- SALDO EM MÃOS REESTILIZADO -->
+            <div class="bg-gradient-to-br from-blue-600 to-blue-700 p-5 rounded-[2rem] text-white shadow-xl shadow-blue-200">
+                <div class="flex items-center gap-3 mb-1 opacity-80">
+                    <i data-lucide="wallet" class="w-4 h-4"></i>
+                    <span class="text-[9px] font-black uppercase tracking-widest">Saldo em Mãos</span>
+                </div>
+                <div id="realMao" class="text-3xl font-mono font-bold">R$ 0,00</div>
+                <p class="text-[8px] mt-2 text-blue-200 font-medium italic">* Considera Saldo Inicial + Confirmados</p>
             </div>
         </div>
 
         <!-- LISTAGEM -->
-        <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- ENTRADAS -->
             <div class="space-y-4">
-                <h4 class="text-[9px] font-black text-emerald-600 uppercase tracking-widest px-1">Entradas</h4>
-                <div class="space-y-1">
-                    <span class="text-[7px] font-bold text-slate-400 uppercase ml-1">A Receber</span>
-                    <div id="listR_pend" class="space-y-1.5"></div>
-                </div>
-                <div class="space-y-1 pt-2 border-t border-dashed">
-                    <span class="text-[7px] font-bold text-emerald-400 uppercase ml-1">Recebidos</span>
-                    <div id="listR_conf" class="space-y-1.5 opacity-60"></div>
+                <h4 class="text-[10px] font-black text-emerald-600 uppercase tracking-widest px-2 border-l-2 border-emerald-500">Fluxo de Entradas</h4>
+                <div class="space-y-3">
+                    <div>
+                        <span class="text-[8px] font-black text-slate-400 uppercase ml-2 mb-2 block tracking-tighter">A Receber</span>
+                        <div id="listR_pend" class="space-y-1.5"></div>
+                    </div>
+                    <div class="pt-2">
+                        <span class="text-[8px] font-black text-emerald-400 uppercase ml-2 mb-2 block tracking-tighter">Efetivado</span>
+                        <div id="listR_conf" class="space-y-1.5 opacity-60 italic"></div>
+                    </div>
                 </div>
             </div>
 
+            <!-- SAÍDAS -->
             <div class="space-y-4">
-                <h4 class="text-[9px] font-black text-rose-600 uppercase tracking-widest px-1">Saídas</h4>
-                <div class="space-y-1">
-                    <span class="text-[7px] font-bold text-slate-400 uppercase ml-1">A Pagar</span>
-                    <div id="listP_pend" class="space-y-1.5"></div>
-                </div>
-                <div class="space-y-1 pt-2 border-t border-dashed">
-                    <span class="text-[7px] font-bold text-rose-400 uppercase ml-1">Pagos</span>
-                    <div id="listP_conf" class="space-y-1.5 opacity-60"></div>
+                <h4 class="text-[10px] font-black text-rose-600 uppercase tracking-widest px-2 border-l-2 border-rose-500">Fluxo de Saídas</h4>
+                <div class="space-y-3">
+                    <div>
+                        <span class="text-[8px] font-black text-slate-400 uppercase ml-2 mb-2 block tracking-tighter">A Pagar</span>
+                        <div id="listP_pend" class="space-y-1.5"></div>
+                    </div>
+                    <div class="pt-2">
+                        <span class="text-[8px] font-black text-rose-400 uppercase ml-2 mb-2 block tracking-tighter">Quitado</span>
+                        <div id="listP_conf" class="space-y-1.5 opacity-60 italic"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- RELATÓRIO ANUAL (HIDDEN) -->
-    <div id="sectionAnual" class="hidden card-shadow p-6">
-        <div class="flex justify-between items-center mb-4 border-b pb-2">
-            <h2 class="font-display text-xl font-bold">Resumo Anual <span id="labelAnoReport" class="text-blue-600"></span></h2>
-            <button id="btnCloseAnual" class="p-1.5 bg-slate-100 rounded-full"><i data-lucide="x" class="w-4 h-4"></i></button>
+    <!-- RELATÓRIO ANUAL -->
+    <div id="sectionAnual" class="hidden card-shadow p-8 bg-white">
+        <div class="flex justify-between items-center mb-6 border-b pb-4">
+            <h2 class="font-display text-2xl font-bold">Performance Anual <span id="labelAnoReport" class="text-blue-600"></span></h2>
+            <button id="btnCloseAnual" class="p-2 bg-slate-100 rounded-full hover:bg-rose-100 hover:text-rose-600 transition-all"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
         <table class="w-full text-left">
-            <thead><tr class="text-[9px] uppercase text-slate-400 border-b"><th class="pb-2">Mês</th><th class="pb-2">Entradas</th><th class="pb-2">Saídas</th><th class="pb-2">Balanço</th><th class="pb-2 text-right">Ação</th></tr></thead>
-            <tbody id="bodyRelatorioAnual" class="text-xs"></tbody>
+            <thead><tr class="text-[10px] uppercase text-slate-400 border-b font-black tracking-widest"><th class="pb-3">Mês</th><th class="pb-3">Entradas</th><th class="pb-3">Saídas</th><th class="pb-3">Resultado</th><th class="pb-3 text-right">Ação</th></tr></thead>
+            <tbody id="bodyRelatorioAnual" class="text-xs font-medium text-slate-600"></tbody>
         </table>
     </div>
 </div>
@@ -160,6 +174,16 @@
     let db = {};
     const mesesNomes = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
+    // --- MÁSCARA MONETÁRIA ---
+    function applyMoneyMask(input) {
+        let v = input.value.replace(/\D/g, '');
+        v = (v / 100).toFixed(2) + '';
+        v = v.replace('.', ',');
+        v = v.replace(/(\d)(\d{3})(\d{3}),/g, '$1.$2.$3,');
+        v = v.replace(/(\d)(\d{3}),/g, '$1.$2,');
+        input.value = v === 'NaN' ? '' : 'R$ ' + v;
+    }
+
     async function init() {
         lucide.createIcons(); setupSelectors(); await loadData(); render(); verificarBackupAutomatico();
     }
@@ -181,16 +205,13 @@
         } catch (e) { console.error(e); }
     }
 
-    // FUNÇÃO DE SYNC OTIMIZADA (NÃO TRAVA A TELA)
     async function sync(id) { 
         if (!db[id]) return;
-        document.getElementById('statusSync').innerHTML = `<span class="loading-dot">Salvando...</span>`;
+        document.getElementById('statusSync').innerHTML = `<span class="loading-dot">Sincronizando...</span>`;
         try {
             await setDoc(doc(db_fire, "financeiro", id), db[id]); 
             document.getElementById('statusSync').innerText = "Nuvem Sincronizada";
-        } catch (e) {
-            document.getElementById('statusSync').innerText = "Erro ao Salvar";
-        }
+        } catch (e) { document.getElementById('statusSync').innerText = "Erro Sync"; }
     }
 
     function render() {
@@ -198,6 +219,7 @@
         if (!db[id]) db[id] = { R: [], P: [], saldoIni: 0 };
         const data = db[id];
 
+        // Aplica valor formatado no Saldo Inicial
         document.getElementById('f_saldo_ini').value = data.saldoIni ? data.saldoIni.toLocaleString('pt-br', {style:'currency', currency:'BRL'}) : '';
         
         const lists = { Rp: document.getElementById('listR_pend'), Rc: document.getElementById('listR_conf'), Pp: document.getElementById('listP_pend'), Pc: document.getElementById('listP_conf') };
@@ -208,7 +230,7 @@
         const createRow = (item, type) => {
             const isR = type === 'R';
             const html = `
-                <div class="flex items-center gap-2 p-2 bg-white border border-slate-100 rounded-xl shadow-sm group">
+                <div class="flex items-center gap-2 p-2.5 bg-white border border-slate-100 rounded-xl shadow-sm group hover:border-blue-200 transition-all">
                     <input type="checkbox" ${item.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${item.id})">
                     <span class="text-[8px] font-mono font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded">${String(item.dia).padStart(2,'0')}</span>
                     <span class="flex-1 text-[10px] font-bold text-slate-700 truncate ${item.ok ? 'line-through opacity-40 italic' : ''}">${item.desc}</span>
@@ -229,120 +251,73 @@
         lucide.createIcons();
     }
 
-    window.toggleItem = async (type, itemId) => {
-        const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const item = db[id][type].find(i => i.id == itemId); if (item) item.ok = !item.ok;
-        render(); sync(id); // Sync sem 'await' para não travar
-    };
-
-    // EXCLUSÃO INTELIGENTE DE PARCELAS
-    window.delItem = async (type, itemId, desc) => {
-        const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const regexParc = /(.+)\s\(\d+\/\d+\)$/;
-        const match = desc.match(regexParc);
-
-        if (match) {
-            const baseDesc = match[1];
-            const modo = confirm(`Este item faz parte de um parcelamento.\n\nClique em OK para apagar TODAS as parcelas com este nome.\nClique em CANCELAR para apagar apenas esta.`);
-            
-            if (modo) {
-                // Apagar em todos os meses do banco local
-                Object.keys(db).forEach(mesKey => {
-                    db[mesKey][type] = db[mesKey][type].filter(i => !i.desc.startsWith(baseDesc));
-                    sync(mesKey); // Sincroniza cada mês afetado
-                });
-                render();
-                return;
-            }
-        } else {
-            if(!confirm("Excluir registro?")) return;
-        }
-
-        db[id][type] = db[id][type].filter(i => i.id != itemId);
-        render(); 
-        sync(id);
-    };
-
+    // --- EVENTOS DE INPUT ---
+    document.getElementById('f_valor').oninput = (e) => applyMoneyMask(e.target);
+    
+    // CORREÇÃO: Máscara em tempo real para saldo inicial
+    document.getElementById('f_saldo_ini').oninput = (e) => applyMoneyMask(e.target);
+    
     document.getElementById('f_saldo_ini').onblur = async (e) => {
         const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         db[id].saldoIni = parseFloat(e.target.value.replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
         render(); sync(id);
     };
 
-    const addItem = async (type) => {
-        const desc = document.getElementById('f_desc').value.trim().toUpperCase();
-        const valor = parseFloat(document.getElementById('f_valor').value.replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
-        const dia = parseInt(document.getElementById('f_dia').value) || new Date().getDate();
-        const parc = parseInt(document.getElementById('f_parc').value) || 1;
+    window.toggleItem = async (type, itemId) => {
+        const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
+        const item = db[id][type].find(i => i.id == itemId); if (item) item.ok = !item.ok;
+        render(); sync(id);
+    };
 
-        if(!desc || valor <= 0) return;
-
-        let m = parseInt(document.getElementById('f_mes').value);
-        let a = parseInt(document.getElementById('f_ano').value);
-
-        // Adiciona localmente primeiro (Instantâneo)
-        for (let i = 0; i < parc; i++) {
-            const mesId = `${m}_${a}`; 
-            if(!db[mesId]) db[mesId] = { R: [], P: [], saldoIni: 0 };
-            
-            db[mesId][type].push({ 
-                id: Date.now() + i + Math.random(), 
-                dia, 
-                desc: parc > 1 ? `${desc} (${i+1}/${parc})` : desc, 
-                valor, 
-                ok: false 
-            });
-
-            sync(mesId); // Envia para o Firebase em background
-            
-            m++; if(m > 11) { m = 0; a++; }
+    window.delItem = async (type, itemId, desc) => {
+        const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
+        const match = desc.match(/(.+)\s\(\d+\/\d+\)$/);
+        if (match && confirm(`Apagar TODAS as parcelas futuras de "${match[1]}"?`)) {
+            Object.keys(db).forEach(k => { db[k][type] = db[k][type].filter(i => !i.desc.startsWith(match[1])); sync(k); });
+        } else if (confirm("Excluir este registro?")) {
+            db[id][type] = db[id][type].filter(i => i.id != itemId); sync(id);
         }
-
-        document.getElementById('f_desc').value = ''; 
-        document.getElementById('f_valor').value = ''; 
         render();
+    };
+
+    const addItem = async (type) => {
+        const desc = document.getElementById('f_desc').value.trim().toUpperCase(), valor = parseFloat(document.getElementById('f_valor').value.replace(/[R$\s.]/g, '').replace(',', '.')) || 0, dia = parseInt(document.getElementById('f_dia').value) || new Date().getDate(), parc = parseInt(document.getElementById('f_parc').value) || 1;
+        if(!desc || valor <= 0) return;
+        let m = parseInt(document.getElementById('f_mes').value), a = parseInt(document.getElementById('f_ano').value);
+        for (let i = 0; i < parc; i++) {
+            const mesId = `${m}_${a}`; if(!db[mesId]) db[mesId] = { R: [], P: [], saldoIni: 0 };
+            db[mesId][type].push({ id: Date.now() + i + Math.random(), dia, desc: parc > 1 ? `${desc} (${i+1}/${parc})` : desc, valor, ok: false });
+            sync(mesId); m++; if(m > 11) { m = 0; a++; }
+        }
+        document.getElementById('f_desc').value = ''; document.getElementById('f_valor').value = ''; render();
     };
 
     document.getElementById('btnAddR').onclick = () => addItem('R');
     document.getElementById('btnAddP').onclick = () => addItem('P');
 
-    document.getElementById('f_valor').oninput = (e) => {
-        let v = e.target.value.replace(/\D/g, ''); v = (v / 100).toFixed(2) + ''; v = v.replace('.', ',');
-        v = v.replace(/(\d)(\d{3})(\d{3}),/g, '$1.$2.$3,'); v = v.replace(/(\d)(\d{3}),/g, '$1.$2,');
-        e.target.value = v === 'NaN' ? '' : 'R$ ' + v;
-    };
-
-    function exportarCSV(filename) {
-        const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const data = db[id]; if(!data) return;
-        let csv = `Relatorio;Dia;Descricao;Valor;Status\n`;
-        data.R.forEach(i => csv += `Entrada;${i.dia};${i.desc};${i.valor};${i.ok?'OK':'Pendente'}\n`);
-        data.P.forEach(i => csv += `Saida;${i.dia};${i.desc};${i.valor};${i.ok?'OK':'Pendente'}\n`);
-        const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = (filename || `Financeiro_${id}`) + ".csv"; link.click();
+    function exportarCSV(f) {
+        const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`, data = db[id];
+        let csv = `Tipo;Dia;Descricao;Valor;Status\n`;
+        data.R.forEach(i => csv += `Entrada;${i.dia};${i.desc};${i.valor};${i.ok?'OK':'PEND'}\n`);
+        data.P.forEach(i => csv += `Saida;${i.dia};${i.desc};${i.valor};${i.ok?'OK':'PEND'}\n`);
+        const b = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
+        const l = document.createElement("a"); l.href = URL.createObjectURL(b); l.download = (f || `Financeiro_${id}`) + ".csv"; l.click();
     }
 
     function verificarBackupAutomatico() {
-        const hoje = new Date().toLocaleDateString('pt-br').replace(/\//g, '-');
-        if (localStorage.getItem('last_backup_v16') !== hoje) {
-            setTimeout(() => { exportarCSV(`AUTO_BACKUP_${hoje}`); localStorage.setItem('last_backup_v16', hoje); }, 5000);
-        }
+        const h = new Date().toLocaleDateString('pt-br').replace(/\//g, '-');
+        if (localStorage.getItem('last_backup_v16') !== h) { setTimeout(() => { exportarCSV(`AUTO_BACKUP_${h}`); localStorage.setItem('last_backup_v16', h); }, 5000); }
     }
 
     document.getElementById('btnExportExcel').onclick = () => exportarCSV();
     document.getElementById('btnImportJSON').onclick = () => {
-        const input = document.createElement('input'); input.type = 'file'; input.accept = '.json';
-        input.onchange = e => {
-            const reader = new FileReader(); reader.onload = async ev => {
-                const imported = JSON.parse(ev.target.result);
-                if(confirm("Restaurar backup completo?")) { 
-                    for(const [key, val] of Object.entries(imported)) { 
-                        db[key] = val; await setDoc(doc(db_fire, "financeiro", key), val); 
-                    } 
-                    render(); 
-                }
-            }; reader.readAsText(e.target.files[0]);
-        }; input.click();
+        const i = document.createElement('input'); i.type = 'file'; i.accept = '.json';
+        i.onchange = e => {
+            const r = new FileReader(); r.onload = async ev => {
+                const imp = JSON.parse(ev.target.result);
+                if(confirm("Substituir tudo pelo backup?")) { for(const [k, v] of Object.entries(imp)) { db[k] = v; await setDoc(doc(db_fire, "financeiro", k), v); } render(); }
+            }; r.readAsText(e.target.files[0]);
+        }; i.click();
     };
 
     document.getElementById('btnRelatorio').onclick = () => {
@@ -350,7 +325,7 @@
         const body = document.getElementById('bodyRelatorioAnual'); body.innerHTML = '';
         for(let m=0; m<12; m++){
             const d = db[`${m}_${ano}`] || { R:[], P:[], saldoIni:0 }; const ent = d.R.reduce((a,b)=>a+b.valor,0), sai = d.P.reduce((a,b)=>a+b.valor,0);
-            body.innerHTML += `<tr class="border-b"><td class="py-2 font-bold">${mesesNomes[m]}</td><td class="text-emerald-600">${ent.toFixed(2)}</td><td class="text-rose-600">${sai.toFixed(2)}</td><td class="font-bold">${(ent-sai).toFixed(2)}</td><td class="text-right"><button onclick="window.irParaMes(${m})" class="bg-slate-100 px-2 py-0.5 rounded text-[9px]">Ver</button></td></tr>`;
+            body.innerHTML += `<tr class="border-b hover:bg-slate-50 transition-all"><td class="py-3 font-bold">${mesesNomes[m]}</td><td class="text-emerald-600">R$ ${ent.toFixed(2)}</td><td class="text-rose-600">R$ ${sai.toFixed(2)}</td><td class="font-bold text-slate-700">R$ ${(ent-sai).toFixed(2)}</td><td class="text-right"><button onclick="window.irParaMes(${m})" class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[9px] font-black uppercase hover:bg-blue-600 hover:text-white transition-all">Abrir</button></td></tr>`;
         }
         document.getElementById('mainContent').classList.add('hidden'); document.getElementById('dashboard').classList.add('hidden'); document.getElementById('sectionAnual').classList.remove('hidden');
     };
