@@ -1,35 +1,142 @@
-<div class="lg:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-4">
-    
-    <section class="glass-card p-4 h-fit">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-            <div class="flex items-center gap-2">
-                <div class="w-1 h-5 bg-emerald-500 rounded-full"></div>
-                <div>
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.15em] text-slate-800">Entradas</h4>
-                    <p class="text-[9px] text-slate-400 leading-none">Gestão de recebíveis</p>
-                </div>
-            </div>
-            <div id="headerTotalR" class="mono-big text-[16px] text-emerald-600 font-bold bg-emerald-50 px-3 py-1 rounded-lg">R$ 0,00</div>
-        </div>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Financeiro Pro - Restaurado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #1e293b;
+        }
+        .glass-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 1.25rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+        .mono-big { font-family: 'JetBrains Mono', monospace; }
+        .input-premium {
+            width: 100%;
+            background: #fdfdfd;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .input-premium:focus { border-color: #3b82f6; ring: 2px; }
+    </style>
+</head>
+<body class="p-4 lg:p-8">
+    <div class="max-w-[1600px] mx-auto">
         
-        <div id="listR_content" class="mt-4 space-y-2">
-            </div>
-    </section>
+        <header class="flex flex-wrap gap-3 mb-8">
+            <button class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold text-xs uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-blue-200">
+                Relatório
+            </button>
+            <button class="bg-white border border-slate-200 px-6 py-2 rounded-xl font-bold text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50 transition">
+                Excel
+            </button>
+            <button class="bg-orange-50 border border-orange-100 text-orange-600 px-6 py-2 rounded-xl font-bold text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-orange-100 transition">
+                Backup
+            </button>
+        </header>
 
-    <section class="glass-card p-4 h-fit">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-            <div class="flex items-center gap-2">
-                <div class="w-1 h-5 bg-rose-500 rounded-full"></div>
-                <div>
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.15em] text-slate-800">Saídas</h4>
-                    <p class="text-[9px] text-slate-400 leading-none">Gestão de despesas</p>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <aside class="lg:col-span-3 space-y-6">
+                <div class="glass-card p-6">
+                    <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Novo Lançamento</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[9px] font-bold uppercase text-slate-400 ml-1">Saldo Inicial</label>
+                            <div class="mono-big text-3xl font-bold text-slate-800 p-4 bg-slate-50 rounded-2xl border border-slate-100 mt-1">
+                                R$ 85,66
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-[9px] font-bold uppercase text-slate-400 ml-1">Dia</label>
+                                <input type="number" value="10" class="input-premium font-bold">
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-bold uppercase text-slate-400 ml-1">Parcelas</label>
+                                <input type="number" value="1" class="input-premium font-bold text-slate-400">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-[9px] font-bold uppercase text-slate-400 ml-1">Descrição</label>
+                            <input type="text" placeholder="DESCRIÇÃO..." class="input-premium uppercase font-bold text-sm">
+                        </div>
+
+                        <div>
+                            <label class="text-[9px] font-bold uppercase text-slate-400 ml-1">Valor</label>
+                            <input type="text" value="R$ 0,00" class="input-premium text-center text-3xl font-black text-slate-300 py-4">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <button class="bg-emerald-500 text-white p-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-600 transition">
+                                + Receber
+                            </button>
+                            <button class="bg-rose-500 text-white p-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-rose-600 transition">
+                                - Pagar
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div id="headerTotalP" class="mono-big text-[16px] text-rose-600 font-bold bg-rose-50 px-3 py-1 rounded-lg">R$ 0,00</div>
+            </aside>
+
+            <main class="lg:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-6">
+                
+                <section class="glass-card p-6">
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-50">
+                        <div class="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+                        <div>
+                            <h4 class="text-xs font-black uppercase tracking-widest">Entradas</h4>
+                            <p class="text-[10px] text-slate-400">Controle do que entra.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <div class="flex items-center gap-4">
+                                <span class="text-[10px] font-bold text-slate-400 bg-white px-2 py-1 rounded-md border border-slate-200">05</span>
+                                <span class="text-xs font-bold text-slate-600">SALARIO (1/9)</span>
+                            </div>
+                            <span class="mono-big text-sm font-bold text-emerald-600">R$ 1.000,00</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="glass-card p-6">
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-50">
+                        <div class="w-1.5 h-6 bg-rose-500 rounded-full"></div>
+                        <div>
+                            <h4 class="text-xs font-black uppercase tracking-widest">Saídas</h4>
+                            <p class="text-[10px] text-slate-400">Controle do que sai.</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <div class="flex items-center gap-4">
+                                <span class="text-[10px] font-bold text-slate-400 bg-white px-2 py-1 rounded-md border border-slate-200">10</span>
+                                <span class="text-xs font-bold text-slate-600 uppercase">Seguro de Vida (1/9)</span>
+                            </div>
+                            <span class="mono-big text-sm font-bold text-rose-500">R$ 42,18</span>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
         </div>
-
-        <div id="listP_content" class="mt-4 space-y-2">
-            </div>
-    </section>
-
-</div>
+    </div>
+</body>
+</html>
