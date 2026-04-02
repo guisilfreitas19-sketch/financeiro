@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Financeiro Pro v24 - Premium Visual</title>
+    <title>Financeiro Pro v25 - Single Screen</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -19,6 +19,10 @@
 
         * { box-sizing: border-box; }
 
+        html, body {
+            height: 100%;
+        }
+
         body {
             background: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -27,57 +31,63 @@
             overflow-x: hidden;
         }
 
+        .app-shell {
+            min-height: 100vh;
+        }
+
         .glass-card {
-            background: rgba(255,255,255,.88);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(226,232,240,.9);
+            background: rgba(255,255,255,.90);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226,232,240,.95);
             box-shadow:
-                0 10px 30px rgba(15, 23, 42, 0.06),
-                0 2px 8px rgba(15, 23, 42, 0.04);
-            border-radius: 1.25rem;
+                0 8px 26px rgba(15, 23, 42, 0.05),
+                0 2px 8px rgba(15, 23, 42, 0.03);
+            border-radius: 1.1rem;
         }
 
         .soft-card {
             background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             border: 1px solid #e2e8f0;
-            box-shadow: 0 6px 20px rgba(15,23,42,0.05);
-            border-radius: 1.1rem;
+            box-shadow: 0 4px 14px rgba(15,23,42,0.04);
+            border-radius: 1rem;
         }
 
         .hero-card {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #2563eb 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #2563eb 100%);
             border: none;
             color: white;
-            box-shadow: 0 18px 40px rgba(37,99,235,.18);
+            box-shadow: 0 16px 32px rgba(37,99,235,.16);
         }
 
         .sub-hero-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             border: 1px solid #dbeafe;
-            box-shadow: 0 12px 28px rgba(37,99,235,.08);
+            box-shadow: 0 8px 22px rgba(37,99,235,.06);
         }
 
         .label-mini {
-            font-size: 9px;
+            font-size: 8px;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: .18em;
+            letter-spacing: .22em;
+            line-height: 1;
         }
 
         .mono-big {
             font-family: 'JetBrains Mono', monospace;
             font-weight: 700;
-            letter-spacing: -0.04em;
+            letter-spacing: -0.05em;
+            line-height: 1.05;
         }
 
         .negative-val { color: #fb7185 !important; }
 
         input[type="checkbox"] {
             appearance: none;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border: 2px solid #cbd5e1;
-            border-radius: 6px;
+            border-radius: 5px;
             cursor: pointer;
             position: relative;
             transition: all .2s ease;
@@ -95,9 +105,9 @@
             content: '✓';
             position: absolute;
             color: white;
-            font-size: 11px;
-            left: 3px;
-            top: -1px;
+            font-size: 10px;
+            left: 2px;
+            top: -2px;
             font-weight: bold;
         }
 
@@ -109,17 +119,17 @@
         }
 
         .entry-row {
-            transition: all .22s ease;
+            transition: all .18s ease;
         }
 
         .entry-row:hover {
             transform: translateY(-1px);
-            box-shadow: 0 10px 20px rgba(15,23,42,.05);
+            box-shadow: 0 8px 18px rgba(15,23,42,.04);
         }
 
         .premium-input {
             width: 100%;
-            border-radius: 1rem;
+            border-radius: .9rem;
             border: 1px solid #e2e8f0;
             background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             outline: none;
@@ -135,27 +145,27 @@
         .money-input {
             background: #fff;
             border: 2px solid #dbeafe;
-            box-shadow: inset 0 2px 8px rgba(15,23,42,.04);
+            box-shadow: inset 0 2px 6px rgba(15,23,42,.04);
         }
 
         .money-input:focus {
             border-color: #2563eb;
             box-shadow:
-                0 0 0 5px rgba(37,99,235,.10),
-                inset 0 2px 8px rgba(15,23,42,.04);
+                0 0 0 4px rgba(37,99,235,.10),
+                inset 0 2px 6px rgba(15,23,42,.04);
         }
 
         .section-title {
             display: flex;
             align-items: center;
-            gap: .65rem;
-            padding-bottom: .45rem;
+            gap: .55rem;
+            padding-bottom: .5rem;
             border-bottom: 1px solid #e2e8f0;
         }
 
         .section-pill {
-            width: 8px;
-            height: 26px;
+            width: 6px;
+            height: 22px;
             border-radius: 999px;
         }
 
@@ -163,36 +173,49 @@
             display: inline-flex;
             align-items: center;
             gap: .35rem;
-            padding: .3rem .6rem;
+            padding: .25rem .55rem;
             border-radius: 999px;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 800;
             letter-spacing: .08em;
             text-transform: uppercase;
             background: #ecfdf5;
             color: #059669;
             border: 1px solid #d1fae5;
+            line-height: 1;
         }
 
         .btn-premium {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: .5rem;
-            border-radius: .9rem;
-            padding: .75rem 1rem;
-            font-size: 10px;
+            gap: .45rem;
+            border-radius: .85rem;
+            padding: .7rem .95rem;
+            font-size: 9px;
             font-weight: 800;
             letter-spacing: .16em;
             text-transform: uppercase;
             transition: .2s ease;
+            line-height: 1;
         }
 
         .btn-premium:hover { transform: translateY(-1px); }
 
+        .tag-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: .28rem .5rem;
+            border-radius: 999px;
+            font-size: 9px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
         .scroll-soft::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
 
         .scroll-soft::-webkit-scrollbar-thumb {
@@ -204,31 +227,44 @@
             background: #f8fafc;
         }
 
-        @media (max-width: 1024px) {
-            .sticky-panel {
-                position: static !important;
-                top: auto !important;
+        .list-box {
+            min-height: 148px;
+        }
+
+        .compact-note {
+            font-size: 11px;
+            line-height: 1.3;
+        }
+
+        @media (min-width: 1024px) {
+            .viewport-fit {
+                min-height: calc(100vh - 24px);
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .list-box {
+                min-height: auto;
             }
         }
     </style>
 </head>
-<body class="p-3 md:px-6 md:py-4">
-
-<div id="appContainer" class="max-w-[1650px] mx-auto flex flex-col gap-4">
+<body class="p-2 md:p-3">
+<div id="appContainer" class="app-shell viewport-fit max-w-[1650px] mx-auto flex flex-col gap-3">
 
     <!-- HEADER -->
-    <header class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between no-print">
+    <header class="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between no-print">
         <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-2xl bg-slate-900 flex items-center justify-center shadow-lg shadow-blue-100">
-                <i data-lucide="wallet-cards" class="w-5 h-5 text-blue-400"></i>
+            <div class="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center shadow-lg shadow-blue-100 shrink-0">
+                <i data-lucide="wallet-cards" class="w-4 h-4 text-blue-400"></i>
             </div>
 
             <div>
-                <h1 class="text-lg md:text-xl font-black tracking-tight text-slate-900 uppercase">
+                <h1 class="text-lg md:text-[22px] font-black tracking-tight text-slate-900 uppercase leading-none">
                     Financeiro<span class="text-blue-600">Pro</span>
-                    <span class="text-slate-300">v24</span>
+                    <span class="text-slate-300">v25</span>
                 </h1>
-                <div class="flex items-center gap-2 mt-1">
+                <div class="mt-1">
                     <div id="statusSync" class="status-badge">
                         <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
                         Sincronizado
@@ -238,79 +274,80 @@
         </div>
 
         <div class="glass-card px-2 py-2 flex items-center gap-2 self-start lg:self-auto">
-            <div class="flex items-center gap-2 px-2">
+            <div class="flex items-center gap-2 px-1">
                 <i data-lucide="calendar-range" class="w-4 h-4 text-slate-400"></i>
-                <select id="f_mes" class="bg-transparent text-[12px] font-bold px-2 py-2 outline-none cursor-pointer text-slate-700"></select>
-                <select id="f_ano" class="bg-slate-50 text-[12px] font-bold px-3 py-2 rounded-xl outline-none cursor-pointer text-blue-600 border border-slate-200"></select>
+                <select id="f_mes" class="bg-transparent text-[12px] font-bold px-2 py-1.5 outline-none cursor-pointer text-slate-700"></select>
+                <select id="f_ano" class="bg-slate-50 text-[12px] font-bold px-3 py-1.5 rounded-xl outline-none cursor-pointer text-blue-600 border border-slate-200"></select>
             </div>
         </div>
     </header>
 
-    <!-- DASHBOARD -->
+    <!-- CARDS -->
     <section id="dashboard" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3">
         <div class="glass-card hero-card p-4 xl:col-span-2">
             <span class="label-mini text-blue-200 block mb-2">Previsão Final</span>
-            <div id="totalSaldo" class="mono-big text-2xl md:text-3xl">R$ 0,00</div>
-            <p class="text-[11px] text-slate-200 mt-2">Resultado previsto considerando todas as entradas e saídas do mês.</p>
+            <div id="totalSaldo" class="mono-big text-[30px] md:text-[34px]">R$ 0,00</div>
+            <p class="compact-note text-slate-200 mt-2">Resultado previsto considerando todas as entradas e saídas do mês.</p>
         </div>
 
         <div class="glass-card sub-hero-card p-4">
             <span class="label-mini text-slate-400 block mb-2">Saldo Real</span>
-            <div id="realMao" class="mono-big text-2xl text-slate-800">R$ 0,00</div>
-            <p class="text-[11px] text-slate-400 mt-2">Valor em mãos com base apenas no que já foi confirmado.</p>
+            <div id="realMao" class="mono-big text-[26px] md:text-[30px] text-slate-800">R$ 0,00</div>
+            <p class="compact-note text-slate-400 mt-2">Somente o que já foi confirmado.</p>
         </div>
 
         <div class="soft-card p-4 border-l-4 border-l-emerald-500">
             <span class="label-mini text-emerald-500 block mb-2">Entradas</span>
-            <div id="totalR" class="mono-big text-2xl text-slate-800">R$ 0,00</div>
+            <div id="totalR" class="mono-big text-[24px] md:text-[28px] text-slate-800">R$ 0,00</div>
         </div>
 
         <div class="soft-card p-4 border-l-4 border-l-rose-500">
             <span class="label-mini text-rose-500 block mb-2">Saídas</span>
-            <div id="totalP" class="mono-big text-2xl text-slate-800">R$ 0,00</div>
+            <div id="totalP" class="mono-big text-[24px] md:text-[28px] text-slate-800">R$ 0,00</div>
         </div>
     </section>
 
     <!-- AÇÕES -->
     <div class="flex flex-wrap gap-2 no-print">
         <button id="btnRelatorio" class="btn-premium bg-blue-600 text-white shadow-lg shadow-blue-100 hover:bg-blue-700">
-            <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+            <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
             Relatório
         </button>
 
         <button id="btnExportExcel" class="btn-premium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50">
-            <i data-lucide="download" class="w-4 h-4"></i>
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
             Excel
         </button>
 
         <button id="btnImportJSON" class="btn-premium bg-amber-50 border border-amber-200 text-amber-700 hover:bg-amber-100">
-            <i data-lucide="database" class="w-4 h-4"></i>
+            <i data-lucide="database" class="w-3.5 h-3.5"></i>
             Backup
         </button>
     </div>
 
     <!-- CONTEÚDO -->
-    <main id="mainContent" class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+    <main id="mainContent" class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start flex-1">
 
-        <!-- SIDEBAR -->
-        <aside class="lg:col-span-4 xl:col-span-3 no-print">
-            <div class="glass-card p-4 md:p-5 space-y-4 sticky-panel sticky top-4">
-                <div class="flex items-center justify-between">
+        <!-- FORM -->
+        <aside class="lg:col-span-3 xl:col-span-3 no-print">
+            <div class="glass-card p-4 space-y-3">
+                <div class="flex items-start justify-between gap-2">
                     <div>
-                        <h3 class="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">Novo Lançamento</h3>
-                        <p class="text-[12px] text-slate-400 mt-1">Preencha os dados e escolha se é entrada ou saída.</p>
+                        <h3 class="text-[10px] font-black uppercase tracking-[0.24em] text-slate-500">Novo Lançamento</h3>
+                        <p class="compact-note text-slate-400 mt-1">Preencha e escolha se é entrada ou saída.</p>
                     </div>
-                    <div class="w-10 h-10 rounded-2xl bg-blue-50 flex items-center justify-center border border-blue-100">
+
+                    <div class="w-9 h-9 rounded-2xl bg-blue-50 flex items-center justify-center border border-blue-100 shrink-0">
                         <i data-lucide="sparkles" class="w-4 h-4 text-blue-600"></i>
                     </div>
                 </div>
 
                 <div class="soft-card p-3">
                     <label class="label-mini text-slate-400 block mb-2">Saldo Inicial</label>
-                    <input type="text" id="f_saldo_ini" class="premium-input money-input text-xl md:text-2xl mono-big px-4 py-3 text-slate-800" placeholder="R$ 0,00">
+                    <input type="text" id="f_saldo_ini" class="premium-input money-input text-[22px] mono-big px-4 py-3 text-slate-800" placeholder="R$ 0,00">
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2">
                     <div>
                         <label class="label-mini text-slate-400 block mb-2">Dia</label>
                         <div class="relative">
@@ -338,15 +375,15 @@
 
                 <div>
                     <label class="label-mini text-slate-400 block mb-2">Valor</label>
-                    <input type="text" id="f_valor" placeholder="R$ 0,00" class="premium-input money-input text-center px-4 py-4 text-2xl md:text-3xl mono-big text-slate-900">
+                    <input type="text" id="f_valor" placeholder="R$ 0,00" class="premium-input money-input text-center px-4 py-3 text-[28px] mono-big text-slate-900">
                 </div>
 
-                <div class="grid grid-cols-1 gap-2 pt-1">
-                    <button id="btnAddR" class="btn-premium bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-100 py-4">
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                    <button id="btnAddR" class="btn-premium bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-100 py-3">
                         <i data-lucide="plus-circle" class="w-4 h-4"></i>
                         Receber
                     </button>
-                    <button id="btnAddP" class="btn-premium bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-100 py-4">
+                    <button id="btnAddP" class="btn-premium bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-100 py-3">
                         <i data-lucide="minus-circle" class="w-4 h-4"></i>
                         Pagar
                     </button>
@@ -355,31 +392,31 @@
         </aside>
 
         <!-- LISTAS -->
-        <div class="lg:col-span-8 xl:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div class="lg:col-span-9 xl:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-3">
 
             <!-- ENTRADAS -->
-            <section class="glass-card p-4 md:p-5">
+            <section class="glass-card p-4 list-box">
                 <div class="section-title">
                     <div class="section-pill bg-emerald-500"></div>
                     <div>
-                        <h4 class="text-[12px] font-black text-slate-900 uppercase tracking-[0.18em]">Entradas</h4>
-                        <p class="text-[12px] text-slate-400">Controle do que ainda entra e do que já entrou.</p>
+                        <h4 class="text-[11px] font-black text-slate-900 uppercase tracking-[0.18em] leading-none">Entradas</h4>
+                        <p class="compact-note text-slate-400 mt-1">Controle do que ainda entra e do que já entrou.</p>
                     </div>
                 </div>
 
-                <div class="mt-5 space-y-5">
+                <div class="mt-4 space-y-4">
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.18em]">A Receber</span>
-                            <span class="text-[10px] px-2 py-1 rounded-full bg-slate-100 text-slate-500 font-bold">Pendente</span>
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-[0.18em]">A Receber</span>
+                            <span class="tag-chip bg-slate-100 text-slate-500">Pendente</span>
                         </div>
                         <div id="listR_pend" class="space-y-2"></div>
                     </div>
 
-                    <div class="pt-4 border-t border-emerald-100">
+                    <div class="pt-3 border-t border-emerald-100">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.18em]">Confirmadas</span>
-                            <span class="text-[10px] px-2 py-1 rounded-full bg-emerald-50 text-emerald-600 font-bold">Ok</span>
+                            <span class="text-[9px] font-black text-emerald-600 uppercase tracking-[0.18em]">Confirmadas</span>
+                            <span class="tag-chip bg-emerald-50 text-emerald-600">Ok</span>
                         </div>
                         <div id="listR_conf" class="space-y-2 opacity-80"></div>
                     </div>
@@ -387,28 +424,28 @@
             </section>
 
             <!-- SAÍDAS -->
-            <section class="glass-card p-4 md:p-5">
+            <section class="glass-card p-4 list-box">
                 <div class="section-title">
                     <div class="section-pill bg-rose-500"></div>
                     <div>
-                        <h4 class="text-[12px] font-black text-slate-900 uppercase tracking-[0.18em]">Saídas</h4>
-                        <p class="text-[12px] text-slate-400">Controle do que ainda precisa pagar e do que já foi quitado.</p>
+                        <h4 class="text-[11px] font-black text-slate-900 uppercase tracking-[0.18em] leading-none">Saídas</h4>
+                        <p class="compact-note text-slate-400 mt-1">Controle do que ainda precisa pagar e do que já foi quitado.</p>
                     </div>
                 </div>
 
-                <div class="mt-5 space-y-5">
+                <div class="mt-4 space-y-4">
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.18em]">A Pagar</span>
-                            <span class="text-[10px] px-2 py-1 rounded-full bg-slate-100 text-slate-500 font-bold">Pendente</span>
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-[0.18em]">A Pagar</span>
+                            <span class="tag-chip bg-slate-100 text-slate-500">Pendente</span>
                         </div>
                         <div id="listP_pend" class="space-y-2"></div>
                     </div>
 
-                    <div class="pt-4 border-t border-rose-100">
+                    <div class="pt-3 border-t border-rose-100">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-[10px] font-black text-rose-600 uppercase tracking-[0.18em]">Quitadas</span>
-                            <span class="text-[10px] px-2 py-1 rounded-full bg-rose-50 text-rose-600 font-bold">Ok</span>
+                            <span class="text-[9px] font-black text-rose-600 uppercase tracking-[0.18em]">Quitadas</span>
+                            <span class="tag-chip bg-rose-50 text-rose-600">Ok</span>
                         </div>
                         <div id="listP_conf" class="space-y-2 opacity-80"></div>
                     </div>
@@ -418,13 +455,13 @@
     </main>
 
     <!-- RELATÓRIO -->
-    <section id="sectionAnual" class="hidden glass-card p-5 md:p-6 border border-blue-100">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5 border-b border-slate-100 pb-3">
+    <section id="sectionAnual" class="hidden glass-card p-5 border border-blue-100">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4 border-b border-slate-100 pb-3">
             <div>
-                <h2 class="text-2xl font-black tracking-tight text-slate-900">
+                <h2 class="text-xl md:text-2xl font-black tracking-tight text-slate-900">
                     Relatório Anual <span id="labelAnoReport" class="text-blue-600"></span>
                 </h2>
-                <p class="text-sm text-slate-400 mt-1">Visão consolidada de entradas, saídas e saldo por mês.</p>
+                <p class="text-sm text-slate-400 mt-1">Visão consolidada por mês.</p>
             </div>
 
             <button id="btnCloseAnual" class="self-start md:self-auto p-2.5 bg-slate-100 rounded-xl hover:bg-rose-50 hover:text-rose-600 transition-all">
@@ -491,6 +528,7 @@
     function setupSelectors() {
         const mSel = document.getElementById('f_mes');
         const aSel = document.getElementById('f_ano');
+
         mesesNomes.forEach((m, i) => {
             const o = document.createElement('option');
             o.value = i;
@@ -528,6 +566,7 @@
 
     async function sync(id) {
         if (!db[id]) return;
+
         document.getElementById('statusSync').innerHTML =
             `<div class="w-2 h-2 rounded-full bg-blue-500 loading-dot"></div> Salvando...`;
 
@@ -545,29 +584,29 @@
         const isR = type === 'R';
 
         return `
-            <div class="entry-row flex items-center gap-3 p-3 bg-white border border-slate-100 rounded-2xl shadow-sm group hover:border-blue-100">
+            <div class="entry-row flex items-center gap-2.5 p-2.5 bg-white border border-slate-100 rounded-2xl shadow-sm group hover:border-blue-100">
                 <input type="checkbox" ${item.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${item.id})">
 
-                <div class="min-w-[46px] text-center">
-                    <span class="inline-flex items-center justify-center min-w-[42px] h-8 px-2 rounded-xl bg-slate-50 text-[11px] font-black text-slate-500 border border-slate-100">
+                <div class="min-w-[42px] text-center">
+                    <span class="inline-flex items-center justify-center min-w-[38px] h-7 px-2 rounded-xl bg-slate-50 text-[10px] font-black text-slate-500 border border-slate-100">
                         ${String(item.dia).padStart(2,'0')}
                     </span>
                 </div>
 
                 <div class="flex-1 min-w-0">
-                    <div class="text-[12px] font-bold text-slate-700 truncate ${item.ok ? 'line-through opacity-40' : ''}">
+                    <div class="text-[11px] font-bold text-slate-700 truncate ${item.ok ? 'line-through opacity-40' : ''}">
                         ${item.desc}
                     </div>
                 </div>
 
                 <div class="text-right shrink-0">
-                    <div class="text-[12px] mono-big ${isR ? 'text-emerald-600' : 'text-rose-600'}">
+                    <div class="text-[11px] mono-big ${isR ? 'text-emerald-600' : 'text-rose-600'}">
                         ${formatBRL(item.valor)}
                     </div>
                 </div>
 
                 <button onclick="delItem('${type}', ${item.id}, '${item.desc.replace(/'/g, "\\'")}')" class="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-rose-500 transition-all">
-                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                 </button>
             </div>
         `;
@@ -620,7 +659,7 @@
         document.getElementById('totalR').innerText = formatBRL(tR);
         document.getElementById('totalP').innerText = formatBRL(tP);
         totalSaldoEl.innerText = formatBRL(totalSaldo);
-        totalSaldoEl.className = `mono-big text-2xl md:text-3xl ${totalSaldo < 0 ? 'negative-val' : 'text-white'}`;
+        totalSaldoEl.className = `mono-big text-[30px] md:text-[34px] ${totalSaldo < 0 ? 'negative-val' : 'text-white'}`;
 
         document.getElementById('realMao').innerText = formatBRL(saldoReal);
 
@@ -720,10 +759,10 @@
 
     function verificarBackupAutomatico() {
         const h = new Date().toLocaleDateString('pt-br').replace(/\//g, '-');
-        if (localStorage.getItem('last_backup_v24') !== h) {
+        if (localStorage.getItem('last_backup_v25') !== h) {
             setTimeout(() => {
                 exportarCSV(`AUTO_BACKUP_${h}`);
-                localStorage.setItem('last_backup_v24', h);
+                localStorage.setItem('last_backup_v25', h);
             }, 5000);
         }
     }
