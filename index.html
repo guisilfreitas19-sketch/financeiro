@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financeiro Pro v12.0 - Light Edition</title>
+    <title>Financeiro Pro v13 - Parcelamentos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -12,16 +12,13 @@
         :root {
             --bg: #F8FAFC;
             --surface: #FFFFFF;
-            --surface-muted: #F1F5F9;
             --border: #E2E8F0;
             --text-main: #0F172A;
             --text-soft: #475569;
             --text-muted: #94A3B8;
-            --gold: #B59440;
-            --gold-light: #F59E0B;
+            --accent: #2563EB;
             --green: #10B981;
             --red: #EF4444;
-            --accent: #2563EB;
         }
 
         body {
@@ -29,47 +26,20 @@
             font-family: 'Inter', sans-serif;
             color: var(--text-main);
             min-height: 100vh;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.03) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(181, 148, 64, 0.05) 0px, transparent 50%);
         }
 
         .font-display { font-family: 'Playfair Display', serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
 
-        /* Estilização de Cards */
         .card-shadow {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.02);
             border: 1px solid var(--border);
         }
 
-        .item-card {
-            transition: all 0.2s ease;
-            animation: slideIn 0.3s ease both;
-        }
-        .item-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Inputs Modernos */
-        input:focus {
-            outline: none;
-            border-color: var(--accent) !important;
-            ring: 2px rgba(37, 99, 235, 0.1);
-        }
-
-        /* Scrollbar Clean */
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-        /* Checkbox Custom */
         input[type="checkbox"] {
             appearance: none;
             width: 18px; height: 18px;
@@ -85,169 +55,149 @@
         }
         input[type="checkbox"]:checked::after {
             content: '✓';
-            position: absolute;
-            color: white;
-            font-size: 12px;
-            left: 3px; top: -1px;
+            position: absolute; color: white; font-size: 12px; left: 3px; top: -1px;
         }
 
         @media print { .no-print { display: none !important; } }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 md:p-6">
 
-<div class="max-w-6xl mx-auto flex flex-col gap-6">
+<div class="max-w-7xl mx-auto flex flex-col gap-6">
 
     <!-- HEADER -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center shadow-lg">
-                <i data-lucide="trending-up" class="w-6 h-6 text-white"></i>
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-200">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 text-white"></i>
             </div>
             <div>
-                <h1 class="font-display text-2xl text-slate-900">Financeiro Pro</h1>
-                <p class="text-xs font-bold tracking-widest text-slate-400 uppercase">Gestão Pessoal Premium</p>
+                <h1 class="font-display text-xl text-slate-900">Financeiro Pro <span class="text-blue-600">v13</span></h1>
+                <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">Gestão com Parcelamento</p>
             </div>
         </div>
         
-        <div class="flex items-center gap-2 no-print">
-            <select id="f_mes" onchange="updateData()" class="bg-white border border-slate-200 text-sm font-semibold px-4 py-2 rounded-xl shadow-sm">
-                <option value="Jan">Janeiro</option><option value="Fev">Fevereiro</option>
-                <option value="Mar">Março</option><option value="Abr">Abril</option>
-                <option value="Mai">Maio</option><option value="Jun">Junho</option>
-                <option value="Jul">Julho</option><option value="Ago">Agosto</option>
-                <option value="Set">Setembro</option><option value="Out">Outubro</option>
-                <option value="Nov">Novembro</option><option value="Dez">Dezembro</option>
+        <div class="flex items-center gap-2 no-print bg-white p-1 rounded-xl card-shadow">
+            <select id="f_mes" onchange="renderAll()" class="bg-transparent text-sm font-bold px-3 py-1.5 outline-none">
+                <option value="0">Janeiro</option><option value="1">Fevereiro</option>
+                <option value="2">Março</option><option value="3">Abril</option>
+                <option value="4">Maio</option><option value="5">Junho</option>
+                <option value="6">Julho</option><option value="7">Agosto</option>
+                <option value="8">Setembro</option><option value="9">Outubro</option>
+                <option value="10">Novembro</option><option value="11">Dezembro</option>
             </select>
-            <select id="f_ano" onchange="updateData()" class="bg-white border border-slate-200 text-sm font-semibold px-4 py-2 rounded-xl shadow-sm"></select>
+            <select id="f_ano" onchange="renderAll()" class="bg-transparent text-sm font-bold px-3 py-1.5 outline-none border-l"></select>
         </div>
     </div>
 
-    <!-- DASHBOARD -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        
-        <div class="card-shadow bg-white p-5 rounded-2xl">
-            <div class="flex items-center gap-3 mb-3">
-                <div class="p-2 rounded-lg bg-amber-50 text-amber-600"><i data-lucide="wallet" class="w-4 h-4"></i></div>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Saldo Inicial</span>
-            </div>
-            <input type="text" id="f_saldo_ini" oninput="moneyMask(this); updateData()" placeholder="R$ 0,00"
-                class="text-2xl font-mono font-bold bg-transparent border-0 w-full p-0 text-slate-900">
+    <!-- RESUMO -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="card-shadow bg-white p-4 rounded-2xl">
+            <span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Saldo Inicial</span>
+            <input type="text" id="f_saldo_ini" oninput="moneyMask(this); saveSaldoIni()" placeholder="R$ 0,00" class="text-lg font-mono font-bold w-full bg-transparent outline-none">
         </div>
-
-        <div class="card-shadow bg-white p-5 rounded-2xl">
-            <div class="flex items-center gap-3 mb-3">
-                <div class="p-2 rounded-lg bg-emerald-50 text-emerald-600"><i data-lucide="arrow-up-right" class="w-4 h-4"></i></div>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Entradas</span>
-            </div>
-            <h2 id="displayReceber" class="text-2xl font-mono font-bold text-emerald-600">R$ 0,00</h2>
+        <div class="card-shadow bg-white p-4 rounded-2xl">
+            <span class="text-[10px] font-bold text-emerald-500 uppercase block mb-1">Entradas Mês</span>
+            <div id="totalR" class="text-lg font-mono font-bold text-emerald-600">R$ 0,00</div>
         </div>
-
-        <div class="card-shadow bg-white p-5 rounded-2xl">
-            <div class="flex items-center gap-3 mb-3">
-                <div class="p-2 rounded-lg bg-rose-50 text-rose-600"><i data-lucide="arrow-down-right" class="w-4 h-4"></i></div>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Saídas</span>
-            </div>
-            <h2 id="displayPagar" class="text-2xl font-mono font-bold text-rose-600">R$ 0,00</h2>
+        <div class="card-shadow bg-white p-4 rounded-2xl">
+            <span class="text-[10px] font-bold text-rose-500 uppercase block mb-1">Saídas Mês</span>
+            <div id="totalP" class="text-lg font-mono font-bold text-rose-600">R$ 0,00</div>
         </div>
-
-        <div id="boxSaldo" class="card-shadow p-5 rounded-2xl bg-slate-900">
-            <div class="flex items-center gap-3 mb-3">
-                <div class="p-2 rounded-lg bg-slate-800 text-amber-400"><i data-lucide="landmark" class="w-4 h-4"></i></div>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Balanço Previsto</span>
-            </div>
-            <h2 id="displaySaldo" class="text-2xl font-mono font-bold text-white">R$ 0,00</h2>
+        <div class="card-shadow bg-slate-900 p-4 rounded-2xl">
+            <span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Saldo Previsto</span>
+            <div id="totalSaldo" class="text-lg font-mono font-bold text-white">R$ 0,00</div>
         </div>
     </div>
 
-    <!-- MAIN CONTENT -->
+    <!-- MAIN GRID -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        <!-- FORMULÁRIO -->
-        <div class="lg:col-span-4 flex flex-col gap-6 no-print">
-            <div class="card-shadow bg-white p-6 rounded-2xl flex flex-col gap-5">
-                <div class="flex items-center justify-between">
-                    <h3 id="formTitle" class="text-sm font-bold text-slate-800 uppercase tracking-widest">Novo Lançamento</h3>
-                    <span id="editBadge" class="hidden bg-amber-100 text-amber-700 text-[10px] px-2 py-1 rounded-md font-bold uppercase">Editando</span>
-                </div>
-
-                <div class="space-y-4">
-                    <div class="grid grid-cols-4 gap-3">
-                        <div class="col-span-1">
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Dia</label>
-                            <input type="number" id="f_dia" placeholder="01" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-mono text-center">
-                        </div>
-                        <div class="col-span-3">
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Descrição</label>
-                            <input type="text" id="f_desc" placeholder="Ex: Mercado" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-semibold">
-                        </div>
-                    </div>
-
+        <!-- COLUNA FORMULÁRIO -->
+        <div class="lg:col-span-3 space-y-4 no-print">
+            <div class="card-shadow bg-white p-5 rounded-2xl space-y-4">
+                <h3 class="text-xs font-black uppercase tracking-tighter text-slate-800 border-b pb-2">Novo Lançamento</h3>
+                
+                <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Valor</label>
-                        <input type="text" id="f_valor" oninput="moneyMask(this)" placeholder="R$ 0,00" class="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 text-2xl font-mono font-bold text-slate-800 text-center">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Dia</label>
+                        <input type="number" id="f_dia" placeholder="01" class="w-full p-2 bg-slate-50 border rounded-lg font-mono">
                     </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="addItem('R')" class="flex flex-col items-center gap-1 py-4 rounded-xl bg-emerald-500 text-white hover:bg-emerald-600 transition-all shadow-md shadow-emerald-100">
-                            <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                            <span class="text-[10px] font-bold uppercase">Entrada</span>
-                        </button>
-                        <button onclick="addItem('P')" class="flex flex-col items-center gap-1 py-4 rounded-xl bg-rose-500 text-white hover:bg-rose-600 transition-all shadow-md shadow-rose-100">
-                            <i data-lucide="minus-circle" class="w-5 h-5"></i>
-                            <span class="text-[10px] font-bold uppercase">Saída</span>
-                        </button>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Parcelas</label>
+                        <input type="number" id="f_parc" placeholder="1" min="1" class="w-full p-2 bg-slate-50 border rounded-lg font-mono">
                     </div>
                 </div>
 
-                <div class="pt-4 border-t border-slate-100 flex flex-col gap-2">
-                    <button onclick="cancelEdit()" id="btnCancelar" class="hidden w-full py-2 text-xs font-bold text-slate-500 uppercase">Cancelar Edição</button>
-                    <div class="flex gap-2">
-                        <button onclick="window.print()" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold uppercase">
-                            <i data-lucide="printer" class="w-4 h-4"></i> PDF
-                        </button>
-                        <button onclick="limparTudo()" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-rose-100 text-rose-500 hover:bg-rose-50 text-xs font-bold uppercase">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i> Reset
-                        </button>
-                    </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">Descrição</label>
+                    <input type="text" id="f_desc" placeholder="Ex: Aluguel" class="w-full p-2 bg-slate-50 border rounded-lg font-semibold uppercase text-sm">
                 </div>
-            </div>
 
-            <!-- RESUMO REAL -->
-            <div class="card-shadow bg-slate-50 p-6 rounded-2xl space-y-4">
-                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Saldo em Mãos (Efetivado)</h3>
-                <div class="flex justify-between items-end">
-                    <span id="realSaldo" class="text-3xl font-mono font-bold text-slate-800">R$ 0,00</span>
-                    <i data-lucide="check-check" class="w-6 h-6 text-emerald-500 mb-1"></i>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">Valor</label>
+                    <input type="text" id="f_valor" oninput="moneyMask(this)" placeholder="R$ 0,00" class="w-full p-3 bg-slate-50 border rounded-lg font-mono font-bold text-xl text-center">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 pt-2">
+                    <button onclick="addItem('R')" class="bg-emerald-500 text-white p-3 rounded-xl font-bold text-xs uppercase hover:bg-emerald-600 transition-all flex flex-col items-center gap-1">
+                        <i data-lucide="trending-up" class="w-4 h-4"></i> Receber
+                    </button>
+                    <button onclick="addItem('P')" class="bg-rose-500 text-white p-3 rounded-xl font-bold text-xs uppercase hover:bg-rose-600 transition-all flex flex-col items-center gap-1">
+                        <i data-lucide="trending-down" class="w-4 h-4"></i> Pagar
+                    </button>
                 </div>
             </div>
+
+            <div class="card-shadow bg-blue-50 p-5 rounded-2xl">
+                <span class="text-[10px] font-bold text-blue-400 uppercase block">Saldo Real em Mãos</span>
+                <div id="realMao" class="text-2xl font-mono font-bold text-blue-700">R$ 0,00</div>
+            </div>
+            
+            <button onclick="limparTudo()" class="w-full py-3 text-[10px] font-bold text-slate-400 uppercase border-2 border-dashed rounded-2xl hover:border-rose-200 hover:text-rose-400 transition-all">
+                Resetar Todos os Dados
+            </button>
         </div>
 
-        <!-- LISTAS -->
-        <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- COLUNA LISTAS -->
+        <div class="lg:col-span-9 space-y-6">
             
-            <!-- ENTRADAS -->
-            <div class="flex flex-col gap-4">
-                <div class="flex items-center justify-between border-b border-slate-200 pb-2">
-                    <h3 class="text-xs font-black text-emerald-600 uppercase tracking-widest flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Entradas
-                    </h3>
-                    <span id="countR" class="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+            <!-- SEÇÃO DE ENTRADAS -->
+            <div class="space-y-3">
+                <h2 class="text-xs font-black text-emerald-600 uppercase tracking-widest flex items-center gap-2">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i> Entradas (Ganhos)
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Pendentes -->
+                    <div class="space-y-2">
+                        <span class="text-[9px] font-bold text-slate-400 uppercase ml-2">A Receber</span>
+                        <div id="listR_pend" class="space-y-2 min-h-[100px]"></div>
+                    </div>
+                    <!-- Confirmadas -->
+                    <div class="space-y-2">
+                        <span class="text-[9px] font-bold text-emerald-400 uppercase ml-2">Recebido</span>
+                        <div id="listR_conf" class="space-y-2 min-h-[100px] opacity-70"></div>
+                    </div>
                 </div>
-                <div id="listR_pendente" class="space-y-2 custom-scroll overflow-y-auto max-h-[400px]"></div>
-                <div id="listR_confirmado" class="space-y-2 opacity-60"></div>
             </div>
 
-            <!-- SAÍDAS -->
-            <div class="flex flex-col gap-4">
-                <div class="flex items-center justify-between border-b border-slate-200 pb-2">
-                    <h3 class="text-xs font-black text-rose-600 uppercase tracking-widest flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-rose-500"></span> Saídas
-                    </h3>
-                    <span id="countP" class="bg-rose-50 text-rose-600 text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+            <!-- SEÇÃO DE SAÍDAS -->
+            <div class="space-y-3 border-t pt-6">
+                <h2 class="text-xs font-black text-rose-600 uppercase tracking-widest flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-4 h-4"></i> Saídas (Gastos)
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Pendentes -->
+                    <div class="space-y-2">
+                        <span class="text-[9px] font-bold text-slate-400 uppercase ml-2">A Pagar</span>
+                        <div id="listP_pend" class="space-y-2 min-h-[100px]"></div>
+                    </div>
+                    <!-- Confirmadas -->
+                    <div class="space-y-2">
+                        <span class="text-[9px] font-bold text-rose-400 uppercase ml-2">Pago</span>
+                        <div id="listP_conf" class="space-y-2 min-h-[100px] opacity-70"></div>
+                    </div>
                 </div>
-                <div id="listP_pendente" class="space-y-2 custom-scroll overflow-y-auto max-h-[400px]"></div>
-                <div id="listP_confirmado" class="space-y-2 opacity-60"></div>
             </div>
 
         </div>
@@ -255,26 +205,36 @@
 </div>
 
 <script>
-    // Toda a lógica JavaScript foi preservada para garantir o funcionamento idêntico
-    const STORAGE_KEY = 'fin_pro_v12_light';
-    let ds = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { P: [], R: [], saldoIni: 0, mes: null, ano: null };
-    let editId = null;
+    // Gerenciamento de Dados por Mês/Ano
+    const STORAGE_KEY = 'fin_pro_v13_data';
+    let db = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
 
     lucide.createIcons();
-    initMesAno();
+    initDateSelectors();
     renderAll();
 
-    function initMesAno() {
+    function initDateSelectors() {
         const now = new Date();
         const anos = document.getElementById('f_ano');
-        for (let y = now.getFullYear() + 1; y >= 2020; y--) {
+        for (let y = now.getFullYear() + 2; y >= 2023; y--) {
             const o = document.createElement('option');
             o.value = y; o.textContent = y;
             anos.appendChild(o);
         }
-        const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-        document.getElementById('f_mes').value = ds.mes || meses[now.getMonth()];
-        document.getElementById('f_ano').value = ds.ano || now.getFullYear();
+        document.getElementById('f_mes').value = now.getMonth();
+        document.getElementById('f_ano').value = now.getFullYear();
+    }
+
+    function getID() {
+        const m = document.getElementById('f_mes').value;
+        const a = document.getElementById('f_ano').value;
+        return `${m}_${a}`;
+    }
+
+    function getData() {
+        const id = getID();
+        if (!db[id]) db[id] = { R: [], P: [], saldoIni: 0 };
+        return db[id];
     }
 
     function moneyMask(i) {
@@ -283,160 +243,141 @@
         v = v.replace('.', ',');
         v = v.replace(/(\d)(\d{3})(\d{3}),/g, '$1.$2.$3,');
         v = v.replace(/(\d)(\d{3}),/g, '$1.$2,');
-        i.value = (v === 'NaN') ? '' : 'R$ ' + v;
+        i.value = v === 'NaN' ? '' : 'R$ ' + v;
     }
 
     function parseMoney(val) {
-        if (!val) return 0;
         return parseFloat(String(val).replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
     }
 
-    function updateData() {
-        ds.saldoIni = parseMoney(document.getElementById('f_saldo_ini').value);
-        ds.mes = document.getElementById('f_mes').value;
-        ds.ano = document.getElementById('f_ano').value;
-        saveAndRef();
-    }
-
-    function addItem(type) {
-        const d = document.getElementById('f_dia').value || new Date().getDate();
-        const s = document.getElementById('f_desc').value.trim();
-        const v = parseMoney(document.getElementById('f_valor').value);
-        if (!s || v === 0) return;
-
-        if (editId) {
-            const oldItem = ds.R.find(i => i.id === editId) || ds.P.find(i => i.id === editId);
-            ds.R = ds.R.filter(i => i.id !== editId);
-            ds.P = ds.P.filter(i => i.id !== editId);
-            ds[type].push({ id: editId, dia: parseInt(d), desc: s.toUpperCase(), valor: v, ok: oldItem ? oldItem.ok : false });
-            editId = null;
-            hideEditUI();
-        } else {
-            ds[type].push({ id: Date.now(), dia: parseInt(d), desc: s.toUpperCase(), valor: v, ok: false });
-        }
-
-        ds[type].sort((a, b) => a.dia - b.dia);
-        saveAndRef();
-        clearForm();
-    }
-
-    function clearForm() {
-        ['f_desc', 'f_valor', 'f_dia'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('f_desc').focus();
-    }
-
-    function toggleItem(type, id) {
-        const item = ds[type].find(i => i.id === id);
-        if (item) { item.ok = !item.ok; saveAndRef(); }
-    }
-
-    function prepareEdit(type, id) {
-        const item = ds[type].find(i => i.id === id);
-        if (!item) return;
-        editId = id;
-        document.getElementById('f_dia').value = item.dia;
-        document.getElementById('f_desc').value = item.desc;
-        document.getElementById('f_valor').value = 'R$ ' + item.valor.toLocaleString('pt-br', { minimumFractionDigits: 2 });
-        document.getElementById('formTitle').innerText = 'Editando Item';
-        document.getElementById('editBadge').classList.remove('hidden');
-        document.getElementById('btnCancelar').classList.remove('hidden');
-    }
-
-    function cancelEdit() {
-        editId = null;
-        clearForm();
-        hideEditUI();
-    }
-
-    function hideEditUI() {
-        document.getElementById('formTitle').innerText = 'Novo Lançamento';
-        document.getElementById('editBadge').classList.add('hidden');
-        document.getElementById('btnCancelar').classList.add('hidden');
-    }
-
-    function delItem(type, id) {
-        if (confirm('Excluir este lançamento?')) {
-            ds[type] = ds[type].filter(i => i.id !== id);
-            saveAndRef();
-        }
-    }
-
-    function limparTudo() {
-        if (confirm('Apagar TODOS os dados?')) {
-            ds = { P: [], R: [], saldoIni: 0, mes: ds.mes, ano: ds.ano };
-            saveAndRef();
-        }
-    }
-
-    function saveAndRef() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(ds));
+    function saveSaldoIni() {
+        const data = getData();
+        data.saldoIni = parseMoney(document.getElementById('f_saldo_ini').value);
+        save();
         renderAll();
     }
 
+    function addItem(type) {
+        const dia = parseInt(document.getElementById('f_dia').value) || new Date().getDate();
+        const desc = document.getElementById('f_desc').value.trim().toUpperCase();
+        const valor = parseMoney(document.getElementById('f_valor').value);
+        const parcelas = parseInt(document.getElementById('f_parc').value) || 1;
+
+        if (!desc || valor <= 0) return;
+
+        let mesAtual = parseInt(document.getElementById('f_mes').value);
+        let anoAtual = parseInt(document.getElementById('f_ano').value);
+
+        for (let i = 0; i < parcelas; i++) {
+            const idComp = `${mesAtual}_${anoAtual}`;
+            if (!db[idComp]) db[idComp] = { R: [], P: [], saldoIni: 0 };
+            
+            const itemDesc = parcelas > 1 ? `${desc} (${i + 1}/${parcelas})` : desc;
+            
+            db[idComp][type].push({
+                id: Date.now() + i,
+                dia,
+                desc: itemDesc,
+                valor,
+                ok: false
+            });
+
+            // Lógica para avançar o mês
+            mesAtual++;
+            if (mesAtual > 11) {
+                mesAtual = 0;
+                anoAtual++;
+            }
+        }
+
+        save();
+        renderAll();
+        document.getElementById('f_desc').value = '';
+        document.getElementById('f_valor').value = '';
+        document.getElementById('f_parc').value = '';
+    }
+
+    function toggleItem(type, id) {
+        const data = getData();
+        const item = data[type].find(i => i.id === id);
+        if (item) item.ok = !item.ok;
+        save();
+        renderAll();
+    }
+
+    function delItem(type, id) {
+        if (!confirm("Excluir lançamento?")) return;
+        const data = getData();
+        data[type] = data[type].filter(i => i.id !== id);
+        save();
+        renderAll();
+    }
+
+    function save() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+    }
+
     function renderAll() {
-        const lists = {
-            R_pendente: document.getElementById('listR_pendente'),
-            R_confirmado: document.getElementById('listR_confirmado'),
-            P_pendente: document.getElementById('listP_pendente'),
-            P_confirmado: document.getElementById('listP_confirmado'),
+        const data = getData();
+        const containers = {
+            R_pend: document.getElementById('listR_pend'),
+            R_conf: document.getElementById('listR_conf'),
+            P_pend: document.getElementById('listP_pend'),
+            P_conf: document.getElementById('listP_conf')
         };
-        Object.values(lists).forEach(l => l.innerHTML = '');
+
+        Object.values(containers).forEach(c => c.innerHTML = '');
+        document.getElementById('f_saldo_ini').value = data.saldoIni > 0 ? data.saldoIni.toLocaleString('pt-br', {style:'currency', currency:'BRL'}) : '';
 
         let tR = 0, tP = 0, realR = 0, realP = 0;
 
         const draw = (item, type) => {
             const isR = type === 'R';
-            const colorClass = isR ? 'text-emerald-600' : 'text-rose-600';
-            
             const html = `
-            <div class="item-card flex items-center gap-3 px-4 py-3 bg-white rounded-xl border border-slate-100 group shadow-sm">
-                <input type="checkbox" ${item.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${item.id})">
-                <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-md">
-                    ${String(item.dia).padStart(2, '0')}
-                </span>
-                <span onclick="prepareEdit('${type}', ${item.id})" class="flex-1 text-xs font-bold text-slate-700 truncate cursor-pointer ${item.ok ? 'line-through text-slate-300' : ''}">
-                    ${item.desc}
-                </span>
-                <span class="text-sm font-mono font-bold ${item.ok ? 'text-slate-300' : colorClass}">
-                    ${item.valor.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-                </span>
-                <button onclick="delItem('${type}', ${item.id})" class="no-print opacity-0 group-hover:opacity-100 p-1 text-slate-300 hover:text-rose-500 transition-all">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-            </div>`;
+                <div class="flex items-center gap-3 p-3 bg-white border rounded-xl shadow-sm group">
+                    <input type="checkbox" ${item.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${item.id})">
+                    <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded">${String(item.dia).padStart(2,'0')}</span>
+                    <span class="flex-1 text-xs font-bold text-slate-700 truncate ${item.ok ? 'line-through opacity-40' : ''}">${item.desc}</span>
+                    <span class="text-xs font-mono font-bold ${isR ? 'text-emerald-600' : 'text-rose-600'}">
+                        ${item.valor.toLocaleString('pt-br', {minimumFractionDigits:2})}
+                    </span>
+                    <button onclick="delItem('${type}', ${item.id})" class="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-rose-500">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `;
 
             if (isR) {
                 tR += item.valor;
-                if (item.ok) { realR += item.valor; lists.R_confirmado.innerHTML += html; }
-                else { lists.R_pendente.innerHTML += html; }
+                if (item.ok) { realR += item.valor; containers.R_conf.innerHTML += html; }
+                else { containers.R_pend.innerHTML += html; }
             } else {
                 tP += item.valor;
-                if (item.ok) { realP += item.valor; lists.P_confirmado.innerHTML += html; }
-                else { lists.P_pendente.innerHTML += html; }
+                if (item.ok) { realP += item.valor; containers.P_conf.innerHTML += html; }
+                else { containers.P_pend.innerHTML += html; }
             }
         };
 
-        ds.R.forEach(i => draw(i, 'R'));
-        ds.P.forEach(i => draw(i, 'P'));
+        data.R.sort((a,b)=>a.dia - b.dia).forEach(i => draw(i, 'R'));
+        data.P.sort((a,b)=>a.dia - b.dia).forEach(i => draw(i, 'P'));
 
-        document.getElementById('countR').innerText = ds.R.length;
-        document.getElementById('countP').innerText = ds.P.length;
-        document.getElementById('displayReceber').innerText = tR.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-        document.getElementById('displayPagar').innerText = tP.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-        
-        const saldoFinal = ds.saldoIni + tR - tP;
-        const displaySaldo = document.getElementById('displaySaldo');
-        displaySaldo.innerText = saldoFinal.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-        displaySaldo.className = `text-2xl font-mono font-bold ${saldoFinal >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
-
-        const saldoReal = ds.saldoIni + realR - realP;
-        document.getElementById('realSaldo').innerText = saldoReal.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-
-        if (ds.saldoIni > 0 && document.activeElement.id !== 'f_saldo_ini') {
-            document.getElementById('f_saldo_ini').value = 'R$ ' + ds.saldoIni.toLocaleString('pt-br', { minimumFractionDigits: 2 });
-        }
+        // Cálculos Finais
+        document.getElementById('totalR').innerText = tR.toLocaleString('pt-br', {style:'currency', currency:'BRL'});
+        document.getElementById('totalP').innerText = tP.toLocaleString('pt-br', {style:'currency', currency:'BRL'});
+        const saldoPrev = data.saldoIni + tR - tP;
+        document.getElementById('totalSaldo').innerText = saldoPrev.toLocaleString('pt-br', {style:'currency', currency:'BRL'});
+        const saldoMao = data.saldoIni + realR - realP;
+        document.getElementById('realMao').innerText = saldoMao.toLocaleString('pt-br', {style:'currency', currency:'BRL'});
 
         lucide.createIcons();
+    }
+
+    function limparTudo() {
+        if(confirm("Isso apagará TODOS os meses. Tem certeza?")) {
+            db = {};
+            save();
+            renderAll();
+        }
     }
 </script>
 </body>
