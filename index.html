@@ -1,297 +1,35 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Financeiro Pro v25</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg1: #f8fafc;
-            --bg2: #eef2ff;
-            --primary: #0f172a;
-            --accent: #2563eb;
-            --success: #10b981;
-            --danger: #f43f5e;
-        }
-
-        * { box-sizing: border-box; }
-        body {
-            background: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: #1e293b;
-            -webkit-font-smoothing: antialiased;
-            min-height: 100vh;
-        }
-
-        .glass-card {
-            background: rgba(255,255,255,.90);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(226,232,240,.95);
-            box-shadow: 0 8px 26px rgba(15, 23, 42, 0.05);
-            border-radius: 1.1rem;
-        }
-
-        .hero-card {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #2563eb 100%);
-            color: white;
-        }
-
-        .label-mini { font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: .22em; }
-        .mono-big { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
-        .negative-val { color: #fb7185 !important; }
-
-        .premium-input {
-            width: 100%;
-            border-radius: .9rem;
-            border: 1px solid #e2e8f0;
-            background: #fff;
-            outline: none;
-            transition: all .2s ease;
-        }
-
-        .section-title {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: .5rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .btn-premium {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: .45rem;
-            border-radius: .85rem;
-            padding: 0.75rem;
-            font-size: 9px;
-            font-weight: 800;
-            text-transform: uppercase;
-            transition: .2s ease;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: .35rem;
-            padding: .25rem .55rem;
-            border-radius: 999px;
-            font-size: 9px;
-            font-weight: 800;
-        }
-    </style>
-</head>
-<body class="p-2 md:p-4">
-<div id="appContainer" class="max-w-[1650px] mx-auto flex flex-col gap-4">
-
-    <header class="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center shadow-lg">
-                <i data-lucide="wallet-cards" class="w-4 h-4 text-blue-400"></i>
-            </div>
-            <div>
-                <h1 class="text-xl font-black tracking-tight text-slate-900 uppercase leading-none">
-                    Financeiro<span class="text-blue-600">Pro</span> <span class="text-slate-300 text-sm">v25</span>
-                </h1>
-                <div id="statusSync" class="status-badge bg-emerald-50 text-emerald-600 mt-1">
-                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div> Sincronizado
+<div class="lg:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-4">
+    
+    <section class="glass-card p-4 h-fit">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-2">
+                <div class="w-1 h-5 bg-emerald-500 rounded-full"></div>
+                <div>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.15em] text-slate-800">Entradas</h4>
+                    <p class="text-[9px] text-slate-400 leading-none">Gestão de recebíveis</p>
                 </div>
             </div>
+            <div id="headerTotalR" class="mono-big text-[16px] text-emerald-600 font-bold bg-emerald-50 px-3 py-1 rounded-lg">R$ 0,00</div>
         </div>
-
-        <div class="glass-card px-4 py-2 flex items-center gap-2">
-            <i data-lucide="calendar-range" class="w-4 h-4 text-slate-400"></i>
-            <select id="f_mes" class="bg-transparent text-sm font-bold outline-none cursor-pointer text-slate-700"></select>
-            <select id="f_ano" class="bg-slate-50 text-sm font-bold px-3 py-1 rounded-xl outline-none text-blue-600 border border-slate-200"></select>
-        </div>
-    </header>
-
-    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-        <div class="glass-card hero-card p-4 lg:col-span-1">
-            <span class="label-mini text-blue-200 block mb-1">Previsão Final</span>
-            <div id="totalSaldo" class="mono-big text-[28px]">R$ 0,00</div>
-        </div>
-        <div class="glass-card p-4">
-            <span class="label-mini text-slate-400 block mb-1">Saldo Real</span>
-            <div id="realMao" class="mono-big text-[28px] text-slate-800">R$ 0,00</div>
-        </div>
-        <div class="glass-card p-4 border-l-4 border-l-emerald-500">
-            <span class="label-mini text-emerald-500 block mb-1">Entradas</span>
-            <div id="totalR" class="mono-big text-[24px]">R$ 0,00</div>
-        </div>
-        <div class="glass-card p-4 border-l-4 border-l-rose-500">
-            <span class="label-mini text-rose-500 block mb-1">Saídas</span>
-            <div id="totalP" class="mono-big text-[24px]">R$ 0,00</div>
-        </div>
+        
+        <div id="listR_content" class="mt-4 space-y-2">
+            </div>
     </section>
 
-    <main class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        
-        <aside class="lg:col-span-3">
-            <div class="glass-card p-4 space-y-4">
-                <h3 class="label-mini text-slate-500">Novo Lançamento</h3>
-                
-                <div class="space-y-3">
-                    <div>
-                        <label class="label-mini text-slate-400 block mb-1">Saldo Inicial</label>
-                        <input type="text" id="f_saldo_ini" class="premium-input px-4 py-2 font-bold text-lg" placeholder="R$ 0,00">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="number" id="f_dia" placeholder="Dia" class="premium-input p-2 text-sm">
-                        <input type="number" id="f_parc" placeholder="Parc." value="1" class="premium-input p-2 text-sm">
-                    </div>
-                    <input type="text" id="f_desc" placeholder="DESCRIÇÃO" class="premium-input p-2 text-sm uppercase font-bold">
-                    <input type="text" id="f_valor" placeholder="R$ 0,00" class="premium-input p-3 text-center text-2xl font-black">
-                    
-                    <div class="grid grid-cols-2 gap-2">
-                        <button id="btnAddR" class="btn-premium bg-emerald-500 text-white hover:bg-emerald-600">Receber</button>
-                        <button id="btnAddP" class="btn-premium bg-rose-500 text-white hover:bg-rose-600">Pagar</button>
-                    </div>
+    <section class="glass-card p-4 h-fit">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-2">
+                <div class="w-1 h-5 bg-rose-500 rounded-full"></div>
+                <div>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.15em] text-slate-800">Saídas</h4>
+                    <p class="text-[9px] text-slate-400 leading-none">Gestão de despesas</p>
                 </div>
             </div>
-        </aside>
-
-        <div class="lg:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-4">
-            
-            <section class="glass-card p-4">
-                <div class="section-title">
-                    <div class="flex items-center gap-2">
-                        <div class="w-1.5 h-5 bg-emerald-500 rounded-full"></div>
-                        <h4 class="text-[11px] font-black uppercase tracking-widest">Entradas</h4>
-                    </div>
-                    <div id="headerTotalR" class="mono-big text-emerald-600 text-lg">R$ 0,00</div>
-                </div>
-                <div id="listR_pend" class="mt-4 space-y-2"></div>
-                <div id="listR_conf" class="mt-4 pt-4 border-t border-emerald-100 space-y-2 opacity-60"></div>
-            </section>
-
-            <section class="glass-card p-4">
-                <div class="section-title">
-                    <div class="flex items-center gap-2">
-                        <div class="w-1.5 h-5 bg-rose-500 rounded-full"></div>
-                        <h4 class="text-[11px] font-black uppercase tracking-widest">Saídas</h4>
-                    </div>
-                    <div id="headerTotalP" class="mono-big text-rose-600 text-lg">R$ 0,00</div>
-                </div>
-                <div id="listP_pend" class="mt-4 space-y-2"></div>
-                <div id="listP_conf" class="mt-4 pt-4 border-t border-rose-100 space-y-2 opacity-60"></div>
-            </section>
-
+            <div id="headerTotalP" class="mono-big text-[16px] text-rose-600 font-bold bg-rose-50 px-3 py-1 rounded-lg">R$ 0,00</div>
         </div>
-    </main>
+
+        <div id="listP_content" class="mt-4 space-y-2">
+            </div>
+    </section>
+
 </div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyCi8znMRngui3EI6tODeuczGcUV2o3U90c",
-        authDomain: "financeiro-guilherme-49a5b.firebaseapp.com",
-        projectId: "financeiro-guilherme-49a5b",
-        storageBucket: "financeiro-guilherme-49a5b.firebasestorage.app",
-        messagingSenderId: "61246912262",
-        appId: "1:61246912262:web:75273e5394d837e6e69087"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db_fire = getFirestore(app);
-    let db = {};
-    const mesesNomes = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-
-    function formatBRL(v) {
-        return v.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    }
-
-    function applyMoneyMask(input) {
-        let v = input.value.replace(/\D/g, '');
-        v = (v / 100).toFixed(2).replace('.', ',');
-        v = v.replace(/(\d)(\d{3})(\d{3}),/g, '$1.$2.$3,');
-        v = v.replace(/(\d)(\d{3}),/g, '$1.$2,');
-        input.value = v === 'NaN' ? '' : 'R$ ' + v;
-    }
-
-    async function sync(id) {
-        try {
-            await setDoc(doc(db_fire, "financeiro", id), db[id]);
-            document.getElementById('statusSync').classList.replace('bg-rose-50', 'bg-emerald-50');
-        } catch (e) {
-            console.error(e);
-            document.getElementById('statusSync').classList.replace('bg-emerald-50', 'bg-rose-50');
-        }
-    }
-
-    function render() {
-        const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        if (!db[id]) db[id] = { R: [], P: [], saldoIni: 0 };
-        const data = db[id];
-
-        let tR = 0, tP = 0, rR = 0, rP = 0;
-        
-        const lists = {
-            Rp: document.getElementById('listR_pend'), Rc: document.getElementById('listR_conf'),
-            Pp: document.getElementById('listP_pend'), Pc: document.getElementById('listP_conf')
-        };
-        Object.values(lists).forEach(l => l.innerHTML = '');
-
-        data.R.forEach(item => {
-            tR += item.valor;
-            if (item.ok) rR += item.valor;
-            const target = item.ok ? lists.Rc : lists.Rp;
-            target.innerHTML += `<div class="flex justify-between p-2 bg-white rounded-lg border border-slate-100 text-xs">
-                <span>${item.dia} - ${item.desc}</span>
-                <span class="font-bold text-emerald-600">${formatBRL(item.valor)}</span>
-            </div>`;
-        });
-
-        data.P.forEach(item => {
-            tP += item.valor;
-            if (item.ok) rP += item.valor;
-            const target = item.ok ? lists.Pc : lists.Pp;
-            target.innerHTML += `<div class="flex justify-between p-2 bg-white rounded-lg border border-slate-100 text-xs">
-                <span>${item.dia} - ${item.desc}</span>
-                <span class="font-bold text-rose-600">${formatBRL(item.valor)}</span>
-            </div>`;
-        });
-
-        // ATUALIZAÇÃO DOS TOTAIS (INCLUINDO OS CABEÇALHOS QUE VOCÊ PEDIU)
-        document.getElementById('totalR').innerText = formatBRL(tR);
-        document.getElementById('totalP').innerText = formatBRL(tP);
-        document.getElementById('headerTotalR').innerText = formatBRL(tR);
-        document.getElementById('headerTotalP').innerText = formatBRL(tP);
-        
-        const totalFinal = data.saldoIni + tR - tP;
-        document.getElementById('totalSaldo').innerText = formatBRL(totalFinal);
-        document.getElementById('realMao').innerText = formatBRL(data.saldoIni + rR - rP);
-    }
-
-    // Inicialização e Eventos
-    const init = async () => {
-        const mSel = document.getElementById('f_mes');
-        const aSel = document.getElementById('f_ano');
-        mesesNomes.forEach((m, i) => mSel.innerHTML += `<option value="${i}">${m}</option>`);
-        for (let y = 2026; y >= 2023; y--) aSel.innerHTML += `<option value="${y}">${y}</option>`;
-        
-        const now = new Date();
-        mSel.value = now.getMonth();
-        aSel.value = now.getFullYear();
-
-        const snap = await getDocs(collection(db_fire, "financeiro"));
-        snap.forEach(d => db[d.id] = d.data());
-        
-        render();
-        lucide.createIcons();
-    };
-
-    document.getElementById('f_valor').oninput = e => applyMoneyMask(e.target);
-    document.getElementById('f_saldo_ini').oninput = e => applyMoneyMask(e.target);
-    document.getElementById('f_mes').onchange = render;
-    document.getElementById('f_ano').onchange = render;
-
-    init();
-</script>
-</body>
-</html>
