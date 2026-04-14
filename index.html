@@ -2,70 +2,130 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Financeiro Pro v26.3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Financeiro Pro v27</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f4f7fb;
+            --bg-top: #f2f7ff;
+            --bg-bottom: #fbfdff;
             --panel: #ffffff;
-            --panel-soft: #f8fafc;
-            --line: #e2e8f0;
-            --text: #0f172a;
-            --muted: #64748b;
-            --blue: #2563eb;
-            --blue-dark: #1d4ed8;
-            --green: #10b981;
-            --green-soft: #ecfdf5;
-            --red: #f43f5e;
-            --red-soft: #fff1f2;
-            --amber: #f59e0b;
-            --amber-soft: #fffbeb;
+            --panel-soft: #f8fbff;
+            --line: #dfe9f5;
+            --line-soft: #e9f0f8;
+            --text: #17324d;
+            --muted: #7690ab;
+
+            --blue: #2f6fed;
+            --blue-2: #4f8cff;
+            --blue-soft: #eef5ff;
+            --blue-line: #cfe0ff;
+
+            --green: #15b67a;
+            --green-soft: #effdf7;
+            --green-line: #caf3df;
+
+            --red: #f25572;
+            --red-soft: #fff3f6;
+            --red-line: #ffd7df;
+
+            --amber: #f4a11a;
+            --amber-soft: #fff8ea;
+            --amber-line: #ffe1a8;
+
+            --violet: #7c66ff;
+            --violet-soft: #f3efff;
+            --violet-line: #ddd4ff;
+
+            --shadow-1: 0 10px 30px rgba(48, 88, 140, .08);
+            --shadow-2: 0 3px 10px rgba(48, 88, 140, .05);
         }
 
         * { box-sizing: border-box; }
         html, body { height: 100%; }
 
         body {
-            background: linear-gradient(180deg, #f8fbff 0%, #f2f6fb 100%);
+            background:
+                radial-gradient(circle at top left, rgba(88, 149, 255, .10), transparent 30%),
+                radial-gradient(circle at top right, rgba(124, 102, 255, .08), transparent 28%),
+                linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: var(--text);
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
         }
 
-        .app-shell { min-height: 100vh; }
+        .app-shell {
+            min-height: 100vh;
+        }
+
+        .shell-card {
+            background: rgba(255,255,255,.86);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(223,233,245,.9);
+            border-radius: 24px;
+            box-shadow: var(--shadow-1);
+        }
 
         .panel {
-            background: rgba(255,255,255,.96);
-            border: 1px solid rgba(226,232,240,.95);
-            box-shadow:
-                0 10px 30px rgba(15,23,42,.05),
-                0 2px 8px rgba(15,23,42,.03);
-            border-radius: 20px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            box-shadow: var(--shadow-2);
         }
 
         .panel-soft {
-            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid #e2e8f0;
-            border-radius: 18px;
-            box-shadow: 0 4px 14px rgba(15,23,42,.04);
+            background: linear-gradient(180deg, #ffffff 0%, #fafeff 100%);
+            border: 1px solid var(--line-soft);
+            border-radius: 20px;
+            box-shadow: var(--shadow-2);
         }
 
         .hero-main {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 48%, #2563eb 100%);
+            background:
+                radial-gradient(circle at top right, rgba(255,255,255,.22), transparent 30%),
+                linear-gradient(135deg, #5c89ff 0%, #3b73ff 50%, #6e78ff 100%);
             color: white;
             border: none;
-            box-shadow: 0 18px 40px rgba(37,99,235,.18);
+            box-shadow: 0 18px 40px rgba(79,140,255,.24);
         }
 
         .metric-card {
-            min-height: 126px;
+            min-height: 132px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::after {
+            content: "";
+            position: absolute;
+            inset: auto -18px -26px auto;
+            width: 90px;
+            height: 90px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.16);
+            filter: blur(0px);
+        }
+
+        .metric-card.soft-blue {
+            background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+        }
+
+        .metric-card.soft-green {
+            background: linear-gradient(180deg, #ffffff 0%, #f5fffb 100%);
+        }
+
+        .metric-card.soft-red {
+            background: linear-gradient(180deg, #ffffff 0%, #fff8fa 100%);
+        }
+
+        .metric-card.soft-amber {
+            background: linear-gradient(180deg, #ffffff 0%, #fffaf1 100%);
         }
 
         .metric-number {
@@ -88,172 +148,298 @@
         .status-badge {
             display: inline-flex;
             align-items: center;
-            gap: .35rem;
-            padding: .32rem .62rem;
+            gap: .4rem;
+            padding: .38rem .68rem;
             border-radius: 999px;
             font-size: 9px;
             font-weight: 800;
             letter-spacing: .08em;
             text-transform: uppercase;
-            background: #ecfdf5;
-            color: #059669;
-            border: 1px solid #d1fae5;
-            line-height: 1;
+            background: var(--green-soft);
+            color: #0f9f67;
+            border: 1px solid var(--green-line);
         }
 
         .btn-premium {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: .45rem;
+            gap: .5rem;
             border-radius: 14px;
-            padding: .8rem 1rem;
+            padding: .82rem 1rem;
             font-size: 10px;
             font-weight: 800;
             letter-spacing: .14em;
             text-transform: uppercase;
-            transition: .18s ease;
             line-height: 1;
+            transition: .18s ease;
         }
 
-        .btn-premium:hover { transform: translateY(-1px); }
+        .btn-premium:hover {
+            transform: translateY(-1px);
+        }
 
         .premium-input,
         .premium-select {
             width: 100%;
-            border-radius: 14px;
-            border: 1px solid #dbe3ef;
+            border-radius: 16px;
+            border: 1px solid var(--line);
             background: #fff;
             outline: none;
             transition: all .18s ease;
+            color: var(--text);
         }
 
         .premium-input:focus,
         .premium-select:focus {
-            border-color: #60a5fa;
-            box-shadow: 0 0 0 4px rgba(96,165,250,.12);
-            background: #fff;
+            border-color: var(--blue-2);
+            box-shadow: 0 0 0 4px rgba(79,140,255,.12);
         }
 
         .money-input {
-            border: 2px solid #dbeafe;
-            box-shadow: inset 0 2px 6px rgba(15,23,42,.03);
+            border: 2px solid #d8e7ff;
+            box-shadow: inset 0 2px 5px rgba(75,118,172,.04);
         }
 
         .money-input:focus {
             border-color: var(--blue);
             box-shadow:
-                0 0 0 4px rgba(37,99,235,.10),
-                inset 0 2px 6px rgba(15,23,42,.03);
+                0 0 0 4px rgba(79,140,255,.12),
+                inset 0 2px 5px rgba(75,118,172,.04);
         }
 
-        .section-title {
+        .metric-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,.18);
+            border: 1px solid rgba(255,255,255,.25);
+        }
+
+        .metric-icon-soft {
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e3ecf8;
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(48,88,140,.05);
+        }
+
+        .section-box {
+            padding: 18px;
+            border-radius: 22px;
+            border: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(249,252,255,.98) 100%);
+            box-shadow: var(--shadow-2);
+        }
+
+        .section-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 1rem;
-            padding-bottom: .9rem;
-            border-bottom: 1px solid #edf2f7;
+            padding: 0 2px 14px 2px;
+            border-bottom: 1px solid #edf3fa;
+            margin-bottom: 16px;
         }
 
         .section-left {
             display: flex;
             align-items: center;
-            gap: .7rem;
+            gap: .8rem;
         }
 
         .section-pill {
-            width: 7px;
-            height: 24px;
+            width: 8px;
+            height: 30px;
             border-radius: 999px;
+        }
+
+        .section-top-green {
+            background: linear-gradient(90deg, #effdf7 0%, rgba(255,255,255,0) 100%);
+            border-radius: 18px;
+            padding: 12px 14px;
+            margin: -4px -4px 14px -4px;
+            border: 1px solid var(--green-line);
+        }
+
+        .section-top-red {
+            background: linear-gradient(90deg, #fff3f6 0%, rgba(255,255,255,0) 100%);
+            border-radius: 18px;
+            padding: 12px 14px;
+            margin: -4px -4px 14px -4px;
+            border: 1px solid var(--red-line);
         }
 
         .tag-chip {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: .32rem .58rem;
+            padding: .34rem .62rem;
             border-radius: 999px;
             font-size: 9px;
             font-weight: 800;
             line-height: 1;
         }
 
-        .entry-row {
-            transition: all .16s ease;
-        }
-
-        .entry-row:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 10px 20px rgba(15,23,42,.04);
-            border-color: #dbeafe;
-        }
-
-        .metric-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 14px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(255,255,255,.12);
-            background: rgba(255,255,255,.08);
-        }
-
-        .metric-icon-soft {
-            width: 34px;
-            height: 34px;
-            border-radius: 12px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-        }
-
         .filter-btn {
-            border: 1px solid #dbe3ef;
+            border: 1px solid var(--line);
             background: #fff;
-            color: #475569;
-            border-radius: 12px;
-            padding: .7rem .95rem;
+            color: #5d7691;
+            border-radius: 13px;
+            padding: .74rem 1rem;
             font-size: 10px;
             font-weight: 800;
             letter-spacing: .12em;
             text-transform: uppercase;
-            transition: all .18s ease;
             line-height: 1;
+            transition: .18s ease;
+            box-shadow: 0 3px 10px rgba(48,88,140,.03);
         }
 
         .filter-btn:hover {
-            background: #f8fafc;
+            background: #f8fbff;
             transform: translateY(-1px);
         }
 
         .filter-btn.active {
-            background: #2563eb;
+            background: linear-gradient(135deg, #5a87ff 0%, #4279ff 100%);
             color: white;
-            border-color: #2563eb;
-            box-shadow: 0 8px 20px rgba(37,99,235,.15);
+            border-color: #4b7fff;
+            box-shadow: 0 10px 20px rgba(79,140,255,.2);
         }
+
+        .entry-row {
+            transition: all .18s ease;
+            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+        }
+
+        .entry-row:hover {
+            transform: translateY(-1px);
+            border-color: #cfe0ff;
+            box-shadow: 0 12px 24px rgba(48,88,140,.08);
+        }
+
+        .empty-state {
+            border: 1px dashed #d8e5f4;
+            background: linear-gradient(180deg, #fbfdff 0%, #f7fbff 100%);
+            border-radius: 18px;
+            padding: 18px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .empty-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            margin: 0 auto 10px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border: 1px solid #e4edf8;
+        }
+
+        .subgroup {
+            border-radius: 18px;
+            padding: 12px;
+        }
+
+        .subgroup.green {
+            background: linear-gradient(180deg, #fcfffd 0%, #f6fffb 100%);
+            border: 1px solid #e1f7ec;
+        }
+
+        .subgroup.red {
+            background: linear-gradient(180deg, #fffdfd 0%, #fff7f8 100%);
+            border: 1px solid #ffe5ea;
+        }
+
+        .subgroup.neutral {
+            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+            border: 1px solid #ecf2f8;
+        }
+
+        .subgroup-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: .75rem;
+            margin-bottom: 12px;
+        }
+
+        .subgroup-title {
+            display: flex;
+            align-items: center;
+            gap: .55rem;
+        }
+
+        .subgroup-meta {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            flex-wrap: wrap;
+        }
+
+        .mini-count {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--muted);
+        }
+
+        .mini-total {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--text);
+            background: #fff;
+            border: 1px solid #e6eef8;
+            border-radius: 999px;
+            padding: .3rem .55rem;
+        }
+
+        .form-block {
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid #e8eff8;
+            background: linear-gradient(180deg, #ffffff 0%, #fafdff 100%);
+        }
+
+        .scroll-soft::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+
+        .scroll-soft::-webkit-scrollbar-thumb {
+            background: #c8d7ea;
+            border-radius: 999px;
+        }
+
+        .negative-val { color: #ffd7e0 !important; }
 
         input[type="checkbox"] {
             appearance: none;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #cbd5e1;
-            border-radius: 5px;
+            width: 17px;
+            height: 17px;
+            border: 2px solid #c8d8ee;
+            border-radius: 6px;
             cursor: pointer;
             position: relative;
-            transition: all .2s ease;
-            background: white;
+            transition: .2s ease;
+            background: #fff;
             flex-shrink: 0;
         }
 
         input[type="checkbox"]:checked {
-            background: var(--blue);
-            border-color: var(--blue);
-            box-shadow: 0 0 0 4px rgba(37,99,235,.10);
+            background: linear-gradient(135deg, #5a87ff 0%, #4279ff 100%);
+            border-color: #4b7fff;
+            box-shadow: 0 0 0 4px rgba(79,140,255,.1);
         }
 
         input[type="checkbox"]:checked::after {
@@ -273,34 +459,6 @@
             50% { opacity: .35; }
         }
 
-        .scroll-soft::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        .scroll-soft::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 999px;
-        }
-
-        .report-table tr:hover td {
-            background: #f8fafc;
-        }
-
-        .compact-note {
-            font-size: 12px;
-            line-height: 1.4;
-        }
-
-        .negative-val { color: #fb7185 !important; }
-
-        .form-block {
-            padding: 14px;
-            border-radius: 16px;
-            border: 1px solid #edf2f7;
-            background: linear-gradient(180deg, #ffffff 0%, #fafcff 100%);
-        }
-
         @media (min-width: 1024px) {
             .viewport-fit {
                 min-height: calc(100vh - 24px);
@@ -309,365 +467,398 @@
     </style>
 </head>
 <body class="p-2 md:p-3">
-<div id="appContainer" class="app-shell viewport-fit max-w-[1600px] mx-auto flex flex-col gap-4">
+<div id="appContainer" class="app-shell viewport-fit max-w-[1620px] mx-auto flex flex-col gap-4">
 
-    <!-- HEADER -->
-    <header class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between no-print">
-        <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-2xl bg-slate-950 flex items-center justify-center shadow-lg shadow-blue-100 shrink-0">
-                <i data-lucide="wallet-cards" class="w-5 h-5 text-blue-400"></i>
-            </div>
+    <div class="shell-card p-3 md:p-4 flex flex-col gap-4">
 
-            <div>
-                <h1 class="text-xl md:text-[24px] font-black tracking-tight text-slate-900 uppercase leading-none">
-                    Financeiro<span class="text-blue-600">Pro</span>
-                    <span class="text-slate-300">v26.3</span>
-                </h1>
-                <div class="mt-2 flex items-center gap-2">
-                    <div id="statusSync" class="status-badge">
-                        <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-                        Sincronizado
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel px-3 py-2 flex items-center gap-2 self-start lg:self-auto">
-            <div class="flex items-center gap-2">
-                <i data-lucide="calendar-range" class="w-4 h-4 text-slate-400"></i>
-                <select id="f_mes" class="bg-transparent text-[12px] font-bold px-2 py-2 outline-none cursor-pointer text-slate-700"></select>
-                <select id="f_ano" class="bg-slate-50 text-[12px] font-bold px-3 py-2 rounded-xl outline-none cursor-pointer text-blue-600 border border-slate-200"></select>
-            </div>
-        </div>
-    </header>
-
-    <!-- RESUMO -->
-    <section id="summarySection" class="grid grid-cols-1 xl:grid-cols-12 gap-3">
-        <div class="xl:col-span-7 grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div class="panel hero-main metric-card p-5 md:col-span-3">
-                <div class="flex items-start justify-between gap-3">
-                    <div>
-                        <span class="eyebrow text-blue-200 block mb-3">Previsão Final</span>
-                        <div id="totalSaldo" class="metric-number text-[30px] md:text-[38px]">R$ 0,00</div>
-                    </div>
-                    <div class="metric-icon">
-                        <i data-lucide="bar-chart-4" class="w-5 h-5 text-blue-100"></i>
-                    </div>
-                </div>
-                <p class="compact-note text-slate-200 mt-3">Resultado previsto considerando todas as entradas e saídas do mês.</p>
-            </div>
-
-            <div class="panel-soft metric-card p-4">
-                <div class="flex items-start justify-between gap-3">
-                    <div>
-                        <span class="eyebrow text-slate-400 block mb-3">Saldo Real</span>
-                        <div id="realMao" class="metric-number text-[25px] md:text-[28px] text-slate-800">R$ 0,00</div>
-                    </div>
-                    <div class="metric-icon-soft">
-                        <i data-lucide="wallet" class="w-4 h-4 text-slate-500"></i>
-                    </div>
-                </div>
-                <p class="compact-note text-slate-400 mt-3">Somente o que já foi confirmado.</p>
-            </div>
-
-            <div class="panel-soft metric-card p-4">
-                <div class="flex items-start justify-between gap-3">
-                    <div>
-                        <span class="eyebrow text-amber-600 block mb-3">Dinheiro Vivo</span>
-                        <div id="saldoCaixa" class="metric-number text-[25px] md:text-[28px] text-slate-800">R$ 0,00</div>
-                    </div>
-                    <div class="metric-icon-soft">
-                        <i data-lucide="hand-coins" class="w-4 h-4 text-amber-600"></i>
-                    </div>
-                </div>
-                <p class="compact-note text-slate-400 mt-3">Saldo real disponível em caixa.</p>
-            </div>
-
-            <div class="panel-soft metric-card p-4">
-                <div class="flex items-start justify-between gap-3">
-                    <div>
-                        <span class="eyebrow text-blue-600 block mb-3">Banco</span>
-                        <div id="saldoBanco" class="metric-number text-[25px] md:text-[28px] text-slate-800">R$ 0,00</div>
-                    </div>
-                    <div class="metric-icon-soft">
-                        <i data-lucide="landmark" class="w-4 h-4 text-blue-600"></i>
-                    </div>
-                </div>
-                <p class="compact-note text-slate-400 mt-3">Saldo real disponível em banco.</p>
-            </div>
-        </div>
-
-        <div id="extraSaldos" class="xl:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="panel-soft metric-card p-4 border-l-4 border-l-emerald-500">
-                <div class="flex items-start justify-between gap-3">
-                    <div>
-                        <span class="eyebrow text-emerald-600 block mb-3">Entradas</span>
-                        <div id="totalR" class="metric-number text-[26px] md:text-[30px] text-slate-800">R$ 0,00</div>
-                    </div>
-                    <div class="metric-icon-soft">
-                        <i data-lucide="arrow-down-left" class="w-4 h-4 text-emerald-600"></i>
-                    </div>
-                </div>
-                <p class="compact-note text-slate-400 mt-3">Total lançado como recebimento no mês.</p>
-            </div>
-
-            <div class="panel-soft metric-card p-4 border-l-4 border-l-rose-500">
-                <div class="flex items-start justify-between gap-3">
-                    <div>
-                        <span class="eyebrow text-rose-600 block mb-3">Saídas</span>
-                        <div id="totalP" class="metric-number text-[26px] md:text-[30px] text-slate-800">R$ 0,00</div>
-                    </div>
-                    <div class="metric-icon-soft">
-                        <i data-lucide="arrow-up-right" class="w-4 h-4 text-rose-600"></i>
-                    </div>
-                </div>
-                <p class="compact-note text-slate-400 mt-3">Total lançado como pagamento no mês.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- AÇÕES -->
-    <div class="flex flex-wrap gap-2 no-print">
-        <button id="btnRelatorio" class="btn-premium bg-blue-600 text-white shadow-lg shadow-blue-100 hover:bg-blue-700">
-            <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
-            Relatório
-        </button>
-
-        <button id="btnTransferencia" class="btn-premium bg-violet-50 border border-violet-200 text-violet-700 hover:bg-violet-100">
-            <i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i>
-            Transferência
-        </button>
-
-        <button id="btnExportExcel" class="btn-premium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50">
-            <i data-lucide="download" class="w-3.5 h-3.5"></i>
-            Excel
-        </button>
-
-        <button id="btnExportJSON" class="btn-premium bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100">
-            <i data-lucide="database-backup" class="w-3.5 h-3.5"></i>
-            Exportar Backup
-        </button>
-
-        <button id="btnImportJSON" class="btn-premium bg-amber-50 border border-amber-200 text-amber-700 hover:bg-amber-100">
-            <i data-lucide="database" class="w-3.5 h-3.5"></i>
-            Importar Backup
-        </button>
-    </div>
-
-    <!-- FILTRO -->
-    <section class="no-print">
-        <div class="panel p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div>
-                <h3 class="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">Filtro de Visualização</h3>
-                <p class="compact-note text-slate-400 mt-1">Escolha se quer ver todos os lançamentos, só caixa ou só banco.</p>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <button class="filter-btn active" data-filter="todos">Todos</button>
-                <button class="filter-btn" data-filter="caixa">Caixa</button>
-                <button class="filter-btn" data-filter="banco">Banco</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- CONTEÚDO -->
-    <main id="mainContent" class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start flex-1">
-
-        <!-- FORM -->
-        <aside class="lg:col-span-4 xl:col-span-3 no-print">
-            <div class="panel p-4 space-y-4">
-                <div class="flex items-start justify-between gap-2">
-                    <div>
-                        <h3 class="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">Novo Lançamento</h3>
-                        <p class="compact-note text-slate-400 mt-1">Preencha os dados e escolha a conta correta.</p>
-                    </div>
-
-                    <div class="w-10 h-10 rounded-2xl bg-blue-50 flex items-center justify-center border border-blue-100 shrink-0">
-                        <i data-lucide="sparkles" class="w-4 h-4 text-blue-600"></i>
-                    </div>
+        <!-- HEADER -->
+        <header class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between no-print">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-[18px] bg-white flex items-center justify-center border border-[#dce7f5] shadow-sm shrink-0">
+                    <i data-lucide="wallet-cards" class="w-5 h-5 text-[#4a84ff]"></i>
                 </div>
 
-                <div class="form-block">
-                    <div class="flex items-center gap-2 mb-3">
-                        <i data-lucide="landmark" class="w-4 h-4 text-slate-400"></i>
-                        <span class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Saldos iniciais</span>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <div class="panel-soft p-3">
-                            <label class="eyebrow text-slate-400 block mb-2">Caixa</label>
-                            <input type="text" id="f_saldo_ini_caixa" class="premium-input money-input text-[20px] metric-number px-4 py-3 text-slate-800" placeholder="R$ 0,00">
-                        </div>
-
-                        <div class="panel-soft p-3">
-                            <label class="eyebrow text-slate-400 block mb-2">Banco</label>
-                            <input type="text" id="f_saldo_ini_banco" class="premium-input money-input text-[20px] metric-number px-4 py-3 text-slate-800" placeholder="R$ 0,00">
+                <div>
+                    <h1 class="text-xl md:text-[25px] font-black tracking-tight text-slate-800 uppercase leading-none">
+                        Financeiro<span class="text-blue-600">Pro</span>
+                        <span class="text-slate-300">v27</span>
+                    </h1>
+                    <div class="mt-2 flex items-center gap-2">
+                        <div id="statusSync" class="status-badge">
+                            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                            Sincronizado
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="form-block space-y-3">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="file-pen-line" class="w-4 h-4 text-slate-400"></i>
-                        <span class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Dados do lançamento</span>
-                    </div>
+            <div class="panel px-3 py-2 flex items-center gap-2 self-start lg:self-auto">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="calendar-range" class="w-4 h-4 text-slate-400"></i>
+                    <select id="f_mes" class="bg-transparent text-[12px] font-bold px-2 py-2 outline-none cursor-pointer text-slate-700"></select>
+                    <select id="f_ano" class="bg-[#f5f9ff] text-[12px] font-bold px-3 py-2 rounded-xl outline-none cursor-pointer text-blue-600 border border-[#dbe7f6]"></select>
+                </div>
+            </div>
+        </header>
 
-                    <div class="grid grid-cols-2 gap-2">
+        <!-- RESUMO -->
+        <section id="summarySection" class="grid grid-cols-1 xl:grid-cols-12 gap-3">
+            <div class="xl:col-span-7 grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div class="panel hero-main metric-card p-5 md:col-span-3">
+                    <div class="flex items-start justify-between gap-3 relative z-10">
                         <div>
-                            <label class="eyebrow text-slate-400 block mb-2">Dia</label>
-                            <div class="relative">
-                                <i data-lucide="calendar-days" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                                <input type="number" id="f_dia" placeholder="Dia" class="premium-input pl-10 pr-3 py-3 text-sm font-bold text-slate-700">
-                            </div>
+                            <span class="eyebrow text-blue-100 block mb-3">Previsão Final</span>
+                            <div id="totalSaldo" class="metric-number text-[30px] md:text-[40px]">R$ 0,00</div>
                         </div>
-
-                        <div>
-                            <label class="eyebrow text-slate-400 block mb-2">Parcelas</label>
-                            <div class="relative">
-                                <i data-lucide="copy-plus" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                                <input type="number" id="f_parc" placeholder="Parc." value="1" class="premium-input pl-10 pr-3 py-3 text-sm font-bold text-slate-700">
-                            </div>
+                        <div class="metric-icon">
+                            <i data-lucide="bar-chart-4" class="w-5 h-5 text-blue-100"></i>
                         </div>
                     </div>
-
-                    <div>
-                        <label class="eyebrow text-slate-400 block mb-2">Descrição</label>
-                        <div class="relative">
-                            <i data-lucide="file-text" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                            <input type="text" id="f_desc" placeholder="DESCRIÇÃO..." class="premium-input pl-10 pr-3 py-3 text-sm font-bold uppercase text-slate-700">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="eyebrow text-slate-400 block mb-2">Conta</label>
-                        <select id="f_conta" class="premium-select px-3 py-3 text-sm font-bold text-slate-700">
-                            <option value="caixa">Dinheiro Vivo</option>
-                            <option value="banco" selected>Banco</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="eyebrow text-slate-400 block mb-2">Valor</label>
-                        <input type="text" id="f_valor" placeholder="R$ 0,00" class="premium-input money-input text-center px-4 py-3 text-[28px] metric-number text-slate-900">
-                    </div>
+                    <p class="compact-note text-blue-50 mt-3 relative z-10">Resultado previsto considerando todas as entradas e saídas do mês.</p>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2 pt-1">
-                    <button id="btnAddR" class="btn-premium bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-100 py-3">
-                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                        Receber
-                    </button>
-                    <button id="btnAddP" class="btn-premium bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-100 py-3">
-                        <i data-lucide="minus-circle" class="w-4 h-4"></i>
-                        Pagar
-                    </button>
+                <div class="panel-soft metric-card soft-blue p-4">
+                    <div class="flex items-start justify-between gap-3 relative z-10">
+                        <div>
+                            <span class="eyebrow text-slate-400 block mb-3">Saldo Real</span>
+                            <div id="realMao" class="metric-number text-[25px] md:text-[28px] text-slate-800">R$ 0,00</div>
+                        </div>
+                        <div class="metric-icon-soft">
+                            <i data-lucide="wallet" class="w-4 h-4 text-slate-500"></i>
+                        </div>
+                    </div>
+                    <p class="compact-note text-slate-400 mt-3 relative z-10">Somente o que já foi confirmado.</p>
+                </div>
+
+                <div class="panel-soft metric-card soft-amber p-4">
+                    <div class="flex items-start justify-between gap-3 relative z-10">
+                        <div>
+                            <span class="eyebrow text-amber-600 block mb-3">Dinheiro Vivo</span>
+                            <div id="saldoCaixa" class="metric-number text-[25px] md:text-[28px] text-slate-800">R$ 0,00</div>
+                        </div>
+                        <div class="metric-icon-soft">
+                            <i data-lucide="hand-coins" class="w-4 h-4 text-amber-600"></i>
+                        </div>
+                    </div>
+                    <p class="compact-note text-slate-400 mt-3 relative z-10">Saldo real disponível em caixa.</p>
+                </div>
+
+                <div class="panel-soft metric-card soft-blue p-4">
+                    <div class="flex items-start justify-between gap-3 relative z-10">
+                        <div>
+                            <span class="eyebrow text-blue-600 block mb-3">Banco</span>
+                            <div id="saldoBanco" class="metric-number text-[25px] md:text-[28px] text-slate-800">R$ 0,00</div>
+                        </div>
+                        <div class="metric-icon-soft">
+                            <i data-lucide="landmark" class="w-4 h-4 text-blue-600"></i>
+                        </div>
+                    </div>
+                    <p class="compact-note text-slate-400 mt-3 relative z-10">Saldo real disponível em banco.</p>
                 </div>
             </div>
-        </aside>
 
-        <!-- LISTAS -->
-        <div class="lg:col-span-8 xl:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-4">
-
-            <section class="panel p-4">
-                <div class="section-title">
-                    <div class="section-left">
-                        <div class="section-pill bg-emerald-500"></div>
+            <div class="xl:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="panel-soft metric-card soft-green p-4 border border-[#daf6e9]">
+                    <div class="flex items-start justify-between gap-3 relative z-10">
                         <div>
-                            <h4 id="tituloEntradas" class="text-[12px] font-black text-slate-900 uppercase tracking-[0.16em] leading-none">Entradas</h4>
-                            <p class="compact-note text-slate-400 mt-1">Controle do que ainda entra e do que já entrou.</p>
+                            <span class="eyebrow text-emerald-600 block mb-3">Entradas</span>
+                            <div id="totalR" class="metric-number text-[26px] md:text-[30px] text-slate-800">R$ 0,00</div>
+                        </div>
+                        <div class="metric-icon-soft">
+                            <i data-lucide="arrow-down-left" class="w-4 h-4 text-emerald-600"></i>
                         </div>
                     </div>
+                    <p class="compact-note text-slate-400 mt-3 relative z-10">Total lançado como recebimento no mês.</p>
                 </div>
 
-                <div class="mt-4 space-y-5">
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.16em]">A Receber</span>
-                            <span class="tag-chip bg-slate-100 text-slate-500">Pendente</span>
-                        </div>
-                        <div id="listR_pend" class="space-y-2.5"></div>
-                    </div>
-
-                    <div class="pt-4 border-t border-emerald-100">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.16em]">Confirmadas</span>
-                            <span class="tag-chip bg-emerald-50 text-emerald-600">Ok</span>
-                        </div>
-                        <div id="listR_conf" class="space-y-2.5 opacity-85"></div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="panel p-4">
-                <div class="section-title">
-                    <div class="section-left">
-                        <div class="section-pill bg-rose-500"></div>
+                <div class="panel-soft metric-card soft-red p-4 border border-[#ffe2e8]">
+                    <div class="flex items-start justify-between gap-3 relative z-10">
                         <div>
-                            <h4 id="tituloSaidas" class="text-[12px] font-black text-slate-900 uppercase tracking-[0.16em] leading-none">Saídas</h4>
-                            <p class="compact-note text-slate-400 mt-1">Controle do que ainda precisa pagar e do que já foi quitado.</p>
+                            <span class="eyebrow text-rose-600 block mb-3">Saídas</span>
+                            <div id="totalP" class="metric-number text-[26px] md:text-[30px] text-slate-800">R$ 0,00</div>
+                        </div>
+                        <div class="metric-icon-soft">
+                            <i data-lucide="arrow-up-right" class="w-4 h-4 text-rose-600"></i>
                         </div>
                     </div>
+                    <p class="compact-note text-slate-400 mt-3 relative z-10">Total lançado como pagamento no mês.</p>
                 </div>
-
-                <div class="mt-4 space-y-5">
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.16em]">A Pagar</span>
-                            <span class="tag-chip bg-slate-100 text-slate-500">Pendente</span>
-                        </div>
-                        <div id="listP_pend" class="space-y-2.5"></div>
-                    </div>
-
-                    <div class="pt-4 border-t border-rose-100">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-[10px] font-black text-rose-600 uppercase tracking-[0.16em]">Quitadas</span>
-                            <span class="tag-chip bg-rose-50 text-rose-600">Ok</span>
-                        </div>
-                        <div id="listP_conf" class="space-y-2.5 opacity-85"></div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- RELATÓRIO -->
-    <section id="sectionAnual" class="hidden panel p-5 border border-blue-100">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4 border-b border-slate-100 pb-3">
-            <div>
-                <h2 class="text-xl md:text-2xl font-black tracking-tight text-slate-900">
-                    Relatório Anual <span id="labelAnoReport" class="text-blue-600"></span>
-                </h2>
-                <p class="text-sm text-slate-400 mt-1">Visão consolidada por mês.</p>
             </div>
+        </section>
 
-            <button id="btnCloseAnual" class="self-start md:self-auto p-2.5 bg-slate-100 rounded-xl hover:bg-rose-50 hover:text-rose-600 transition-all">
-                <i data-lucide="x" class="w-4 h-4"></i>
+        <!-- AÇÕES -->
+        <div class="flex flex-wrap gap-2 no-print">
+            <button id="btnRelatorio" class="btn-premium bg-[#4b7fff] text-white shadow-lg shadow-blue-100 hover:bg-[#3f73f3]">
+                <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
+                Relatório
+            </button>
+
+            <button id="btnTransferencia" class="btn-premium bg-[var(--violet-soft)] border border-[var(--violet-line)] text-[var(--violet)] hover:bg-[#ede8ff]">
+                <i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i>
+                Transferência
+            </button>
+
+            <button id="btnExportExcel" class="btn-premium bg-white border border-[#dfe9f5] text-slate-700 hover:bg-[#f8fbff]">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                Excel
+            </button>
+
+            <button id="btnExportJSON" class="btn-premium bg-[#eff5ff] border border-[#d5e3ff] text-[#416fe8] hover:bg-[#e8f0ff]">
+                <i data-lucide="database-backup" class="w-3.5 h-3.5"></i>
+                Exportar Backup
+            </button>
+
+            <button id="btnImportJSON" class="btn-premium bg-[var(--amber-soft)] border border-[var(--amber-line)] text-[#b87b13] hover:bg-[#fff2d5]">
+                <i data-lucide="database" class="w-3.5 h-3.5"></i>
+                Importar Backup
             </button>
         </div>
 
-        <div class="overflow-x-auto scroll-soft">
-            <table class="w-full text-left report-table">
-                <thead>
-                    <tr class="text-[10px] uppercase text-slate-400 border-b font-black tracking-[0.18em]">
-                        <th class="pb-3">Mês</th>
-                        <th class="pb-3">Entradas</th>
-                        <th class="pb-3">Saídas</th>
-                        <th class="pb-3">Saldo</th>
-                        <th class="pb-3 text-right">Ação</th>
-                    </tr>
-                </thead>
-                <tbody id="bodyRelatorioAnual" class="text-[12px] font-semibold text-slate-600"></tbody>
-            </table>
-        </div>
-    </section>
+        <!-- FILTRO -->
+        <section id="filterSection" class="no-print">
+            <div class="panel p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                    <h3 class="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">Filtro de Visualização</h3>
+                    <p class="compact-note text-slate-400 mt-1">Escolha se quer ver todos os lançamentos, só caixa ou só banco.</p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button class="filter-btn active" data-filter="todos">Todos</button>
+                    <button class="filter-btn" data-filter="caixa">Caixa</button>
+                    <button class="filter-btn" data-filter="banco">Banco</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTEÚDO -->
+        <main id="mainContent" class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start flex-1">
+
+            <!-- FORM -->
+            <aside class="lg:col-span-4 xl:col-span-3 no-print">
+                <div class="panel p-4 space-y-4">
+                    <div class="flex items-start justify-between gap-2">
+                        <div>
+                            <h3 class="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">Novo Lançamento</h3>
+                            <p class="compact-note text-slate-400 mt-1">Preencha os dados e escolha a conta correta.</p>
+                        </div>
+
+                        <div class="w-10 h-10 rounded-2xl bg-[#eef5ff] flex items-center justify-center border border-[#d9e7ff] shrink-0">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-blue-600"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-block">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i data-lucide="landmark" class="w-4 h-4 text-slate-400"></i>
+                            <span class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Saldos iniciais</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div class="panel-soft p-3">
+                                <label class="eyebrow text-slate-400 block mb-2">Caixa</label>
+                                <input type="text" id="f_saldo_ini_caixa" class="premium-input money-input text-[20px] metric-number px-4 py-3 text-slate-800" placeholder="R$ 0,00">
+                            </div>
+
+                            <div class="panel-soft p-3">
+                                <label class="eyebrow text-slate-400 block mb-2">Banco</label>
+                                <input type="text" id="f_saldo_ini_banco" class="premium-input money-input text-[20px] metric-number px-4 py-3 text-slate-800" placeholder="R$ 0,00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-block space-y-3">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="file-pen-line" class="w-4 h-4 text-slate-400"></i>
+                            <span class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Dados do lançamento</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="eyebrow text-slate-400 block mb-2">Dia</label>
+                                <div class="relative">
+                                    <i data-lucide="calendar-days" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                                    <input type="number" id="f_dia" placeholder="Dia" class="premium-input pl-10 pr-3 py-3 text-sm font-bold text-slate-700">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="eyebrow text-slate-400 block mb-2">Parcelas</label>
+                                <div class="relative">
+                                    <i data-lucide="copy-plus" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                                    <input type="number" id="f_parc" placeholder="Parc." value="1" class="premium-input pl-10 pr-3 py-3 text-sm font-bold text-slate-700">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="eyebrow text-slate-400 block mb-2">Descrição</label>
+                            <div class="relative">
+                                <i data-lucide="file-text" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                                <input type="text" id="f_desc" placeholder="DESCRIÇÃO..." class="premium-input pl-10 pr-3 py-3 text-sm font-bold uppercase text-slate-700">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="eyebrow text-slate-400 block mb-2">Conta</label>
+                            <select id="f_conta" class="premium-select px-3 py-3 text-sm font-bold text-slate-700">
+                                <option value="caixa">Dinheiro Vivo</option>
+                                <option value="banco" selected>Banco</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="eyebrow text-slate-400 block mb-2">Valor</label>
+                            <input type="text" id="f_valor" placeholder="R$ 0,00" class="premium-input money-input text-center px-4 py-3 text-[28px] metric-number text-slate-900">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <button id="btnAddR" class="btn-premium bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-100 py-3">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                            Receber
+                        </button>
+                        <button id="btnAddP" class="btn-premium bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-100 py-3">
+                            <i data-lucide="minus-circle" class="w-4 h-4"></i>
+                            Pagar
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- LISTAS -->
+            <div class="lg:col-span-8 xl:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-4">
+
+                <!-- ENTRADAS -->
+                <section class="section-box">
+                    <div class="section-top-green">
+                        <div class="section-header !border-none !mb-0 !pb-0">
+                            <div class="section-left">
+                                <div class="section-pill bg-emerald-500"></div>
+                                <div>
+                                    <h4 id="tituloEntradas" class="text-[13px] font-black text-slate-900 uppercase tracking-[0.16em] leading-none">Entradas</h4>
+                                    <p class="compact-note text-slate-400 mt-1">Controle do que ainda entra e do que já entrou.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="subgroup neutral">
+                            <div class="subgroup-header">
+                                <div class="subgroup-title">
+                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.16em]">A Receber</span>
+                                </div>
+                                <div class="subgroup-meta">
+                                    <span id="countR_pend" class="mini-count">0 itens</span>
+                                    <span id="sumR_pend" class="mini-total">R$ 0,00</span>
+                                    <span class="tag-chip bg-slate-100 text-slate-500">Pendente</span>
+                                </div>
+                            </div>
+                            <div id="listR_pend" class="space-y-2.5"></div>
+                        </div>
+
+                        <div class="subgroup green">
+                            <div class="subgroup-header">
+                                <div class="subgroup-title">
+                                    <span class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.16em]">Confirmadas</span>
+                                </div>
+                                <div class="subgroup-meta">
+                                    <span id="countR_conf" class="mini-count">0 itens</span>
+                                    <span id="sumR_conf" class="mini-total">R$ 0,00</span>
+                                    <span class="tag-chip bg-emerald-50 text-emerald-600">Ok</span>
+                                </div>
+                            </div>
+                            <div id="listR_conf" class="space-y-2.5"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SAÍDAS -->
+                <section class="section-box">
+                    <div class="section-top-red">
+                        <div class="section-header !border-none !mb-0 !pb-0">
+                            <div class="section-left">
+                                <div class="section-pill bg-rose-500"></div>
+                                <div>
+                                    <h4 id="tituloSaidas" class="text-[13px] font-black text-slate-900 uppercase tracking-[0.16em] leading-none">Saídas</h4>
+                                    <p class="compact-note text-slate-400 mt-1">Controle do que ainda precisa pagar e do que já foi quitado.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="subgroup neutral">
+                            <div class="subgroup-header">
+                                <div class="subgroup-title">
+                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.16em]">A Pagar</span>
+                                </div>
+                                <div class="subgroup-meta">
+                                    <span id="countP_pend" class="mini-count">0 itens</span>
+                                    <span id="sumP_pend" class="mini-total">R$ 0,00</span>
+                                    <span class="tag-chip bg-slate-100 text-slate-500">Pendente</span>
+                                </div>
+                            </div>
+                            <div id="listP_pend" class="space-y-2.5"></div>
+                        </div>
+
+                        <div class="subgroup red">
+                            <div class="subgroup-header">
+                                <div class="subgroup-title">
+                                    <span class="text-[10px] font-black text-rose-600 uppercase tracking-[0.16em]">Quitadas</span>
+                                </div>
+                                <div class="subgroup-meta">
+                                    <span id="countP_conf" class="mini-count">0 itens</span>
+                                    <span id="sumP_conf" class="mini-total">R$ 0,00</span>
+                                    <span class="tag-chip bg-rose-50 text-rose-600">Ok</span>
+                                </div>
+                            </div>
+                            <div id="listP_conf" class="space-y-2.5"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- RELATÓRIO -->
+        <section id="sectionAnual" class="hidden panel p-5 border border-[#d9e6f8]">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4 border-b border-[#edf3fa] pb-3">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black tracking-tight text-slate-900">
+                        Relatório Anual <span id="labelAnoReport" class="text-blue-600"></span>
+                    </h2>
+                    <p class="text-sm text-slate-400 mt-1">Visão consolidada por mês.</p>
+                </div>
+
+                <button id="btnCloseAnual" class="self-start md:self-auto p-2.5 bg-slate-50 rounded-xl hover:bg-rose-50 hover:text-rose-600 transition-all border border-[#e7eef8]">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="overflow-x-auto scroll-soft">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-[10px] uppercase text-slate-400 border-b font-black tracking-[0.18em]">
+                            <th class="pb-3">Mês</th>
+                            <th class="pb-3">Entradas</th>
+                            <th class="pb-3">Saídas</th>
+                            <th class="pb-3">Saldo</th>
+                            <th class="pb-3 text-right">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bodyRelatorioAnual" class="text-[12px] font-semibold text-slate-600"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
 </div>
 
 <!-- MODAL EDITAR -->
-<div id="editModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 items-center justify-center p-4">
+<div id="editModal" class="hidden fixed inset-0 z-50 bg-slate-900/25 items-center justify-center p-4 backdrop-blur-[2px]">
     <div class="panel w-full max-w-md p-4 space-y-3">
         <div class="flex items-center justify-between">
             <h3 class="text-[12px] font-black uppercase tracking-[0.2em] text-slate-700">Editar lançamento</h3>
-            <button onclick="closeEditModal()" class="p-2 rounded-xl hover:bg-slate-100">
+            <button onclick="closeEditModal()" class="p-2 rounded-xl hover:bg-slate-50 border border-transparent hover:border-[#e8eff8]">
                 <i data-lucide="x" class="w-4 h-4"></i>
             </button>
         </div>
@@ -701,10 +892,10 @@
         </div>
 
         <div class="grid grid-cols-2 gap-2 pt-2">
-            <button onclick="closeEditModal()" class="btn-premium bg-slate-100 text-slate-700 hover:bg-slate-200 py-3">
+            <button onclick="closeEditModal()" class="btn-premium bg-slate-50 text-slate-700 hover:bg-slate-100 py-3 border border-[#e7eef8]">
                 Cancelar
             </button>
-            <button onclick="saveEdit()" class="btn-premium bg-blue-600 text-white hover:bg-blue-700 py-3">
+            <button onclick="saveEdit()" class="btn-premium bg-[#4b7fff] text-white hover:bg-[#3f73f3] py-3">
                 Salvar
             </button>
         </div>
@@ -712,11 +903,11 @@
 </div>
 
 <!-- MODAL TRANSFERÊNCIA -->
-<div id="transferModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 items-center justify-center p-4">
+<div id="transferModal" class="hidden fixed inset-0 z-50 bg-slate-900/25 items-center justify-center p-4 backdrop-blur-[2px]">
     <div class="panel w-full max-w-md p-4 space-y-4">
         <div class="flex items-center justify-between">
             <h3 class="text-[12px] font-black uppercase tracking-[0.2em] text-slate-700">Transferência entre contas</h3>
-            <button onclick="closeTransferModal()" class="p-2 rounded-xl hover:bg-slate-100">
+            <button onclick="closeTransferModal()" class="p-2 rounded-xl hover:bg-slate-50 border border-transparent hover:border-[#e8eff8]">
                 <i data-lucide="x" class="w-4 h-4"></i>
             </button>
         </div>
@@ -760,10 +951,10 @@
         </div>
 
         <div class="grid grid-cols-2 gap-2 pt-2">
-            <button onclick="closeTransferModal()" class="btn-premium bg-slate-100 text-slate-700 hover:bg-slate-200 py-3">
+            <button onclick="closeTransferModal()" class="btn-premium bg-slate-50 text-slate-700 hover:bg-slate-100 py-3 border border-[#e7eef8]">
                 Cancelar
             </button>
-            <button id="btnSaveTransfer" class="btn-premium bg-violet-600 text-white hover:bg-violet-700 py-3">
+            <button id="btnSaveTransfer" class="btn-premium bg-[var(--violet)] text-white hover:bg-[#6d58f0] py-3">
                 Transferir
             </button>
         </div>
@@ -846,10 +1037,8 @@
         buttons.forEach(btn => {
             btn.onclick = () => {
                 filtroConta = btn.dataset.filter;
-
                 buttons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-
                 render();
             };
         });
@@ -956,26 +1145,37 @@
         }
     }
 
+    function emptyStateHTML(texto) {
+        return `
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i data-lucide="inbox" class="w-4 h-4 text-slate-400"></i>
+                </div>
+                <div class="text-[11px] font-bold text-slate-500">${texto}</div>
+            </div>
+        `;
+    }
+
     function createListRow(item, type) {
         const isR = type === 'R';
-        const conta = (item.conta || 'banco');
+        const conta = item.conta || 'banco';
         const contaLabel = conta === 'caixa' ? 'CAIXA' : 'BANCO';
         const contaClass = conta === 'caixa'
-            ? 'bg-amber-50 text-amber-700 border border-amber-200'
-            : 'bg-blue-50 text-blue-700 border border-blue-200';
+            ? 'bg-[var(--amber-soft)] text-[#c68210] border border-[var(--amber-line)]'
+            : 'bg-[var(--blue-soft)] text-[#3d73e8] border border-[var(--blue-line)]';
 
         return `
-            <div class="entry-row flex items-center gap-3 p-3 bg-white border border-slate-100 rounded-2xl shadow-sm group">
+            <div class="entry-row flex items-center gap-3 p-3 border border-[#e8eff8] rounded-2xl shadow-sm group">
                 <input type="checkbox" ${item.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${item.id})">
 
-                <div class="min-w-[42px] text-center">
-                    <span class="inline-flex items-center justify-center min-w-[40px] h-8 px-2 rounded-xl bg-slate-50 text-[10px] font-black text-slate-500 border border-slate-100">
+                <div class="min-w-[44px] text-center">
+                    <span class="inline-flex items-center justify-center min-w-[40px] h-8 px-2 rounded-xl bg-[#f5f9ff] text-[10px] font-black text-slate-500 border border-[#e2ebf8]">
                         ${String(item.dia).padStart(2,'0')}
                     </span>
                 </div>
 
                 <div class="flex-1 min-w-0">
-                    <div class="text-[11px] font-bold text-slate-700 truncate ${item.ok ? 'line-through opacity-40' : ''}">
+                    <div class="text-[11px] font-bold text-slate-700 truncate ${item.ok ? 'line-through opacity-45' : ''}">
                         ${item.desc}
                     </div>
                     <div class="mt-1.5">
@@ -984,7 +1184,7 @@
                 </div>
 
                 <div class="text-right shrink-0">
-                    <div class="text-[12px] metric-number ${isR ? 'text-emerald-600' : 'text-rose-600'}">
+                    <div class="text-[13px] metric-number ${isR ? 'text-emerald-600' : 'text-rose-500'}">
                         ${formatBRL(item.valor)}
                     </div>
                 </div>
@@ -1000,6 +1200,11 @@
                 </div>
             </div>
         `;
+    }
+
+    function updateSectionStats(idCount, idSum, items) {
+        document.getElementById(idCount).textContent = `${items.length} ${items.length === 1 ? 'item' : 'itens'}`;
+        document.getElementById(idSum).textContent = formatBRL(items.reduce((a, b) => a + Number(b.valor || 0), 0));
     }
 
     function render() {
@@ -1027,6 +1232,11 @@
         let saldoCaixaReal = Number(data.saldoIniCaixa || 0);
         let saldoBancoReal = Number((data.saldoIniBanco ?? data.saldoIni) || 0);
 
+        const rPend = [];
+        const rConf = [];
+        const pPend = [];
+        const pConf = [];
+
         data.R.sort((a,b) => a.dia - b.dia).forEach(item => {
             const html = createListRow(item, 'R');
             const conta = item.conta || 'banco';
@@ -1041,10 +1251,12 @@
                 else saldoBancoReal += Number(item.valor || 0);
 
                 if (matchFiltroConta(item)) {
+                    rConf.push(item);
                     lists.Rc.innerHTML += html;
                 }
             } else {
                 if (matchFiltroConta(item)) {
+                    rPend.push(item);
                     lists.Rp.innerHTML += html;
                 }
             }
@@ -1064,14 +1276,26 @@
                 else saldoBancoReal -= Number(item.valor || 0);
 
                 if (matchFiltroConta(item)) {
+                    pConf.push(item);
                     lists.Pc.innerHTML += html;
                 }
             } else {
                 if (matchFiltroConta(item)) {
+                    pPend.push(item);
                     lists.Pp.innerHTML += html;
                 }
             }
         });
+
+        updateSectionStats('countR_pend', 'sumR_pend', rPend);
+        updateSectionStats('countR_conf', 'sumR_conf', rConf);
+        updateSectionStats('countP_pend', 'sumP_pend', pPend);
+        updateSectionStats('countP_conf', 'sumP_conf', pConf);
+
+        if (!rPend.length) lists.Rp.innerHTML = emptyStateHTML('Nenhum lançamento pendente nesta visualização.');
+        if (!rConf.length) lists.Rc.innerHTML = emptyStateHTML('Nenhum lançamento confirmado nesta visualização.');
+        if (!pPend.length) lists.Pp.innerHTML = emptyStateHTML('Nenhum lançamento pendente nesta visualização.');
+        if (!pConf.length) lists.Pc.innerHTML = emptyStateHTML('Nenhum lançamento quitado nesta visualização.');
 
         const totalSaldo = saldoCaixaPrev + saldoBancoPrev;
         const saldoReal = saldoCaixaReal + saldoBancoReal;
@@ -1084,7 +1308,7 @@
         document.getElementById('realMao').innerText = formatBRL(saldoReal);
 
         totalSaldoEl.innerText = formatBRL(totalSaldo);
-        totalSaldoEl.className = `metric-number text-[30px] md:text-[38px] ${totalSaldo < 0 ? 'negative-val' : 'text-white'}`;
+        totalSaldoEl.className = `metric-number text-[30px] md:text-[40px] ${totalSaldo < 0 ? 'negative-val' : 'text-white'}`;
 
         lucide.createIcons();
     }
@@ -1305,16 +1529,16 @@
         const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json;charset=utf-8' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `BACKUP_FINANCEIRO_V26_3.json`;
+        link.download = `BACKUP_FINANCEIRO_V27.json`;
         link.click();
     }
 
     function verificarBackupAutomatico() {
         const h = new Date().toLocaleDateString('pt-br').replace(/\//g, '-');
-        if (localStorage.getItem('last_backup_v26_3') !== h) {
+        if (localStorage.getItem('last_backup_v27') !== h) {
             setTimeout(() => {
                 exportarCSV(`AUTO_BACKUP_${h}`);
-                localStorage.setItem('last_backup_v26_3', h);
+                localStorage.setItem('last_backup_v27', h);
             }, 5000);
         }
     }
@@ -1377,17 +1601,17 @@
             const saldo = ent - sai;
 
             body.innerHTML += `
-                <tr class="border-b border-slate-100 transition-all">
+                <tr class="border-b border-[#edf3fa] transition-all">
                     <td class="py-3">
-                        <span class="inline-flex px-3 py-1 rounded-full bg-slate-100 text-slate-700 font-black text-[11px]">
+                        <span class="inline-flex px-3 py-1 rounded-full bg-[#f5f9ff] text-slate-700 font-black text-[11px] border border-[#e1ebf8]">
                             ${mesesNomes[m]}
                         </span>
                     </td>
                     <td class="py-3 text-emerald-600 font-bold">${formatBRL(ent)}</td>
-                    <td class="py-3 text-rose-600 font-bold">${formatBRL(sai)}</td>
+                    <td class="py-3 text-rose-500 font-bold">${formatBRL(sai)}</td>
                     <td class="py-3 font-black ${saldo < 0 ? 'text-rose-500' : 'text-slate-800'}">${formatBRL(saldo)}</td>
                     <td class="py-3 text-right">
-                        <button onclick="window.irParaMes(${m})" class="bg-blue-600 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.16em] shadow-sm hover:bg-blue-700 transition-all">
+                        <button onclick="window.irParaMes(${m})" class="bg-[#4b7fff] text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.16em] shadow-sm hover:bg-[#3f73f3] transition-all">
                             Ver
                         </button>
                     </td>
@@ -1396,7 +1620,7 @@
         }
 
         document.getElementById('mainContent').classList.add('hidden');
-        document.querySelector('.no-print:nth-of-type(3)').classList.add('hidden');
+        document.getElementById('filterSection').classList.add('hidden');
         document.getElementById('summarySection').classList.add('hidden');
         document.getElementById('sectionAnual').classList.remove('hidden');
         lucide.createIcons();
@@ -1410,7 +1634,7 @@
 
     document.getElementById('btnCloseAnual').onclick = () => {
         document.getElementById('mainContent').classList.remove('hidden');
-        document.querySelector('.no-print:nth-of-type(3)').classList.remove('hidden');
+        document.getElementById('filterSection').classList.remove('hidden');
         document.getElementById('summarySection').classList.remove('hidden');
         document.getElementById('sectionAnual').classList.add('hidden');
     };
