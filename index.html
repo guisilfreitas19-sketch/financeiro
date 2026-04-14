@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Financeiro Pro v26.2</title>
+    <title>Financeiro Pro v26.3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -211,6 +211,32 @@
             border: 1px solid #e2e8f0;
         }
 
+        .filter-btn {
+            border: 1px solid #dbe3ef;
+            background: #fff;
+            color: #475569;
+            border-radius: 12px;
+            padding: .7rem .95rem;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            transition: all .18s ease;
+            line-height: 1;
+        }
+
+        .filter-btn:hover {
+            background: #f8fafc;
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+            box-shadow: 0 8px 20px rgba(37,99,235,.15);
+        }
+
         input[type="checkbox"] {
             appearance: none;
             width: 16px;
@@ -295,7 +321,7 @@
             <div>
                 <h1 class="text-xl md:text-[24px] font-black tracking-tight text-slate-900 uppercase leading-none">
                     Financeiro<span class="text-blue-600">Pro</span>
-                    <span class="text-slate-300">v26.2</span>
+                    <span class="text-slate-300">v26.3</span>
                 </h1>
                 <div class="mt-2 flex items-center gap-2">
                     <div id="statusSync" class="status-badge">
@@ -428,6 +454,22 @@
         </button>
     </div>
 
+    <!-- FILTRO -->
+    <section class="no-print">
+        <div class="panel p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+                <h3 class="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">Filtro de Visualização</h3>
+                <p class="compact-note text-slate-400 mt-1">Escolha se quer ver todos os lançamentos, só caixa ou só banco.</p>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button class="filter-btn active" data-filter="todos">Todos</button>
+                <button class="filter-btn" data-filter="caixa">Caixa</button>
+                <button class="filter-btn" data-filter="banco">Banco</button>
+            </div>
+        </div>
+    </section>
+
     <!-- CONTEÚDO -->
     <main id="mainContent" class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start flex-1">
 
@@ -531,7 +573,7 @@
                     <div class="section-left">
                         <div class="section-pill bg-emerald-500"></div>
                         <div>
-                            <h4 class="text-[12px] font-black text-slate-900 uppercase tracking-[0.16em] leading-none">Entradas</h4>
+                            <h4 id="tituloEntradas" class="text-[12px] font-black text-slate-900 uppercase tracking-[0.16em] leading-none">Entradas</h4>
                             <p class="compact-note text-slate-400 mt-1">Controle do que ainda entra e do que já entrou.</p>
                         </div>
                     </div>
@@ -561,7 +603,7 @@
                     <div class="section-left">
                         <div class="section-pill bg-rose-500"></div>
                         <div>
-                            <h4 class="text-[12px] font-black text-slate-900 uppercase tracking-[0.16em] leading-none">Saídas</h4>
+                            <h4 id="tituloSaidas" class="text-[12px] font-black text-slate-900 uppercase tracking-[0.16em] leading-none">Saídas</h4>
                             <p class="compact-note text-slate-400 mt-1">Controle do que ainda precisa pagar e do que já foi quitado.</p>
                         </div>
                     </div>
@@ -745,6 +787,7 @@
     const db_fire = getFirestore(app);
     let db = {};
     let editingItem = null;
+    let filtroConta = 'todos';
     const mesesNomes = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
     function getMonthKey() {
@@ -785,11 +828,39 @@
         return Number(v || 0).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     }
 
+    function matchFiltroConta(item) {
+        const conta = item.conta || 'banco';
+        if (filtroConta === 'todos') return true;
+        return conta === filtroConta;
+    }
+
+    function getFiltroLabel() {
+        if (filtroConta === 'caixa') return ' — Caixa';
+        if (filtroConta === 'banco') return ' — Banco';
+        return ' — Todos';
+    }
+
+    function setupFiltroConta() {
+        const buttons = document.querySelectorAll('.filter-btn');
+
+        buttons.forEach(btn => {
+            btn.onclick = () => {
+                filtroConta = btn.dataset.filter;
+
+                buttons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                render();
+            };
+        });
+    }
+
     async function init() {
         lucide.createIcons();
         setupSelectors();
         await loadData();
         bindEvents();
+        setupFiltroConta();
         render();
         verificarBackupAutomatico();
     }
@@ -938,6 +1009,9 @@
         document.getElementById('f_saldo_ini_caixa').value = data.saldoIniCaixa ? formatBRL(data.saldoIniCaixa) : '';
         document.getElementById('f_saldo_ini_banco').value = (data.saldoIniBanco ?? data.saldoIni) ? formatBRL(data.saldoIniBanco ?? data.saldoIni) : '';
 
+        document.getElementById('tituloEntradas').textContent = `Entradas${getFiltroLabel()}`;
+        document.getElementById('tituloSaidas').textContent = `Saídas${getFiltroLabel()}`;
+
         const lists = {
             Rp: document.getElementById('listR_pend'),
             Rc: document.getElementById('listR_conf'),
@@ -965,9 +1039,14 @@
             if (item.ok) {
                 if (conta === 'caixa') saldoCaixaReal += Number(item.valor || 0);
                 else saldoBancoReal += Number(item.valor || 0);
-                lists.Rc.innerHTML += html;
+
+                if (matchFiltroConta(item)) {
+                    lists.Rc.innerHTML += html;
+                }
             } else {
-                lists.Rp.innerHTML += html;
+                if (matchFiltroConta(item)) {
+                    lists.Rp.innerHTML += html;
+                }
             }
         });
 
@@ -983,9 +1062,14 @@
             if (item.ok) {
                 if (conta === 'caixa') saldoCaixaReal -= Number(item.valor || 0);
                 else saldoBancoReal -= Number(item.valor || 0);
-                lists.Pc.innerHTML += html;
+
+                if (matchFiltroConta(item)) {
+                    lists.Pc.innerHTML += html;
+                }
             } else {
-                lists.Pp.innerHTML += html;
+                if (matchFiltroConta(item)) {
+                    lists.Pp.innerHTML += html;
+                }
             }
         });
 
@@ -1221,16 +1305,16 @@
         const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json;charset=utf-8' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `BACKUP_FINANCEIRO_V26_2.json`;
+        link.download = `BACKUP_FINANCEIRO_V26_3.json`;
         link.click();
     }
 
     function verificarBackupAutomatico() {
         const h = new Date().toLocaleDateString('pt-br').replace(/\//g, '-');
-        if (localStorage.getItem('last_backup_v26_2') !== h) {
+        if (localStorage.getItem('last_backup_v26_3') !== h) {
             setTimeout(() => {
                 exportarCSV(`AUTO_BACKUP_${h}`);
-                localStorage.setItem('last_backup_v26_2', h);
+                localStorage.setItem('last_backup_v26_3', h);
             }, 5000);
         }
     }
@@ -1312,6 +1396,7 @@
         }
 
         document.getElementById('mainContent').classList.add('hidden');
+        document.querySelector('.no-print:nth-of-type(3)').classList.add('hidden');
         document.getElementById('summarySection').classList.add('hidden');
         document.getElementById('sectionAnual').classList.remove('hidden');
         lucide.createIcons();
@@ -1325,6 +1410,7 @@
 
     document.getElementById('btnCloseAnual').onclick = () => {
         document.getElementById('mainContent').classList.remove('hidden');
+        document.querySelector('.no-print:nth-of-type(3)').classList.remove('hidden');
         document.getElementById('summarySection').classList.remove('hidden');
         document.getElementById('sectionAnual').classList.add('hidden');
     };
