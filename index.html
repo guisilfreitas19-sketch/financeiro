@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Financeiro Pro v25</title>
+    <title>Financeiro Pro v26</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -19,9 +19,7 @@
 
         * { box-sizing: border-box; }
 
-        html, body {
-            height: 100%;
-        }
+        html, body { height: 100%; }
 
         body {
             background: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
@@ -31,9 +29,7 @@
             overflow-x: hidden;
         }
 
-        .app-shell {
-            min-height: 100vh;
-        }
+        .app-shell { min-height: 100vh; }
 
         .glass-card {
             background: rgba(255,255,255,.90);
@@ -127,7 +123,8 @@
             box-shadow: 0 8px 18px rgba(15,23,42,.04);
         }
 
-        .premium-input {
+        .premium-input,
+        .premium-select {
             width: 100%;
             border-radius: .9rem;
             border: 1px solid #e2e8f0;
@@ -136,7 +133,8 @@
             transition: all .2s ease;
         }
 
-        .premium-input:focus {
+        .premium-input:focus,
+        .premium-select:focus {
             border-color: #60a5fa;
             box-shadow: 0 0 0 4px rgba(96,165,250,.12);
             background: #fff;
@@ -262,7 +260,7 @@
             <div>
                 <h1 class="text-lg md:text-[22px] font-black tracking-tight text-slate-900 uppercase leading-none">
                     Financeiro<span class="text-blue-600">Pro</span>
-                    <span class="text-slate-300">v25</span>
+                    <span class="text-slate-300">v26</span>
                 </h1>
                 <div class="mt-1">
                     <div id="statusSync" class="status-badge">
@@ -283,7 +281,7 @@
     </header>
 
     <!-- CARDS -->
-    <section id="dashboard" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3">
+    <section id="dashboard" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-3">
         <div class="glass-card hero-card p-4 xl:col-span-2">
             <span class="label-mini text-blue-200 block mb-2">Previsão Final</span>
             <div id="totalSaldo" class="mono-big text-[30px] md:text-[34px]">R$ 0,00</div>
@@ -292,8 +290,14 @@
 
         <div class="glass-card sub-hero-card p-4">
             <span class="label-mini text-slate-400 block mb-2">Saldo Real</span>
-            <div id="realMao" class="mono-big text-[26px] md:text-[30px] text-slate-800">R$ 0,00</div>
+            <div id="realMao" class="mono-big text-[24px] md:text-[28px] text-slate-800">R$ 0,00</div>
             <p class="compact-note text-slate-400 mt-2">Somente o que já foi confirmado.</p>
+        </div>
+
+        <div class="glass-card sub-hero-card p-4">
+            <span class="label-mini text-slate-400 block mb-2">Dinheiro Vivo</span>
+            <div id="saldoCaixa" class="mono-big text-[24px] md:text-[28px] text-slate-800">R$ 0,00</div>
+            <p class="compact-note text-slate-400 mt-2">Saldo real disponível em caixa.</p>
         </div>
 
         <div class="soft-card p-4 border-l-4 border-l-emerald-500">
@@ -304,6 +308,15 @@
         <div class="soft-card p-4 border-l-4 border-l-rose-500">
             <span class="label-mini text-rose-500 block mb-2">Saídas</span>
             <div id="totalP" class="mono-big text-[24px] md:text-[28px] text-slate-800">R$ 0,00</div>
+        </div>
+    </section>
+
+    <!-- EXTRA CARD BANCO -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="glass-card sub-hero-card p-4 max-w-full">
+            <span class="label-mini text-slate-400 block mb-2">Banco</span>
+            <div id="saldoBanco" class="mono-big text-[24px] md:text-[28px] text-slate-800">R$ 0,00</div>
+            <p class="compact-note text-slate-400 mt-2">Saldo real disponível em banco.</p>
         </div>
     </section>
 
@@ -319,9 +332,14 @@
             Excel
         </button>
 
+        <button id="btnExportJSON" class="btn-premium bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100">
+            <i data-lucide="database-backup" class="w-3.5 h-3.5"></i>
+            Exportar Backup
+        </button>
+
         <button id="btnImportJSON" class="btn-premium bg-amber-50 border border-amber-200 text-amber-700 hover:bg-amber-100">
             <i data-lucide="database" class="w-3.5 h-3.5"></i>
-            Backup
+            Importar Backup
         </button>
     </div>
 
@@ -342,9 +360,16 @@
                     </div>
                 </div>
 
-                <div class="soft-card p-3">
-                    <label class="label-mini text-slate-400 block mb-2">Saldo Inicial</label>
-                    <input type="text" id="f_saldo_ini" class="premium-input money-input text-[22px] mono-big px-4 py-3 text-slate-800" placeholder="R$ 0,00">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div class="soft-card p-3">
+                        <label class="label-mini text-slate-400 block mb-2">Saldo Inicial Caixa</label>
+                        <input type="text" id="f_saldo_ini_caixa" class="premium-input money-input text-[20px] mono-big px-4 py-3 text-slate-800" placeholder="R$ 0,00">
+                    </div>
+
+                    <div class="soft-card p-3">
+                        <label class="label-mini text-slate-400 block mb-2">Saldo Inicial Banco</label>
+                        <input type="text" id="f_saldo_ini_banco" class="premium-input money-input text-[20px] mono-big px-4 py-3 text-slate-800" placeholder="R$ 0,00">
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
@@ -371,6 +396,14 @@
                         <i data-lucide="file-text" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
                         <input type="text" id="f_desc" placeholder="DESCRIÇÃO..." class="premium-input pl-10 pr-3 py-3 text-sm font-bold uppercase text-slate-700">
                     </div>
+                </div>
+
+                <div>
+                    <label class="label-mini text-slate-400 block mb-2">Conta</label>
+                    <select id="f_conta" class="premium-select px-3 py-3 text-sm font-bold text-slate-700">
+                        <option value="caixa">Dinheiro Vivo</option>
+                        <option value="banco" selected>Banco</option>
+                    </select>
                 </div>
 
                 <div>
@@ -507,6 +540,14 @@
         </div>
 
         <div>
+            <label class="label-mini text-slate-400 block mb-2">Conta</label>
+            <select id="edit_conta" class="premium-select px-3 py-3 text-sm font-bold text-slate-700">
+                <option value="caixa">Dinheiro Vivo</option>
+                <option value="banco">Banco</option>
+            </select>
+        </div>
+
+        <div>
             <label class="label-mini text-slate-400 block mb-2">Valor</label>
             <input type="text" id="edit_valor" class="premium-input money-input text-center px-4 py-3 text-[24px] mono-big text-slate-900">
         </div>
@@ -546,6 +587,31 @@
     let editingItem = null;
     const mesesNomes = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
+    function getMonthKey() {
+        return `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
+    }
+
+    function getDefaultMonthData(existing = {}) {
+        return {
+            R: Array.isArray(existing.R) ? existing.R : [],
+            P: Array.isArray(existing.P) ? existing.P : [],
+            saldoIni: typeof existing.saldoIni === 'number' ? existing.saldoIni : 0, // legado
+            saldoIniCaixa: typeof existing.saldoIniCaixa === 'number' ? existing.saldoIniCaixa : 0,
+            saldoIniBanco: typeof existing.saldoIniBanco === 'number'
+                ? existing.saldoIniBanco
+                : (typeof existing.saldoIni === 'number' ? existing.saldoIni : 0)
+        };
+    }
+
+    function ensureMonthData(id) {
+        db[id] = getDefaultMonthData(db[id] || {});
+        return db[id];
+    }
+
+    function parseBRL(text) {
+        return parseFloat(String(text || '').replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
+    }
+
     function applyMoneyMask(input) {
         let v = input.value.replace(/\D/g, '');
         v = (v / 100).toFixed(2) + '';
@@ -556,7 +622,7 @@
     }
 
     function formatBRL(v) {
-        return v.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        return Number(v || 0).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     }
 
     async function init() {
@@ -596,7 +662,10 @@
     async function loadData() {
         try {
             const snap = await getDocs(collection(db_fire, "financeiro"));
-            snap.forEach(d => db[d.id] = d.data());
+            snap.forEach(d => {
+                db[d.id] = getDefaultMonthData(d.data());
+            });
+
             document.getElementById('statusSync').innerHTML =
                 `<div class="w-2 h-2 rounded-full bg-emerald-500"></div> Sincronizado`;
         } catch (e) {
@@ -613,10 +682,12 @@
             `<div class="w-2 h-2 rounded-full bg-blue-500 loading-dot"></div> Salvando...`;
 
         try {
+            db[id] = getDefaultMonthData(db[id]);
             await setDoc(doc(db_fire, "financeiro", id), db[id]);
             document.getElementById('statusSync').innerHTML =
                 `<div class="w-2 h-2 rounded-full bg-emerald-500"></div> Sincronizado`;
         } catch (e) {
+            console.error(e);
             document.getElementById('statusSync').innerHTML =
                 `<div class="w-2 h-2 rounded-full bg-rose-500"></div> Erro`;
         }
@@ -624,6 +695,11 @@
 
     function createListRow(item, type) {
         const isR = type === 'R';
+        const conta = (item.conta || 'banco');
+        const contaLabel = conta === 'caixa' ? 'CAIXA' : 'BANCO';
+        const contaClass = conta === 'caixa'
+            ? 'bg-amber-50 text-amber-700 border border-amber-200'
+            : 'bg-blue-50 text-blue-700 border border-blue-200';
 
         return `
             <div class="entry-row flex items-center gap-2.5 p-2.5 bg-white border border-slate-100 rounded-2xl shadow-sm group hover:border-blue-100">
@@ -639,6 +715,9 @@
                     <div class="text-[11px] font-bold text-slate-700 truncate ${item.ok ? 'line-through opacity-40' : ''}">
                         ${item.desc}
                     </div>
+                    <div class="mt-1">
+                        <span class="tag-chip ${contaClass}">${contaLabel}</span>
+                    </div>
                 </div>
 
                 <div class="text-right shrink-0">
@@ -652,7 +731,7 @@
                         <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
                     </button>
 
-                    <button onclick="delItem('${type}', ${item.id}, '${item.desc.replace(/'/g, "\\'")}')" class="text-slate-300 hover:text-rose-500 transition-all" title="Excluir">
+                    <button onclick="delItem('${type}', ${item.id}, '${String(item.desc).replace(/'/g, "\\'")}')" class="text-slate-300 hover:text-rose-500 transition-all" title="Excluir">
                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                     </button>
                 </div>
@@ -661,11 +740,11 @@
     }
 
     function render() {
-        const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        if (!db[id]) db[id] = { R: [], P: [], saldoIni: 0 };
-        const data = db[id];
+        const id = getMonthKey();
+        const data = ensureMonthData(id);
 
-        document.getElementById('f_saldo_ini').value = data.saldoIni ? formatBRL(data.saldoIni) : '';
+        document.getElementById('f_saldo_ini_caixa').value = data.saldoIniCaixa ? formatBRL(data.saldoIniCaixa) : '';
+        document.getElementById('f_saldo_ini_banco').value = (data.saldoIniBanco ?? data.saldoIni) ? formatBRL(data.saldoIniBanco ?? data.saldoIni) : '';
 
         const lists = {
             Rp: document.getElementById('listR_pend'),
@@ -678,11 +757,27 @@
 
         let tR = 0, tP = 0, rR = 0, rP = 0;
 
+        let saldoCaixaPrev = Number(data.saldoIniCaixa || 0);
+        let saldoBancoPrev = Number((data.saldoIniBanco ?? data.saldoIni) || 0);
+
+        let saldoCaixaReal = Number(data.saldoIniCaixa || 0);
+        let saldoBancoReal = Number((data.saldoIniBanco ?? data.saldoIni) || 0);
+
         data.R.sort((a,b) => a.dia - b.dia).forEach(item => {
             const html = createListRow(item, 'R');
-            tR += item.valor;
+            const conta = item.conta || 'banco';
+
+            tR += Number(item.valor || 0);
+
+            if (conta === 'caixa') saldoCaixaPrev += Number(item.valor || 0);
+            else saldoBancoPrev += Number(item.valor || 0);
+
             if (item.ok) {
-                rR += item.valor;
+                rR += Number(item.valor || 0);
+
+                if (conta === 'caixa') saldoCaixaReal += Number(item.valor || 0);
+                else saldoBancoReal += Number(item.valor || 0);
+
                 lists.Rc.innerHTML += html;
             } else {
                 lists.Rp.innerHTML += html;
@@ -691,43 +786,65 @@
 
         data.P.sort((a,b) => a.dia - b.dia).forEach(item => {
             const html = createListRow(item, 'P');
-            tP += item.valor;
+            const conta = item.conta || 'banco';
+
+            tP += Number(item.valor || 0);
+
+            if (conta === 'caixa') saldoCaixaPrev -= Number(item.valor || 0);
+            else saldoBancoPrev -= Number(item.valor || 0);
+
             if (item.ok) {
-                rP += item.valor;
+                rP += Number(item.valor || 0);
+
+                if (conta === 'caixa') saldoCaixaReal -= Number(item.valor || 0);
+                else saldoBancoReal -= Number(item.valor || 0);
+
                 lists.Pc.innerHTML += html;
             } else {
                 lists.Pp.innerHTML += html;
             }
         });
 
-        const totalSaldo = data.saldoIni + tR - tP;
-        const saldoReal = data.saldoIni + rR - rP;
+        const totalSaldo = saldoCaixaPrev + saldoBancoPrev;
+        const saldoReal = saldoCaixaReal + saldoBancoReal;
         const totalSaldoEl = document.getElementById('totalSaldo');
 
         document.getElementById('totalR').innerText = formatBRL(tR);
         document.getElementById('totalP').innerText = formatBRL(tP);
+        document.getElementById('saldoCaixa').innerText = formatBRL(saldoCaixaReal);
+        document.getElementById('saldoBanco').innerText = formatBRL(saldoBancoReal);
+        document.getElementById('realMao').innerText = formatBRL(saldoReal);
+
         totalSaldoEl.innerText = formatBRL(totalSaldo);
         totalSaldoEl.className = `mono-big text-[30px] md:text-[34px] ${totalSaldo < 0 ? 'negative-val' : 'text-white'}`;
-
-        document.getElementById('realMao').innerText = formatBRL(saldoReal);
 
         lucide.createIcons();
     }
 
     document.getElementById('f_valor').oninput = (e) => applyMoneyMask(e.target);
-    document.getElementById('f_saldo_ini').oninput = (e) => applyMoneyMask(e.target);
+    document.getElementById('f_saldo_ini_caixa').oninput = (e) => applyMoneyMask(e.target);
+    document.getElementById('f_saldo_ini_banco').oninput = (e) => applyMoneyMask(e.target);
     document.getElementById('edit_valor').oninput = (e) => applyMoneyMask(e.target);
 
-    document.getElementById('f_saldo_ini').onblur = async (e) => {
-        const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        if (!db[id]) db[id] = { R: [], P: [], saldoIni: 0 };
-        db[id].saldoIni = parseFloat(e.target.value.replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
+    document.getElementById('f_saldo_ini_caixa').onblur = async (e) => {
+        const id = getMonthKey();
+        ensureMonthData(id);
+        db[id].saldoIniCaixa = parseBRL(e.target.value);
+        render();
+        sync(id);
+    };
+
+    document.getElementById('f_saldo_ini_banco').onblur = async (e) => {
+        const id = getMonthKey();
+        ensureMonthData(id);
+        db[id].saldoIniBanco = parseBRL(e.target.value);
         render();
         sync(id);
     };
 
     window.toggleItem = async (type, itemId) => {
-        const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
+        const id = getMonthKey();
+        ensureMonthData(id);
         const item = db[id][type].find(i => i.id == itemId);
         if (item) item.ok = !item.ok;
         render();
@@ -735,11 +852,8 @@
     };
 
     window.editItem = (type, itemId) => {
-        const mes = document.getElementById('f_mes').value;
-        const ano = document.getElementById('f_ano').value;
-        const id = `${mes}_${ano}`;
-
-        if (!db[id]) return;
+        const id = getMonthKey();
+        ensureMonthData(id);
 
         const item = db[id][type].find(i => i.id == itemId);
         if (!item) return;
@@ -750,6 +864,7 @@
         document.getElementById('edit_desc').value = item.desc;
         document.getElementById('edit_valor').value = formatBRL(item.valor);
         document.getElementById('edit_ok').checked = !!item.ok;
+        document.getElementById('edit_conta').value = item.conta || 'banco';
 
         const modal = document.getElementById('editModal');
         modal.classList.remove('hidden');
@@ -774,15 +889,15 @@
 
         const novoDia = parseInt(document.getElementById('edit_dia').value) || item.dia;
         const novaDesc = document.getElementById('edit_desc').value.trim().toUpperCase();
-        const novoValor = parseFloat(
-            document.getElementById('edit_valor').value.replace(/[R$\s.]/g, '').replace(',', '.')
-        ) || item.valor;
+        const novoValor = parseBRL(document.getElementById('edit_valor').value) || item.valor;
         const novoStatus = document.getElementById('edit_ok').checked;
+        const novaConta = document.getElementById('edit_conta').value || 'banco';
 
         item.dia = novoDia;
         item.desc = novaDesc || item.desc;
         item.valor = novoValor;
         item.ok = novoStatus;
+        item.conta = novaConta;
 
         await sync(dbKey);
         render();
@@ -790,19 +905,22 @@
     };
 
     window.delItem = async (type, itemId, desc) => {
-        const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const match = desc.match(/(.+)\s\(\d+\/\d+\)$/);
+        const id = getMonthKey();
+        ensureMonthData(id);
+
+        const match = String(desc).match(/(.+)\s\(\d+\/\d+\)$/);
 
         if (match && confirm(`Apagar TODAS as parcelas de "${match[1]}"?`)) {
-            Object.keys(db).forEach(k => {
+            for (const k of Object.keys(db)) {
                 if (db[k]) {
-                    db[k][type] = db[k][type].filter(i => !i.desc.startsWith(match[1]));
-                    sync(k);
+                    db[k] = getDefaultMonthData(db[k]);
+                    db[k][type] = db[k][type].filter(i => !String(i.desc).startsWith(match[1]));
+                    await sync(k);
                 }
-            });
+            }
         } else if (confirm("Excluir?")) {
             db[id][type] = db[id][type].filter(i => i.id != itemId);
-            sync(id);
+            await sync(id);
         }
 
         render();
@@ -810,9 +928,10 @@
 
     const addItem = async (type) => {
         const desc = document.getElementById('f_desc').value.trim().toUpperCase();
-        const valor = parseFloat(document.getElementById('f_valor').value.replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
+        const valor = parseBRL(document.getElementById('f_valor').value);
         const dia = parseInt(document.getElementById('f_dia').value) || new Date().getDate();
         const parc = parseInt(document.getElementById('f_parc').value) || 1;
+        const conta = document.getElementById('f_conta').value || 'banco';
 
         if (!desc || valor <= 0) return;
 
@@ -821,17 +940,19 @@
 
         for (let i = 0; i < parc; i++) {
             const mesId = `${m}_${a}`;
-            if (!db[mesId]) db[mesId] = { R: [], P: [], saldoIni: 0 };
+            ensureMonthData(mesId);
 
             db[mesId][type].push({
                 id: Date.now() + i + Math.random(),
                 dia,
                 desc: parc > 1 ? `${desc} (${i+1}/${parc})` : desc,
                 valor,
-                ok: false
+                ok: false,
+                conta
             });
 
-            sync(mesId);
+            await sync(mesId);
+
             m++;
             if (m > 11) {
                 m = 0;
@@ -841,6 +962,9 @@
 
         document.getElementById('f_desc').value = '';
         document.getElementById('f_valor').value = '';
+        document.getElementById('f_parc').value = 1;
+        document.getElementById('f_conta').value = 'banco';
+
         render();
     };
 
@@ -848,12 +972,13 @@
     document.getElementById('btnAddP').onclick = () => addItem('P');
 
     function exportarCSV(f) {
-        const id = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const data = db[id];
-        let csv = `Tipo;Dia;Descricao;Valor;Status\n`;
+        const id = getMonthKey();
+        const data = ensureMonthData(id);
 
-        data.R.forEach(i => csv += `Entrada;${i.dia};${i.desc};${i.valor};${i.ok ? 'OK' : 'PEND'}\n`);
-        data.P.forEach(i => csv += `Saida;${i.dia};${i.desc};${i.valor};${i.ok ? 'OK' : 'PEND'}\n`);
+        let csv = `Tipo;Dia;Descricao;Conta;Valor;Status\n`;
+
+        data.R.forEach(i => csv += `Entrada;${i.dia};${i.desc};${i.conta || 'banco'};${i.valor};${i.ok ? 'OK' : 'PEND'}\n`);
+        data.P.forEach(i => csv += `Saida;${i.dia};${i.desc};${i.conta || 'banco'};${i.valor};${i.ok ? 'OK' : 'PEND'}\n`);
 
         const b = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
         const l = document.createElement("a");
@@ -862,17 +987,26 @@
         l.click();
     }
 
+    function exportarJSON() {
+        const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `BACKUP_FINANCEIRO_V26.json`;
+        link.click();
+    }
+
     function verificarBackupAutomatico() {
         const h = new Date().toLocaleDateString('pt-br').replace(/\//g, '-');
-        if (localStorage.getItem('last_backup_v25') !== h) {
+        if (localStorage.getItem('last_backup_v26') !== h) {
             setTimeout(() => {
                 exportarCSV(`AUTO_BACKUP_${h}`);
-                localStorage.setItem('last_backup_v25', h);
+                localStorage.setItem('last_backup_v26', h);
             }, 5000);
         }
     }
 
     document.getElementById('btnExportExcel').onclick = () => exportarCSV();
+    document.getElementById('btnExportJSON').onclick = () => exportarJSON();
 
     document.getElementById('btnImportJSON').onclick = () => {
         const i = document.createElement('input');
@@ -880,18 +1014,39 @@
         i.accept = '.json';
 
         i.onchange = e => {
+            const file = e.target.files[0];
+            if (!file) return;
+
             const r = new FileReader();
             r.onload = async ev => {
-                const imp = JSON.parse(ev.target.result);
-                if (confirm("Substituir tudo?")) {
+                try {
+                    const imp = JSON.parse(ev.target.result);
+                    if (!confirm("Substituir / mesclar dados do backup?")) return;
+
                     for (const [k, v] of Object.entries(imp)) {
-                        db[k] = v;
-                        await setDoc(doc(db_fire, "financeiro", k), v);
+                        db[k] = getDefaultMonthData(v);
+
+                        db[k].R = db[k].R.map(item => ({
+                            ...item,
+                            conta: item.conta || 'banco'
+                        }));
+
+                        db[k].P = db[k].P.map(item => ({
+                            ...item,
+                            conta: item.conta || 'banco'
+                        }));
+
+                        await setDoc(doc(db_fire, "financeiro", k), db[k]);
                     }
+
                     render();
+                    alert("Backup importado com sucesso.");
+                } catch (err) {
+                    console.error(err);
+                    alert("Arquivo JSON inválido.");
                 }
             };
-            r.readAsText(e.target.files[0]);
+            r.readAsText(file);
         };
 
         i.click();
@@ -905,9 +1060,9 @@
         body.innerHTML = '';
 
         for (let m = 0; m < 12; m++) {
-            const d = db[`${m}_${ano}`] || { R:[], P:[], saldoIni:0 };
-            const ent = d.R.reduce((a,b) => a + b.valor, 0);
-            const sai = d.P.reduce((a,b) => a + b.valor, 0);
+            const d = getDefaultMonthData(db[`${m}_${ano}`] || {});
+            const ent = d.R.reduce((a,b) => a + Number(b.valor || 0), 0);
+            const sai = d.P.reduce((a,b) => a + Number(b.valor || 0), 0);
             const saldo = ent - sai;
 
             body.innerHTML += `
@@ -931,6 +1086,7 @@
 
         document.getElementById('mainContent').classList.add('hidden');
         document.getElementById('dashboard').classList.add('hidden');
+        document.querySelector('section.grid.grid-cols-1.sm\\:grid-cols-2.gap-3').classList.add('hidden');
         document.getElementById('sectionAnual').classList.remove('hidden');
         lucide.createIcons();
     };
@@ -944,6 +1100,7 @@
     document.getElementById('btnCloseAnual').onclick = () => {
         document.getElementById('mainContent').classList.remove('hidden');
         document.getElementById('dashboard').classList.remove('hidden');
+        document.querySelector('section.grid.grid-cols-1.sm\\:grid-cols-2.gap-3').classList.remove('hidden');
         document.getElementById('sectionAnual').classList.add('hidden');
     };
 
