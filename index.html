@@ -3,1149 +3,251 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro Pro v27.6</title>
+    <title>Financeiro Pro v28.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-top: #f3f8ff;
-            --bg-bottom: #fcfdff;
-
-            --panel: #ffffff;
-            --panel-soft: #f9fbff;
-
-            --line: #dde8f5;
-            --line-soft: #e9f0f8;
-
-            --text: #18324a;
-            --muted: #7c93ac;
-
-            --blue: #3d7bfd;
-            --blue-2: #5d95ff;
-            --blue-soft: #eef5ff;
-            --blue-line: #d1e2ff;
-
-            --green: #18b778;
-            --green-soft: #eefdf6;
-            --green-line: #c8f3dd;
-
-            --red: #f35d78;
-            --red-soft: #fff3f6;
-            --red-line: #ffd8df;
-
-            --amber: #f3a31f;
-            --amber-soft: #fff8ea;
-            --amber-line: #ffe3ae;
-
-            --violet: #7a68ff;
-            --violet-soft: #f2efff;
-            --violet-line: #ddd6ff;
-
+            --bg-top: #f3f8ff; --bg-bottom: #fcfdff;
+            --panel: #ffffff; --panel-soft: #f9fbff;
+            --line: #dde8f5; --line-soft: #e9f0f8;
+            --text: #18324a; --muted: #7c93ac;
+            --blue: #3d7bfd; --blue-2: #5d95ff; --blue-soft: #eef5ff; --blue-line: #d1e2ff;
+            --green: #18b778; --green-soft: #eefdf6; --green-line: #c8f3dd;
+            --red: #f35d78; --red-soft: #fff3f6; --red-line: #ffd8df;
+            --amber: #f3a31f; --amber-soft: #fff8ea; --amber-line: #ffe3ae;
+            --violet: #7a68ff; --violet-soft: #f2efff; --violet-line: #ddd6ff;
             --shadow-1: 0 14px 36px rgba(56, 96, 150, .08);
             --shadow-2: 0 4px 14px rgba(56, 96, 150, .05);
         }
 
-        * { box-sizing: border-box; }
-        html, body { height: 100%; }
-
+        * { box-sizing: border-box; outline: none !important; }
         body {
-            background:
-                radial-gradient(circle at top left, rgba(93,149,255,.11), transparent 28%),
-                radial-gradient(circle at top right, rgba(122,104,255,.08), transparent 24%),
-                linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+            background: radial-gradient(circle at top left, rgba(93,149,255,.11), transparent 28%),
+                        radial-gradient(circle at top right, rgba(122,104,255,.08), transparent 24%),
+                        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: var(--text);
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-            transition: .18s ease;
+            min-height: 100vh;
         }
 
-        .app-shell { min-height: 100vh; }
+        .shell-card { background: rgba(255,255,255,.84); backdrop-filter: blur(10px); border: 1px solid rgba(221,232,245,.88); border-radius: 28px; box-shadow: var(--shadow-1); }
+        .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow-2); }
+        .hero-main { background: linear-gradient(135deg, #6b96ff 0%, #417dff 48%, #6e7fff 100%); color: white; border: none; box-shadow: 0 20px 42px rgba(79,140,255,.26); }
+        
+        .metric-card { position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; min-height: 130px; transition: transform 0.2s; }
+        .metric-card::after { content: ""; position: absolute; right: -16px; bottom: -26px; width: 96px; height: 96px; border-radius: 999px; background: rgba(255,255,255,.15); }
+        
+        .metric-number { font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: -0.04em; }
+        .eyebrow { font-size: 9px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; }
 
-        .shell-card {
-            background: rgba(255,255,255,.84);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(221,232,245,.88);
-            border-radius: 28px;
-            box-shadow: var(--shadow-1);
-        }
+        .btn-premium { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border-radius: 14px; padding: .82rem 1rem; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; transition: all .18s ease; cursor: pointer; }
+        .btn-premium:hover { transform: translateY(-2px); filter: brightness(1.05); }
+        .btn-premium:active { transform: translateY(0); }
 
-        .panel {
-            background: var(--panel);
-            border: 1px solid var(--line);
-            border-radius: 22px;
-            box-shadow: var(--shadow-2);
-        }
+        .premium-input, .premium-select { width: 100%; border-radius: 15px; border: 1px solid var(--line); background: #fff; padding: 0.8rem 1rem; transition: all .18s ease; color: var(--text); font-weight: 600; }
+        .premium-input:focus { border-color: var(--blue-2); box-shadow: 0 0 0 4px rgba(93,149,255,.12); }
 
-        .panel-soft {
-            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-            border: 1px solid var(--line-soft);
-            border-radius: 20px;
-            box-shadow: var(--shadow-2);
-        }
+        .entry-row { transition: all .2s ease; border: 1px solid #edf3fa; }
+        .entry-row:hover { transform: translateX(4px); border-color: var(--blue-line); background: #f8fbff; }
 
-        .hero-main {
-            background:
-                radial-gradient(circle at 85% 10%, rgba(255,255,255,.23), transparent 24%),
-                linear-gradient(135deg, #6b96ff 0%, #417dff 48%, #6e7fff 100%);
-            color: white;
-            border: none;
-            box-shadow: 0 20px 42px rgba(79,140,255,.26);
-        }
+        .collapse-panel { display: grid; grid-template-rows: 0fr; opacity: 0; transition: all .35s ease; }
+        .collapse-panel.open { grid-template-rows: 1fr; opacity: 1; padding-top: 10px; }
 
-        .metric-card {
-            min-height: 134px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-        }
+        /* MODO ULTRA FOCO */
+        body.ultra-focus #filterSection, body.ultra-focus #btnRelatorio, body.ultra-focus .history-block, body.ultra-focus .support-text { display: none !important; }
+        body.ultra-focus .shell-card { border-radius: 0; border: none; }
+        body.ultra-focus #mainContent { grid-template-columns: 1fr 1.5fr !important; }
 
-        .metric-card::after {
-            content: "";
-            position: absolute;
-            right: -16px;
-            bottom: -26px;
-            width: 96px;
-            height: 96px;
-            border-radius: 999px;
-            background: rgba(255,255,255,.15);
-        }
-
-        .metric-card.soft-blue { background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%); }
-        .metric-card.soft-green { background: linear-gradient(180deg, #ffffff 0%, #f4fff9 100%); }
-        .metric-card.soft-red { background: linear-gradient(180deg, #ffffff 0%, #fff8fa 100%); }
-        .metric-card.soft-amber { background: linear-gradient(180deg, #ffffff 0%, #fffaf2 100%); }
-
-        .metric-number {
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
-            letter-spacing: -0.04em;
-            line-height: 1;
-        }
-
-        .eyebrow {
-            font-size: 9px;
-            font-weight: 800;
-            letter-spacing: .22em;
-            text-transform: uppercase;
-            line-height: 1;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: .4rem;
-            padding: .38rem .72rem;
-            border-radius: 999px;
-            font-size: 9px;
-            font-weight: 800;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            background: var(--green-soft);
-            color: #0f9d67;
-            border: 1px solid var(--green-line);
-        }
-
-        .btn-premium {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: .5rem;
-            border-radius: 14px;
-            padding: .82rem 1rem;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: .14em;
-            text-transform: uppercase;
-            line-height: 1;
-            transition: .18s ease;
-        }
-
-        .btn-premium:hover { transform: translateY(-1px); }
-
-        .premium-input,
-        .premium-select {
-            width: 100%;
-            border-radius: 15px;
-            border: 1px solid var(--line);
-            background: #fff;
-            outline: none;
-            transition: all .18s ease;
-            color: var(--text);
-        }
-
-        .premium-input:focus,
-        .premium-select:focus {
-            border-color: var(--blue-2);
-            box-shadow: 0 0 0 4px rgba(93,149,255,.12);
-        }
-
-        .money-input {
-            border: 2px solid #d9e8ff;
-            box-shadow: inset 0 2px 5px rgba(75,118,172,.04);
-        }
-
-        .money-input:focus {
-            border-color: var(--blue);
-            box-shadow:
-                0 0 0 4px rgba(93,149,255,.12),
-                inset 0 2px 5px rgba(75,118,172,.04);
-        }
-
-        .metric-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 15px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255,255,255,.18);
-            border: 1px solid rgba(255,255,255,.26);
-        }
-
-        .metric-icon-soft {
-            width: 38px;
-            height: 38px;
-            border-radius: 14px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #e3ecf8;
-            background: #fff;
-            box-shadow: 0 4px 12px rgba(56,96,150,.05);
-        }
-
-        .filter-btn {
-            border: 1px solid var(--line);
-            background: #fff;
-            color: #5f7893;
-            border-radius: 13px;
-            padding: .74rem 1rem;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-            line-height: 1;
-            transition: .18s ease;
-            box-shadow: 0 3px 10px rgba(56,96,150,.03);
-        }
-
-        .filter-btn:hover {
-            background: #f8fbff;
-            transform: translateY(-1px);
-        }
-
-        .filter-btn.active {
-            background: linear-gradient(135deg, #6592ff 0%, #467dff 100%);
-            color: white;
-            border-color: #4d82ff;
-            box-shadow: 0 10px 22px rgba(93,149,255,.2);
-        }
-
-        .toolbar-card {
-            background: linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(248,251,255,.96) 100%);
-            border: 1px solid var(--line);
-            border-radius: 20px;
-            box-shadow: var(--shadow-2);
-        }
-
-        .form-wrap {
-            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-            border: 1px solid var(--line);
-            border-radius: 24px;
-            box-shadow: var(--shadow-2);
-        }
-
-        .form-block {
-            padding: 14px;
-            border-radius: 18px;
-            border: 1px solid #e8eff8;
-            background: linear-gradient(180deg, #ffffff 0%, #fafdff 100%);
-        }
-
-        .section-box {
-            padding: 18px;
-            border-radius: 24px;
-            border: 1px solid var(--line);
-            background: linear-gradient(180deg, rgba(255,255,255,.99) 0%, rgba(249,252,255,.98) 100%);
-            box-shadow: var(--shadow-2);
-        }
-
-        .section-shell {
-            border-radius: 20px;
-            padding: 12px;
-        }
-
-        .section-shell.green {
-            background: linear-gradient(180deg, #f3fff9 0%, #ffffff 100%);
-            border: 1px solid #d9f7e8;
-        }
-
-        .section-shell.red {
-            background: linear-gradient(180deg, #fff7f9 0%, #ffffff 100%);
-            border: 1px solid #ffe3e9;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            padding: 0 4px 14px 4px;
-            border-bottom: 1px solid #edf3fa;
-            margin-bottom: 14px;
-        }
-
-        .section-left {
-            display: flex;
-            align-items: center;
-            gap: .8rem;
-        }
-
-        .section-pill {
-            width: 8px;
-            height: 32px;
-            border-radius: 999px;
-        }
-
-        .subgroup {
-            border-radius: 18px;
-            padding: 12px;
-        }
-
-        .subgroup.green {
-            background: linear-gradient(180deg, #fcfffd 0%, #f5fff9 100%);
-            border: 1px solid #e0f7ec;
-        }
-
-        .subgroup.red {
-            background: linear-gradient(180deg, #fffdfd 0%, #fff7f8 100%);
-            border: 1px solid #ffe5ea;
-        }
-
-        .subgroup.neutral {
-            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-            border: 1px solid #ecf2f8;
-        }
-
-        .subgroup-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: .75rem;
-            margin-bottom: 12px;
-        }
-
-        .subgroup-title {
-            display: flex;
-            align-items: center;
-            gap: .55rem;
-        }
-
-        .subgroup-meta {
-            display: flex;
-            align-items: center;
-            gap: .5rem;
-            flex-wrap: wrap;
-        }
-
-        .mini-count {
-            font-size: 10px;
-            font-weight: 800;
-            color: #7c93ac;
-        }
-
-        .mini-total {
-            font-size: 10px;
-            font-weight: 800;
-            color: var(--text);
-            background: #fff;
-            border: 1px solid #e6eef8;
-            border-radius: 999px;
-            padding: .3rem .55rem;
-        }
-
-        .collapse-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: .4rem;
-            border-radius: 12px;
-            padding: .55rem .75rem;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            line-height: 1;
-            transition: .18s ease;
-            background: #fff;
-            border: 1px solid #e6eef8;
-            color: #5f7893;
-        }
-
-        .collapse-btn:hover {
-            background: #f8fbff;
-            transform: translateY(-1px);
-        }
-
-        .collapse-panel,
-        .form-collapse {
-            display: grid;
-            grid-template-rows: 0fr;
-            opacity: 0;
-            transition: grid-template-rows .35s ease, opacity .25s ease;
-        }
-
-        .collapse-panel.open,
-        .form-collapse.open {
-            grid-template-rows: 1fr;
-            opacity: 1;
-        }
-
-        .collapse-inner,
-        .form-collapse-inner {
-            overflow: hidden;
-            min-height: 0;
-        }
-
-        .collapse-content,
-        .form-collapse-content {
-            padding-top: 2px;
-        }
-
-        .tag-chip {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: .34rem .62rem;
-            border-radius: 999px;
-            font-size: 9px;
-            font-weight: 800;
-            line-height: 1;
-        }
-
-        .entry-row {
-            transition: all .18s ease;
-            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-        }
-
-        .entry-row:hover {
-            transform: translateY(-1px);
-            border-color: #cfe0ff;
-            box-shadow: 0 12px 24px rgba(56,96,150,.08);
-        }
-
-        .empty-state {
-            border: 1px dashed #d8e5f4;
-            background: linear-gradient(180deg, #fbfdff 0%, #f7fbff 100%);
-            border-radius: 18px;
-            padding: 18px;
-            text-align: center;
-            color: #7c93ac;
-        }
-
-        .empty-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 14px;
-            margin: 0 auto 10px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #fff;
-            border: 1px solid #e4edf8;
-        }
-
-        .scroll-soft::-webkit-scrollbar {
-            width: 7px;
-            height: 7px;
-        }
-
-        .scroll-soft::-webkit-scrollbar-thumb {
-            background: #c8d7ea;
-            border-radius: 999px;
-        }
-
-        .negative-val { color: #ffe0e7 !important; }
-
-        input[type="checkbox"] {
-            appearance: none;
-            width: 17px;
-            height: 17px;
-            border: 2px solid #c8d8ee;
-            border-radius: 6px;
-            cursor: pointer;
-            position: relative;
-            transition: .2s ease;
-            background: #fff;
-            flex-shrink: 0;
-        }
-
-        input[type="checkbox"]:checked {
-            background: linear-gradient(135deg, #6592ff 0%, #467dff 100%);
-            border-color: #4d82ff;
-            box-shadow: 0 0 0 4px rgba(93,149,255,.1);
-        }
-
-        input[type="checkbox"]:checked::after {
-            content: '✓';
-            position: absolute;
-            color: white;
-            font-size: 10px;
-            left: 2px;
-            top: -2px;
-            font-weight: bold;
+        @media (max-width: 1024px) {
+            #mainContent { grid-template-columns: 1fr !important; }
+            body.ultra-focus #mainContent { grid-template-columns: 1fr !important; }
         }
 
         .loading-dot { animation: blink 1s infinite; }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .35; }
-        }
-
-        body.compact-mode .shell-card { border-radius: 22px; }
-        body.compact-mode .panel,
-        body.compact-mode .panel-soft,
-        body.compact-mode .toolbar-card,
-        body.compact-mode .form-wrap,
-        body.compact-mode .section-box { border-radius: 18px; }
-
-        body.compact-mode .shell-card { padding-top: 10px; padding-bottom: 10px; }
-        body.compact-mode #appContainer { gap: 10px; }
-        body.compact-mode .metric-card { min-height: 104px; }
-        body.compact-mode .metric-card::after { width: 72px; height: 72px; bottom: -18px; right: -10px; }
-        body.compact-mode .metric-icon,
-        body.compact-mode .metric-icon-soft { width: 32px; height: 32px; border-radius: 12px; }
-
-        body.compact-mode .btn-premium,
-        body.compact-mode .filter-btn,
-        body.compact-mode .collapse-btn { padding: .62rem .82rem; font-size: 9px; }
-
-        body.compact-mode .status-badge { padding: .28rem .56rem; font-size: 8px; }
-        body.compact-mode .eyebrow { font-size: 8px; }
-        body.compact-mode .metric-number { transform: scale(.96); transform-origin: left center; }
-        body.compact-mode #totalSaldo.metric-number { transform: scale(.94); }
-
-        body.compact-mode .form-block,
-        body.compact-mode .subgroup,
-        body.compact-mode .section-shell { padding: 10px; }
-        body.compact-mode .section-box { padding: 12px; }
-        body.compact-mode .section-header { padding-bottom: 10px; margin-bottom: 10px; }
-        body.compact-mode .subgroup-header { margin-bottom: 8px; }
-        body.compact-mode .premium-input,
-        body.compact-mode .premium-select { border-radius: 12px; }
-        body.compact-mode .premium-input,
-        body.compact-mode .premium-select,
-        body.compact-mode .money-input { font-size: 12px; }
-        body.compact-mode .premium-input { padding-top: 10px !important; padding-bottom: 10px !important; }
-
-        body.compact-mode .entry-row {
-            padding: 10px !important;
-            gap: 10px !important;
-            border-radius: 16px;
-        }
-
-        body.compact-mode .entry-row .metric-number { font-size: 12px !important; }
-        body.compact-mode .entry-row .tag-chip { padding: .24rem .48rem; font-size: 8px; }
-        body.compact-mode .empty-state { padding: 12px; border-radius: 14px; }
-        body.compact-mode .empty-icon { width: 30px; height: 30px; border-radius: 10px; margin-bottom: 8px; }
-
-        /* ULTRA FOCO */
-        body.ultra-focus #filterSection,
-        body.ultra-focus #btnRelatorio,
-        body.ultra-focus #btnTransferencia,
-        body.ultra-focus #btnExportExcel,
-        body.ultra-focus #btnExportJSON,
-        body.ultra-focus #btnImportJSON,
-        body.ultra-focus .history-block,
-        body.ultra-focus #btnToggleSaldoIni,
-        body.ultra-focus #wrapSaldoIni,
-        body.ultra-focus .support-text,
-        body.ultra-focus .secondary-summary {
-            display: none !important;
-        }
-
-        body.ultra-focus #mainContent {
-            grid-template-columns: 1fr 1.3fr !important;
-        }
-
-        body.ultra-focus aside.lg\:col-span-4,
-        body.ultra-focus .lg\:col-span-8 {
-            grid-column: auto !important;
-        }
-
-        body.ultra-focus .hero-only {
-            display: grid !important;
-        }
-
-        body.ultra-focus .form-wrap {
-            position: sticky;
-            top: 10px;
-        }
-
-        body.ultra-focus .metric-card {
-            min-height: 110px;
-        }
-
-        body.ultra-focus .section-box {
-            padding: 14px;
-        }
-
-        body.ultra-focus .subgroup {
-            padding: 10px;
-        }
-
-        @media (max-width: 1023px) {
-            body.ultra-focus #mainContent {
-                grid-template-columns: 1fr !important;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .viewport-fit {
-                min-height: calc(100vh - 24px);
-            }
-        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
     </style>
 </head>
-<body class="p-2 md:p-3">
-<div id="appContainer" class="app-shell viewport-fit max-w-[1640px] mx-auto flex flex-col gap-4">
+<body class="p-2 md:p-4">
 
-    <div class="shell-card p-3 md:p-4 flex flex-col gap-4">
-
-        <header class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between no-print">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-[18px] bg-white flex items-center justify-center border border-[#dce7f5] shadow-sm shrink-0">
-                    <i data-lucide="wallet-cards" class="w-5 h-5 text-[#4a84ff]"></i>
+<div id="appContainer" class="max-w-[1600px] mx-auto flex flex-col gap-4">
+    
+    <div class="shell-card p-4 md:p-6">
+        
+        <!-- HEADER -->
+        <header class="flex flex-col lg:flex-row justify-between gap-4 mb-6">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center border border-slate-200 shadow-sm">
+                    <i data-lucide="wallet-cards" class="w-7 h-7 text-blue-600"></i>
                 </div>
-
                 <div>
-                    <h1 class="text-xl md:text-[26px] font-black tracking-tight text-slate-800 uppercase leading-none">
-                        Financeiro<span class="text-blue-600">Pro</span>
-                        <span class="text-slate-300">v27.6</span>
-                    </h1>
-                    <div class="mt-2 flex items-center gap-2">
-                        <div id="statusSync" class="status-badge">
-                            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-                            Sincronizado
-                        </div>
+                    <h1 class="text-2xl font-black tracking-tight uppercase">Financeiro<span class="text-blue-600">Pro</span> <span class="text-slate-300 text-lg">v28.0</span></h1>
+                    <div id="statusSync" class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-emerald-500 mt-1">
+                        <div class="w-2 h-2 rounded-full bg-emerald-500"></div> Sincronizado
                     </div>
                 </div>
             </div>
 
-            <div class="panel px-3 py-2 flex items-center gap-2 self-start lg:self-auto">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="calendar-range" class="w-4 h-4 text-slate-400"></i>
-                    <select id="f_mes" class="bg-transparent text-[12px] font-bold px-2 py-2 outline-none cursor-pointer text-slate-700"></select>
-                    <select id="f_ano" class="bg-[#f5f9ff] text-[12px] font-bold px-3 py-2 rounded-xl outline-none cursor-pointer text-blue-600 border border-[#dbe7f6]"></select>
-                </div>
+            <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-2xl border border-slate-100">
+                <select id="f_mes" class="bg-transparent font-bold text-sm px-2 outline-none cursor-pointer"></select>
+                <select id="f_ano" class="bg-blue-600 text-white font-bold text-sm px-4 py-2 rounded-xl outline-none cursor-pointer"></select>
             </div>
         </header>
 
-        <section id="summarySection" class="grid grid-cols-1 xl:grid-cols-12 gap-3">
-            <div class="xl:col-span-7 grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div class="panel hero-main metric-card p-5 md:col-span-3">
-                    <div class="flex items-start justify-between gap-3 relative z-10">
-                        <div>
-                            <span class="eyebrow text-blue-100 block mb-3">Previsão Final</span>
-                            <div id="totalSaldo" class="metric-number text-[30px] md:text-[40px]">R$ 0,00</div>
-                        </div>
-                        <div class="metric-icon">
-                            <i data-lucide="bar-chart-4" class="w-5 h-5 text-blue-100"></i>
-                        </div>
-                    </div>
-                    <p class="support-text text-[12px] leading-[1.4] text-blue-50 mt-3 relative z-10">Resultado previsto considerando todas as entradas e saídas do mês.</p>
-                </div>
-
-                <div class="panel-soft metric-card soft-blue p-4 secondary-summary">
-                    <div class="flex items-start justify-between gap-3 relative z-10">
-                        <div>
-                            <span class="eyebrow text-slate-400 block mb-3">Saldo Real</span>
-                            <div id="realMao" class="metric-number text-[24px] md:text-[28px] text-slate-800">R$ 0,00</div>
-                        </div>
-                        <div class="metric-icon-soft">
-                            <i data-lucide="wallet" class="w-4 h-4 text-slate-500"></i>
-                        </div>
-                    </div>
-                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Somente valores já confirmados.</p>
-                </div>
-
-                <div class="panel-soft metric-card soft-amber p-4 secondary-summary">
-                    <div class="flex items-start justify-between gap-3 relative z-10">
-                        <div>
-                            <span class="eyebrow text-amber-600 block mb-3">Dinheiro Vivo</span>
-                            <div id="saldoCaixa" class="metric-number text-[24px] md:text-[28px] text-slate-800">R$ 0,00</div>
-                        </div>
-                        <div class="metric-icon-soft">
-                            <i data-lucide="hand-coins" class="w-4 h-4 text-amber-600"></i>
-                        </div>
-                    </div>
-                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Disponível em caixa.</p>
-                </div>
-
-                <div class="panel-soft metric-card soft-blue p-4 secondary-summary">
-                    <div class="flex items-start justify-between gap-3 relative z-10">
-                        <div>
-                            <span class="eyebrow text-blue-600 block mb-3">Banco</span>
-                            <div id="saldoBanco" class="metric-number text-[24px] md:text-[28px] text-slate-800">R$ 0,00</div>
-                        </div>
-                        <div class="metric-icon-soft">
-                            <i data-lucide="landmark" class="w-4 h-4 text-blue-600"></i>
-                        </div>
-                    </div>
-                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Disponível em conta bancária.</p>
+        <!-- DASHBOARD METRICS -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="panel hero-main metric-card p-5 md:col-span-2 lg:col-span-1">
+                <span class="eyebrow text-blue-100">Previsão Final</span>
+                <div id="totalSaldo" class="metric-number text-3xl mt-2">R$ 0,00</div>
+                <p class="text-[10px] text-blue-100/70 mt-4 uppercase font-bold">Considera todos os lançamentos</p>
+            </div>
+            <div class="panel p-5 metric-card bg-white">
+                <span class="eyebrow text-slate-400">Saldo Real (Confirmado)</span>
+                <div id="realMao" class="metric-number text-2xl text-slate-800 mt-2">R$ 0,00</div>
+                <div class="flex gap-2 mt-4">
+                    <span id="saldoCaixa" class="text-[10px] font-bold bg-amber-50 text-amber-600 px-2 py-1 rounded-md border border-amber-100">Caixa</span>
+                    <span id="saldoBanco" class="text-[10px] font-bold bg-blue-50 text-blue-600 px-2 py-1 rounded-md border border-blue-100">Banco</span>
                 </div>
             </div>
-
-            <div class="xl:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3 hero-only">
-                <div class="panel-soft metric-card soft-green p-4 border border-[#daf6e9]">
-                    <div class="flex items-start justify-between gap-3 relative z-10">
-                        <div>
-                            <span class="eyebrow text-emerald-600 block mb-3">Entradas</span>
-                            <div id="totalR" class="metric-number text-[25px] md:text-[30px] text-slate-800">R$ 0,00</div>
-                        </div>
-                        <div class="metric-icon-soft">
-                            <i data-lucide="arrow-down-left" class="w-4 h-4 text-emerald-600"></i>
-                        </div>
-                    </div>
-                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Total lançado como recebimento.</p>
-                </div>
-
-                <div class="panel-soft metric-card soft-red p-4 border border-[#ffe2e8]">
-                    <div class="flex items-start justify-between gap-3 relative z-10">
-                        <div>
-                            <span class="eyebrow text-rose-600 block mb-3">Saídas</span>
-                            <div id="totalP" class="metric-number text-[25px] md:text-[30px] text-slate-800">R$ 0,00</div>
-                        </div>
-                        <div class="metric-icon-soft">
-                            <i data-lucide="arrow-up-right" class="w-4 h-4 text-rose-600"></i>
-                        </div>
-                    </div>
-                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Total lançado como pagamento.</p>
-                </div>
+            <div class="panel p-5 metric-card bg-white border-l-4 border-l-emerald-500">
+                <span class="eyebrow text-emerald-600">Total Entradas</span>
+                <div id="totalR" class="metric-number text-2xl text-slate-800 mt-2">R$ 0,00</div>
+                <i data-lucide="trending-up" class="absolute right-4 bottom-4 w-5 h-5 text-emerald-100"></i>
+            </div>
+            <div class="panel p-5 metric-card bg-white border-l-4 border-l-rose-500">
+                <span class="eyebrow text-rose-600">Total Saídas</span>
+                <div id="totalP" class="metric-number text-2xl text-slate-800 mt-2">R$ 0,00</div>
+                <i data-lucide="trending-down" class="absolute right-4 bottom-4 w-5 h-5 text-rose-100"></i>
             </div>
         </section>
 
-        <div class="flex flex-wrap gap-2 no-print">
-            <button id="btnRelatorio" class="btn-premium bg-[#4b7fff] text-white shadow-lg shadow-blue-100 hover:bg-[#3f73f3]">
-                <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
-                Relatório
-            </button>
-
-            <button id="btnTransferencia" class="btn-premium bg-[var(--violet-soft)] border border-[var(--violet-line)] text-[var(--violet)] hover:bg-[#ede8ff]">
-                <i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i>
-                Transferência
-            </button>
-
-            <button id="btnCompactMode" class="btn-premium bg-white border border-[#dfe9f5] text-slate-700 hover:bg-[#f8fbff]">
-                <i data-lucide="panel-top-close" class="w-3.5 h-3.5"></i>
-                Compacto
-            </button>
-
-            <button id="btnUltraFocus" class="btn-premium bg-[#eff5ff] border border-[#d5e3ff] text-[#416fe8] hover:bg-[#e8f0ff]">
-                <i data-lucide="focus" class="w-3.5 h-3.5"></i>
-                Ultra Foco
-            </button>
-
-            <button id="btnExportExcel" class="btn-premium bg-white border border-[#dfe9f5] text-slate-700 hover:bg-[#f8fbff]">
-                <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                Excel
-            </button>
-
-            <button id="btnExportJSON" class="btn-premium bg-[#eff5ff] border border-[#d5e3ff] text-[#416fe8] hover:bg-[#e8f0ff]">
-                <i data-lucide="database-backup" class="w-3.5 h-3.5"></i>
-                Exportar Backup
-            </button>
-
-            <button id="btnImportJSON" class="btn-premium bg-[var(--amber-soft)] border border-[var(--amber-line)] text-[#b87b13] hover:bg-[#fff2d5]">
-                <i data-lucide="database" class="w-3.5 h-3.5"></i>
-                Importar Backup
-            </button>
+        <!-- ACTIONS -->
+        <div class="flex flex-wrap gap-2 mb-6 no-print">
+            <button id="btnRelatorio" class="btn-premium bg-slate-800 text-white"><i data-lucide="bar-chart-3" class="w-4 h-4"></i> Relatório</button>
+            <button id="btnTransferencia" class="btn-premium bg-violet-600 text-white"><i data-lucide="repeat" class="w-4 h-4"></i> Transferir</button>
+            <button id="btnUltraFocus" class="btn-premium bg-amber-500 text-white"><i data-lucide="zap" class="w-4 h-4"></i> Ultra Foco</button>
+            <div class="flex-1"></div>
+            <button id="btnExportJSON" class="btn-premium border border-slate-200 text-slate-600"><i data-lucide="download" class="w-4 h-4"></i> Backup</button>
         </div>
 
-        <section id="filterSection" class="no-print">
-            <div class="toolbar-card p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div>
-                    <h3 class="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">Filtro de Visualização</h3>
-                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-1">Escolha se quer ver todos os lançamentos, só caixa ou só banco.</p>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <button class="filter-btn active" data-filter="todos">Todos</button>
-                    <button class="filter-btn" data-filter="caixa">Caixa</button>
-                    <button class="filter-btn" data-filter="banco">Banco</button>
-                </div>
-            </div>
-        </section>
-
-        <main id="mainContent" class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start flex-1">
-
-            <aside class="lg:col-span-4 xl:col-span-3 no-print">
-                <div class="form-wrap p-4 space-y-4">
-                    <div class="flex items-start justify-between gap-2">
+        <main id="mainContent" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- FORMULÁRIO -->
+            <aside class="lg:col-span-4 xl:col-span-3 space-y-4 no-print">
+                <div class="panel p-5 space-y-4 bg-slate-50/50">
+                    <h3 class="eyebrow text-slate-500 border-b pb-2">Novo Lançamento</h3>
+                    
+                    <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <h3 class="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">Lançamento Rápido</h3>
-                            <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-1">Cadastre o essencial sem perder ritmo.</p>
+                            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Dia</label>
+                            <input type="number" id="f_dia" min="1" max="31" class="premium-input text-center" placeholder="01">
                         </div>
-
-                        <div class="w-10 h-10 rounded-2xl bg-[#eef5ff] flex items-center justify-center border border-[#d9e7ff] shrink-0">
-                            <i data-lucide="sparkles" class="w-4 h-4 text-blue-600"></i>
-                        </div>
-                    </div>
-
-                    <div class="form-block">
-                        <div class="subgroup-header mb-0">
-                            <div class="subgroup-title">
-                                <i data-lucide="landmark" class="w-4 h-4 text-slate-400"></i>
-                                <span class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Saldos iniciais</span>
-                            </div>
-                            <button id="btnToggleSaldoIni" class="collapse-btn">
-                                <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
-                                Ver
-                            </button>
-                        </div>
-
-                        <div id="wrapSaldoIni" class="form-collapse">
-                            <div class="form-collapse-inner">
-                                <div class="form-collapse-content">
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-3">
-                                        <div class="panel-soft p-3">
-                                            <label class="eyebrow text-slate-400 block mb-2">Caixa</label>
-                                            <input type="text" id="f_saldo_ini_caixa" class="premium-input money-input text-[18px] metric-number px-4 py-3 text-slate-800" placeholder="R$ 0,00">
-                                        </div>
-
-                                        <div class="panel-soft p-3">
-                                            <label class="eyebrow text-slate-400 block mb-2">Banco</label>
-                                            <input type="text" id="f_saldo_ini_banco" class="premium-input money-input text-[18px] metric-number px-4 py-3 text-slate-800" placeholder="R$ 0,00">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div>
+                            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Parcelas</label>
+                            <input type="number" id="f_parc" min="1" value="1" class="premium-input text-center">
                         </div>
                     </div>
 
-                    <div class="form-block">
-                        <div class="subgroup-header mb-0">
-                            <div class="subgroup-title">
-                                <i data-lucide="file-pen-line" class="w-4 h-4 text-slate-400"></i>
-                                <span class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Dados do lançamento</span>
-                            </div>
-                            <button id="btnToggleDadosLanc" class="collapse-btn">
-                                <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
-                                Ocultar
-                            </button>
-                        </div>
-
-                        <div id="wrapDadosLanc" class="form-collapse open">
-                            <div class="form-collapse-inner">
-                                <div class="form-collapse-content">
-                                    <div class="space-y-3 pt-3">
-                                        <div class="grid grid-cols-2 gap-2">
-                                            <div>
-                                                <label class="eyebrow text-slate-400 block mb-2">Dia</label>
-                                                <div class="relative">
-                                                    <i data-lucide="calendar-days" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                                                    <input type="number" id="f_dia" placeholder="Dia" class="premium-input pl-10 pr-3 py-3 text-sm font-bold text-slate-700">
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <label class="eyebrow text-slate-400 block mb-2">Parcelas</label>
-                                                <div class="relative">
-                                                    <i data-lucide="copy-plus" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                                                    <input type="number" id="f_parc" placeholder="Parc." value="1" class="premium-input pl-10 pr-3 py-3 text-sm font-bold text-slate-700">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <label class="eyebrow text-slate-400 block mb-2">Descrição</label>
-                                            <div class="relative">
-                                                <i data-lucide="file-text" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                                                <input type="text" id="f_desc" placeholder="DESCRIÇÃO..." class="premium-input pl-10 pr-3 py-3 text-sm font-bold uppercase text-slate-700">
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <label class="eyebrow text-slate-400 block mb-2">Conta</label>
-                                            <select id="f_conta" class="premium-select px-3 py-3 text-sm font-bold text-slate-700">
-                                                <option value="caixa">Dinheiro Vivo</option>
-                                                <option value="banco" selected>Banco</option>
-                                            </select>
-                                        </div>
-
-                                        <div>
-                                            <label class="eyebrow text-slate-400 block mb-2">Valor</label>
-                                            <input type="text" id="f_valor" placeholder="R$ 0,00" class="premium-input money-input text-center px-4 py-3 text-[26px] metric-number text-slate-900">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Descrição</label>
+                        <input type="text" id="f_desc" class="premium-input uppercase" placeholder="Ex: Aluguel">
                     </div>
 
-                    <div class="grid grid-cols-2 gap-2 pt-1">
-                        <button id="btnAddR" class="btn-premium bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-100 py-3">
-                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                            Receber
-                        </button>
-                        <button id="btnAddP" class="btn-premium bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-100 py-3">
-                            <i data-lucide="minus-circle" class="w-4 h-4"></i>
-                            Pagar
-                        </button>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Conta</label>
+                        <select id="f_conta" class="premium-select">
+                            <option value="banco">Banco</option>
+                            <option value="caixa">Dinheiro Vivo (Caixa)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Valor</label>
+                        <input type="text" id="f_valor" class="premium-input text-2xl metric-number text-center" placeholder="R$ 0,00">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <button id="btnAddR" class="btn-premium bg-emerald-500 text-white py-4"><i data-lucide="plus-circle" class="w-5 h-5"></i> Ganho</button>
+                        <button id="btnAddP" class="btn-premium bg-rose-500 text-white py-4"><i data-lucide="minus-circle" class="w-5 h-5"></i> Gasto</button>
+                    </div>
+                </div>
+
+                <div class="panel p-4">
+                    <button id="btnToggleSaldoIni" class="flex items-center justify-between w-full eyebrow text-slate-500">
+                        Saldos Iniciais <i data-lucide="chevron-down" class="w-3 h-3"></i>
+                    </button>
+                    <div id="wrapSaldoIni" class="collapse-panel">
+                        <div class="space-y-3 pt-2">
+                            <input type="text" id="f_saldo_ini_caixa" class="premium-input text-sm" placeholder="Saldo Inicial Caixa">
+                            <input type="text" id="f_saldo_ini_banco" class="premium-input text-sm" placeholder="Saldo Inicial Banco">
+                        </div>
                     </div>
                 </div>
             </aside>
 
-            <div class="lg:col-span-8 xl:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-4">
+            <!-- LISTAGEM -->
+            <div class="lg:col-span-8 xl:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-6">
+                
+                <!-- COLUNA ENTRADAS -->
+                <section class="space-y-4">
+                    <div class="flex items-center gap-2 eyebrow text-emerald-600">
+                        <div class="w-2 h-6 bg-emerald-500 rounded-full"></div> Entradas
+                    </div>
+                    
+                    <div id="listR_pend" class="space-y-2"></div>
 
-                <section class="section-box">
-                    <div class="section-shell green">
-                        <div class="section-header">
-                            <div class="section-left">
-                                <div class="section-pill bg-emerald-500"></div>
-                                <div>
-                                    <h4 id="tituloEntradas" class="text-[13px] font-black text-slate-900 uppercase tracking-[0.16em] leading-none">Entradas</h4>
-                                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-1">Foco total no que ainda precisa entrar.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="space-y-4">
-                            <div class="subgroup neutral">
-                                <div class="subgroup-header">
-                                    <div class="subgroup-title">
-                                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.16em]">A Receber</span>
-                                    </div>
-                                    <div class="subgroup-meta">
-                                        <span id="countR_pend" class="mini-count">0 itens</span>
-                                        <span id="sumR_pend" class="mini-total">R$ 0,00</span>
-                                        <span class="tag-chip bg-slate-100 text-slate-500">Pendente</span>
-                                    </div>
-                                </div>
-                                <div id="listR_pend" class="space-y-2.5"></div>
-                            </div>
-
-                            <div class="subgroup green history-block">
-                                <div class="subgroup-header">
-                                    <div class="subgroup-title">
-                                        <span class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.16em]">Confirmadas</span>
-                                    </div>
-                                    <div class="subgroup-meta">
-                                        <span id="countR_conf" class="mini-count">0 itens</span>
-                                        <span id="sumR_conf" class="mini-total">R$ 0,00</span>
-                                        <span class="tag-chip bg-emerald-50 text-emerald-600">Ok</span>
-                                        <button id="btnToggleRConf" class="collapse-btn">
-                                            <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
-                                            Ver
-                                        </button>
-                                    </div>
-                                </div>
-                                <div id="wrapR_conf" class="collapse-panel">
-                                    <div class="collapse-inner">
-                                        <div class="collapse-content">
-                                            <div id="listR_conf" class="space-y-2.5"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="history-block pt-4">
+                        <button id="btnToggleRConf" class="flex items-center gap-2 text-[10px] font-black uppercase text-slate-400 hover:text-slate-600 transition-colors">
+                            <i data-lucide="check-circle-2" class="w-4 h-4"></i> Confirmadas (<span id="countR_conf">0</span>)
+                        </button>
+                        <div id="wrapR_conf" class="collapse-panel">
+                            <div id="listR_conf" class="space-y-2 opacity-60"></div>
                         </div>
                     </div>
                 </section>
 
-                <section class="section-box">
-                    <div class="section-shell red">
-                        <div class="section-header">
-                            <div class="section-left">
-                                <div class="section-pill bg-rose-500"></div>
-                                <div>
-                                    <h4 id="tituloSaidas" class="text-[13px] font-black text-slate-900 uppercase tracking-[0.16em] leading-none">Saídas</h4>
-                                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-1">Foco total no que ainda precisa pagar.</p>
-                                </div>
-                            </div>
-                        </div>
+                <!-- COLUNA SAÍDAS -->
+                <section class="space-y-4">
+                    <div class="flex items-center gap-2 eyebrow text-rose-600">
+                        <div class="w-2 h-6 bg-rose-500 rounded-full"></div> Saídas
+                    </div>
 
-                        <div class="space-y-4">
-                            <div class="subgroup neutral">
-                                <div class="subgroup-header">
-                                    <div class="subgroup-title">
-                                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.16em]">A Pagar</span>
-                                    </div>
-                                    <div class="subgroup-meta">
-                                        <span id="countP_pend" class="mini-count">0 itens</span>
-                                        <span id="sumP_pend" class="mini-total">R$ 0,00</span>
-                                        <span class="tag-chip bg-slate-100 text-slate-500">Pendente</span>
-                                    </div>
-                                </div>
-                                <div id="listP_pend" class="space-y-2.5"></div>
-                            </div>
+                    <div id="listP_pend" class="space-y-2"></div>
 
-                            <div class="subgroup red history-block">
-                                <div class="subgroup-header">
-                                    <div class="subgroup-title">
-                                        <span class="text-[10px] font-black text-rose-600 uppercase tracking-[0.16em]">Quitadas</span>
-                                    </div>
-                                    <div class="subgroup-meta">
-                                        <span id="countP_conf" class="mini-count">0 itens</span>
-                                        <span id="sumP_conf" class="mini-total">R$ 0,00</span>
-                                        <span class="tag-chip bg-rose-50 text-rose-600">Ok</span>
-                                        <button id="btnTogglePConf" class="collapse-btn">
-                                            <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
-                                            Ver
-                                        </button>
-                                    </div>
-                                </div>
-                                <div id="wrapP_conf" class="collapse-panel">
-                                    <div class="collapse-inner">
-                                        <div class="collapse-content">
-                                            <div id="listP_conf" class="space-y-2.5"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="history-block pt-4">
+                        <button id="btnTogglePConf" class="flex items-center gap-2 text-[10px] font-black uppercase text-slate-400 hover:text-slate-600 transition-colors">
+                            <i data-lucide="check-circle-2" class="w-4 h-4"></i> Quitadas (<span id="countP_conf">0</span>)
+                        </button>
+                        <div id="wrapP_conf" class="collapse-panel">
+                            <div id="listP_conf" class="space-y-2 opacity-60"></div>
                         </div>
                     </div>
                 </section>
             </div>
         </main>
-
-        <section id="sectionAnual" class="hidden panel p-5 border border-[#d9e6f8]">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4 border-b border-[#edf3fa] pb-3">
-                <div>
-                    <h2 class="text-xl md:text-2xl font-black tracking-tight text-slate-900">
-                        Relatório Anual <span id="labelAnoReport" class="text-blue-600"></span>
-                    </h2>
-                    <p class="text-sm text-slate-400 mt-1">Visão consolidada por mês.</p>
-                </div>
-
-                <button id="btnCloseAnual" class="self-start md:self-auto p-2.5 bg-slate-50 rounded-xl hover:bg-rose-50 hover:text-rose-600 transition-all border border-[#e7eef8]">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-            </div>
-
-            <div class="overflow-x-auto scroll-soft">
-                <table class="w-full text-left">
-                    <thead>
-                        <tr class="text-[10px] uppercase text-slate-400 border-b font-black tracking-[0.18em]">
-                            <th class="pb-3">Mês</th>
-                            <th class="pb-3">Entradas</th>
-                            <th class="pb-3">Saídas</th>
-                            <th class="pb-3">Saldo</th>
-                            <th class="pb-3 text-right">Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="bodyRelatorioAnual" class="text-[12px] font-semibold text-slate-600"></tbody>
-                </table>
-            </div>
-        </section>
     </div>
 </div>
 
-<div id="editModal" class="hidden fixed inset-0 z-50 bg-slate-900/25 items-center justify-center p-4 backdrop-blur-[2px]">
-    <div class="panel w-full max-w-md p-4 space-y-3">
-        <div class="flex items-center justify-between">
-            <h3 class="text-[12px] font-black uppercase tracking-[0.2em] text-slate-700">Editar lançamento</h3>
-            <button onclick="closeEditModal()" class="p-2 rounded-xl hover:bg-slate-50 border border-transparent hover:border-[#e8eff8]">
-                <i data-lucide="x" class="w-4 h-4"></i>
-            </button>
+<!-- MODAL EDICAO (SIMPLIFICADO) -->
+<div id="editModal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="panel w-full max-w-md p-6 space-y-4">
+        <h3 class="eyebrow">Editar Lançamento</h3>
+        <input type="number" id="edit_dia" class="premium-input" placeholder="Dia">
+        <input type="text" id="edit_desc" class="premium-input uppercase" placeholder="Descrição">
+        <input type="text" id="edit_valor" class="premium-input text-center text-xl metric-number">
+        <select id="edit_conta" class="premium-select">
+            <option value="banco">Banco</option>
+            <option value="caixa">Caixa</option>
+        </select>
+        <div class="flex items-center gap-2 p-2">
+            <input type="checkbox" id="edit_ok" class="w-5 h-5">
+            <label for="edit_ok" class="text-sm font-bold text-slate-600">Lançamento Confirmado</label>
         </div>
-
-        <div>
-            <label class="eyebrow text-slate-400 block mb-2">Dia</label>
-            <input type="number" id="edit_dia" class="premium-input px-3 py-3 text-sm font-bold text-slate-700">
-        </div>
-
-        <div>
-            <label class="eyebrow text-slate-400 block mb-2">Descrição</label>
-            <input type="text" id="edit_desc" class="premium-input px-3 py-3 text-sm font-bold uppercase text-slate-700">
-        </div>
-
-        <div>
-            <label class="eyebrow text-slate-400 block mb-2">Conta</label>
-            <select id="edit_conta" class="premium-select px-3 py-3 text-sm font-bold text-slate-700">
-                <option value="caixa">Dinheiro Vivo</option>
-                <option value="banco">Banco</option>
-            </select>
-        </div>
-
-        <div>
-            <label class="eyebrow text-slate-400 block mb-2">Valor</label>
-            <input type="text" id="edit_valor" class="premium-input money-input text-center px-4 py-3 text-[24px] metric-number text-slate-900">
-        </div>
-
-        <div class="flex items-center gap-2">
-            <input type="checkbox" id="edit_ok">
-            <label for="edit_ok" class="text-sm font-semibold text-slate-600">Marcar como confirmado / quitado</label>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2 pt-2">
-            <button onclick="closeEditModal()" class="btn-premium bg-slate-50 text-slate-700 hover:bg-slate-100 py-3 border border-[#e7eef8]">
-                Cancelar
-            </button>
-            <button onclick="saveEdit()" class="btn-premium bg-[#4b7fff] text-white hover:bg-[#3f73f3] py-3">
-                Salvar
-            </button>
-        </div>
-    </div>
-</div>
-
-<div id="transferModal" class="hidden fixed inset-0 z-50 bg-slate-900/25 items-center justify-center p-4 backdrop-blur-[2px]">
-    <div class="panel w-full max-w-md p-4 space-y-4">
-        <div class="flex items-center justify-between">
-            <h3 class="text-[12px] font-black uppercase tracking-[0.2em] text-slate-700">Transferência entre contas</h3>
-            <button onclick="closeTransferModal()" class="p-2 rounded-xl hover:bg-slate-50 border border-transparent hover:border-[#e8eff8]">
-                <i data-lucide="x" class="w-4 h-4"></i>
-            </button>
-        </div>
-
         <div class="grid grid-cols-2 gap-2">
-            <div>
-                <label class="eyebrow text-slate-400 block mb-2">Dia</label>
-                <input type="number" id="trans_dia" class="premium-input px-3 py-3 text-sm font-bold text-slate-700" placeholder="Dia">
-            </div>
-
-            <div>
-                <label class="eyebrow text-slate-400 block mb-2">Valor</label>
-                <input type="text" id="trans_valor" class="premium-input money-input text-center px-4 py-3 text-[20px] metric-number text-slate-900" placeholder="R$ 0,00">
-            </div>
-        </div>
-
-        <div>
-            <label class="eyebrow text-slate-400 block mb-2">Origem</label>
-            <select id="trans_origem" class="premium-select px-3 py-3 text-sm font-bold text-slate-700">
-                <option value="caixa">Dinheiro Vivo</option>
-                <option value="banco" selected>Banco</option>
-            </select>
-        </div>
-
-        <div>
-            <label class="eyebrow text-slate-400 block mb-2">Destino</label>
-            <select id="trans_destino" class="premium-select px-3 py-3 text-sm font-bold text-slate-700">
-                <option value="caixa" selected>Dinheiro Vivo</option>
-                <option value="banco">Banco</option>
-            </select>
-        </div>
-
-        <div>
-            <label class="eyebrow text-slate-400 block mb-2">Observação</label>
-            <input type="text" id="trans_obs" class="premium-input px-3 py-3 text-sm font-bold uppercase text-slate-700" placeholder="OPCIONAL">
-        </div>
-
-        <div class="flex items-center gap-2">
-            <input type="checkbox" id="trans_ok" checked>
-            <label for="trans_ok" class="text-sm font-semibold text-slate-600">Marcar como confirmado automaticamente</label>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2 pt-2">
-            <button onclick="closeTransferModal()" class="btn-premium bg-slate-50 text-slate-700 hover:bg-slate-100 py-3 border border-[#e7eef8]">
-                Cancelar
-            </button>
-            <button id="btnSaveTransfer" class="btn-premium bg-[var(--violet)] text-white hover:bg-[#6d58f0] py-3">
-                Transferir
-            </button>
+            <button onclick="closeEditModal()" class="btn-premium bg-slate-100 text-slate-600">Cancelar</button>
+            <button onclick="saveEdit()" class="btn-premium bg-blue-600 text-white">Salvar</button>
         </div>
     </div>
 </div>
@@ -1167,257 +269,45 @@
     const db_fire = getFirestore(app);
     let db = {};
     let editingItem = null;
-    let filtroConta = 'todos';
-    let mostrarRConf = false;
-    let mostrarPConf = false;
-    let mostrarSaldoIni = false;
-    let mostrarDadosLanc = true;
-    let modoCompacto = false;
-    let modoUltraFoco = false;
+    let modoUltraFoco = localStorage.getItem('ultraFoco') === 'true';
 
-    const mesesNomes = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    // --- UTILS ---
+    const formatBRL = (v) => Number(v || 0).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+    const parseBRL = (t) => parseFloat(String(t || '').replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
+
+    function applyMoneyMask(input) {
+        let v = input.value.replace(/\D/g, '');
+        v = (v / 100).toFixed(2).replace('.', ',');
+        v = v.replace(/(\d)(\d{3})(\d{3}),/g, '$1.$2.$3,');
+        v = v.replace(/(\d)(\d{3}),/g, '$1.$2,');
+        input.value = v === '0,00' ? '' : 'R$ ' + v;
+    }
 
     function getMonthKey() {
         return `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
     }
 
-    function getDefaultMonthData(existing = {}) {
-        return {
-            R: Array.isArray(existing.R) ? existing.R : [],
-            P: Array.isArray(existing.P) ? existing.P : [],
-            saldoIni: typeof existing.saldoIni === 'number' ? existing.saldoIni : 0,
-            saldoIniCaixa: typeof existing.saldoIniCaixa === 'number' ? existing.saldoIniCaixa : 0,
-            saldoIniBanco: typeof existing.saldoIniBanco === 'number'
-                ? existing.saldoIniBanco
-                : (typeof existing.saldoIni === 'number' ? existing.saldoIni : 0)
-        };
-    }
-
-    function ensureMonthData(id) {
-        db[id] = getDefaultMonthData(db[id] || {});
-        return db[id];
-    }
-
-    function parseBRL(text) {
-        return parseFloat(String(text || '').replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
-    }
-
-    function applyMoneyMask(input) {
-        let v = input.value.replace(/\D/g, '');
-        v = (v / 100).toFixed(2) + '';
-        v = v.replace('.', ',');
-        v = v.replace(/(\d)(\d{3})(\d{3}),/g, '$1.$2.$3,');
-        v = v.replace(/(\d)(\d{3}),/g, '$1.$2,');
-        input.value = v === 'NaN' ? '' : 'R$ ' + v;
-    }
-
-    function formatBRL(v) {
-        return Number(v || 0).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    }
-
-    function matchFiltroConta(item) {
-        const conta = item.conta || 'banco';
-        if (filtroConta === 'todos') return true;
-        return conta === filtroConta;
-    }
-
-    function getFiltroLabel() {
-        if (filtroConta === 'caixa') return ' — Caixa';
-        if (filtroConta === 'banco') return ' — Banco';
-        return ' — Todos';
-    }
-
-    function setupFiltroConta() {
-        const buttons = document.querySelectorAll('.filter-btn');
-
-        buttons.forEach(btn => {
-            btn.onclick = () => {
-                filtroConta = btn.dataset.filter;
-                buttons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                render();
-            };
-        });
-    }
-
-    function bindCollapseButtons() {
-        document.getElementById('btnToggleRConf').onclick = () => {
-            mostrarRConf = !mostrarRConf;
-            updateCollapseState();
-        };
-
-        document.getElementById('btnTogglePConf').onclick = () => {
-            mostrarPConf = !mostrarPConf;
-            updateCollapseState();
-        };
-
-        document.getElementById('btnToggleSaldoIni').onclick = () => {
-            mostrarSaldoIni = !mostrarSaldoIni;
-            updateFormCollapseState();
-        };
-
-        document.getElementById('btnToggleDadosLanc').onclick = () => {
-            mostrarDadosLanc = !mostrarDadosLanc;
-            updateFormCollapseState();
-        };
-    }
-
-    function applyCompactMode() {
-        document.body.classList.toggle('compact-mode', modoCompacto);
-        const btn = document.getElementById('btnCompactMode');
-        btn.innerHTML = `
-            <i data-lucide="${modoCompacto ? 'panel-top-open' : 'panel-top-close'}" class="w-3.5 h-3.5"></i>
-            ${modoCompacto ? 'Normal' : 'Compacto'}
-        `;
-        localStorage.setItem('financeiro_compacto_v276', modoCompacto ? '1' : '0');
-    }
-
-    function setupCompactMode() {
-        modoCompacto = localStorage.getItem('financeiro_compacto_v276') === '1';
-        document.getElementById('btnCompactMode').onclick = () => {
-            modoCompacto = !modoCompacto;
-            applyCompactMode();
-            lucide.createIcons();
-        };
-    }
-
-    function applyUltraFocusMode() {
-        document.body.classList.toggle('ultra-focus', modoUltraFoco);
-
-        const btn = document.getElementById('btnUltraFocus');
-        btn.innerHTML = `
-            <i data-lucide="${modoUltraFoco ? 'focus' : 'focus'}" class="w-3.5 h-3.5"></i>
-            ${modoUltraFoco ? 'Sair Foco' : 'Ultra Foco'}
-        `;
-
-        localStorage.setItem('financeiro_ultrafoco_v276', modoUltraFoco ? '1' : '0');
-
-        if (modoUltraFoco) {
-            mostrarRConf = false;
-            mostrarPConf = false;
-            mostrarSaldoIni = false;
-            mostrarDadosLanc = true;
-        }
-
-        updateCollapseState();
-        updateFormCollapseState();
-    }
-
-    function setupUltraFocusMode() {
-        modoUltraFoco = localStorage.getItem('financeiro_ultrafoco_v276') === '1';
-        document.getElementById('btnUltraFocus').onclick = () => {
-            modoUltraFoco = !modoUltraFoco;
-            applyUltraFocusMode();
-            lucide.createIcons();
-        };
-    }
-
-    function updateCollapseState() {
-        const wrapR = document.getElementById('wrapR_conf');
-        const wrapP = document.getElementById('wrapP_conf');
-        const btnR = document.getElementById('btnToggleRConf');
-        const btnP = document.getElementById('btnTogglePConf');
-
-        wrapR.classList.toggle('open', !modoUltraFoco && mostrarRConf);
-        wrapP.classList.toggle('open', !modoUltraFoco && mostrarPConf);
-
-        btnR.innerHTML = `
-            <i data-lucide="${mostrarRConf ? 'chevron-up' : 'chevron-down'}" class="w-3.5 h-3.5"></i>
-            ${mostrarRConf ? 'Ocultar' : 'Ver'}
-        `;
-
-        btnP.innerHTML = `
-            <i data-lucide="${mostrarPConf ? 'chevron-up' : 'chevron-down'}" class="w-3.5 h-3.5"></i>
-            ${mostrarPConf ? 'Ocultar' : 'Ver'}
-        `;
-    }
-
-    function updateFormCollapseState() {
-        const wrapSaldo = document.getElementById('wrapSaldoIni');
-        const wrapDados = document.getElementById('wrapDadosLanc');
-        const btnSaldo = document.getElementById('btnToggleSaldoIni');
-        const btnDados = document.getElementById('btnToggleDadosLanc');
-
-        wrapSaldo.classList.toggle('open', !modoUltraFoco && mostrarSaldoIni);
-        wrapDados.classList.toggle('open', mostrarDadosLanc);
-
-        btnSaldo.innerHTML = `
-            <i data-lucide="${mostrarSaldoIni ? 'chevron-up' : 'chevron-down'}" class="w-3.5 h-3.5"></i>
-            ${mostrarSaldoIni ? 'Ocultar' : 'Ver'}
-        `;
-
-        btnDados.innerHTML = `
-            <i data-lucide="${mostrarDadosLanc ? 'chevron-up' : 'chevron-down'}" class="w-3.5 h-3.5"></i>
-            ${mostrarDadosLanc ? 'Ocultar' : 'Ver'}
-        `;
-    }
-
+    // --- CORE ---
     async function init() {
-        lucide.createIcons();
         setupSelectors();
         await loadData();
         bindEvents();
-        setupFiltroConta();
-        bindCollapseButtons();
-        setupCompactMode();
-        setupUltraFocusMode();
         render();
-        verificarBackupAutomatico();
-    }
-
-    function bindEvents() {
-        document.getElementById('f_valor').oninput = (e) => applyMoneyMask(e.target);
-        document.getElementById('f_saldo_ini_caixa').oninput = (e) => applyMoneyMask(e.target);
-        document.getElementById('f_saldo_ini_banco').oninput = (e) => applyMoneyMask(e.target);
-        document.getElementById('edit_valor').oninput = (e) => applyMoneyMask(e.target);
-        document.getElementById('trans_valor').oninput = (e) => applyMoneyMask(e.target);
-
-        document.getElementById('f_saldo_ini_caixa').onblur = async (e) => {
-            const id = getMonthKey();
-            ensureMonthData(id);
-            db[id].saldoIniCaixa = parseBRL(e.target.value);
-            render();
-            sync(id);
-        };
-
-        document.getElementById('f_saldo_ini_banco').onblur = async (e) => {
-            const id = getMonthKey();
-            ensureMonthData(id);
-            db[id].saldoIniBanco = parseBRL(e.target.value);
-            render();
-            sync(id);
-        };
-
-        document.getElementById('btnAddR').onclick = () => addItem('R');
-        document.getElementById('btnAddP').onclick = () => addItem('P');
-        document.getElementById('btnExportExcel').onclick = () => exportarCSV();
-        document.getElementById('btnExportJSON').onclick = () => exportarJSON();
-        document.getElementById('btnTransferencia').onclick = openTransferModal;
-        document.getElementById('btnSaveTransfer').onclick = saveTransfer;
+        if(modoUltraFoco) document.body.classList.add('ultra-focus');
+        lucide.createIcons();
     }
 
     function setupSelectors() {
+        const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
         const mSel = document.getElementById('f_mes');
         const aSel = document.getElementById('f_ano');
-
-        mesesNomes.forEach((m, i) => {
-            const o = document.createElement('option');
-            o.value = i;
-            o.textContent = m;
-            mSel.appendChild(o);
-        });
-
         const now = new Date();
-        for (let y = now.getFullYear() + 5; y >= 2023; y--) {
-            const o = document.createElement('option');
-            o.value = y;
-            o.textContent = y;
-            aSel.appendChild(o);
-        }
+
+        meses.forEach((m, i) => mSel.innerHTML += `<option value="${i}">${m}</option>`);
+        for (let y = now.getFullYear() + 2; y >= 2023; y--) aSel.innerHTML += `<option value="${y}">${y}</option>`;
 
         mSel.value = now.getMonth();
         aSel.value = now.getFullYear();
-
         mSel.onchange = render;
         aSel.onchange = render;
     }
@@ -1425,533 +315,205 @@
     async function loadData() {
         try {
             const snap = await getDocs(collection(db_fire, "financeiro"));
-            snap.forEach(d => {
-                db[d.id] = getDefaultMonthData(d.data());
-            });
-
-            document.getElementById('statusSync').innerHTML =
-                `<div class="w-2 h-2 rounded-full bg-emerald-500"></div> Sincronizado`;
-        } catch (e) {
-            console.error(e);
-            document.getElementById('statusSync').innerHTML =
-                `<div class="w-2 h-2 rounded-full bg-rose-500"></div> Erro`;
-        }
+            snap.forEach(d => db[d.id] = d.data());
+        } catch (e) { console.error("Erro ao carregar:", e); }
     }
 
     async function sync(id) {
-        if (!db[id]) return;
-
-        document.getElementById('statusSync').innerHTML =
-            `<div class="w-2 h-2 rounded-full bg-blue-500 loading-dot"></div> Salvando...`;
-
+        document.getElementById('statusSync').innerHTML = `<div class="w-2 h-2 rounded-full bg-blue-500 loading-dot"></div> Sincronizando...`;
         try {
-            db[id] = getDefaultMonthData(db[id]);
             await setDoc(doc(db_fire, "financeiro", id), db[id]);
-            document.getElementById('statusSync').innerHTML =
-                `<div class="w-2 h-2 rounded-full bg-emerald-500"></div> Sincronizado`;
-        } catch (e) {
-            console.error(e);
-            document.getElementById('statusSync').innerHTML =
-                `<div class="w-2 h-2 rounded-full bg-rose-500"></div> Erro`;
+            document.getElementById('statusSync').innerHTML = `<div class="w-2 h-2 rounded-full bg-emerald-500"></div> Sincronizado`;
+        } catch (e) { 
+            document.getElementById('statusSync').innerHTML = `<div class="w-2 h-2 rounded-full bg-rose-500"></div> Erro`;
         }
-    }
-
-    function emptyStateHTML(texto) {
-        return `
-            <div class="empty-state">
-                <div class="empty-icon">
-                    <i data-lucide="inbox" class="w-4 h-4 text-slate-400"></i>
-                </div>
-                <div class="text-[11px] font-bold text-slate-500">${texto}</div>
-            </div>
-        `;
-    }
-
-    function createListRow(item, type) {
-        const isR = type === 'R';
-        const conta = item.conta || 'banco';
-        const contaLabel = conta === 'caixa' ? 'CAIXA' : 'BANCO';
-        const contaClass = conta === 'caixa'
-            ? 'bg-[var(--amber-soft)] text-[#c68210] border border-[var(--amber-line)]'
-            : 'bg-[var(--blue-soft)] text-[#3d73e8] border border-[var(--blue-line)]';
-
-        return `
-            <div class="entry-row flex items-center gap-3 p-3 border border-[#e8eff8] rounded-2xl shadow-sm group">
-                <input type="checkbox" ${item.ok ? 'checked' : ''} onchange="toggleItem('${type}', ${item.id})">
-
-                <div class="min-w-[44px] text-center">
-                    <span class="inline-flex items-center justify-center min-w-[40px] h-8 px-2 rounded-xl bg-[#f5f9ff] text-[10px] font-black text-slate-500 border border-[#e2ebf8]">
-                        ${String(item.dia).padStart(2,'0')}
-                    </span>
-                </div>
-
-                <div class="flex-1 min-w-0">
-                    <div class="text-[11px] font-bold text-slate-700 truncate ${item.ok ? 'line-through opacity-45' : ''}">
-                        ${item.desc}
-                    </div>
-                    <div class="mt-1.5">
-                        <span class="tag-chip ${contaClass}">${contaLabel}</span>
-                    </div>
-                </div>
-
-                <div class="text-right shrink-0">
-                    <div class="text-[13px] metric-number ${isR ? 'text-emerald-600' : 'text-rose-500'}">
-                        ${formatBRL(item.valor)}
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                    <button onclick="editItem('${type}', ${item.id})" class="text-slate-300 hover:text-blue-500 transition-all" title="Editar">
-                        <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
-                    </button>
-
-                    <button onclick="delItem('${type}', ${item.id}, '${String(item.desc).replace(/'/g, "\\'")}')" class="text-slate-300 hover:text-rose-500 transition-all" title="Excluir">
-                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-    }
-
-    function updateSectionStats(idCount, idSum, items) {
-        document.getElementById(idCount).textContent = `${items.length} ${items.length === 1 ? 'item' : 'itens'}`;
-        document.getElementById(idSum).textContent = formatBRL(items.reduce((a, b) => a + Number(b.valor || 0), 0));
     }
 
     function render() {
         const id = getMonthKey();
-        const data = ensureMonthData(id);
+        if (!db[id]) db[id] = { R: [], P: [], saldoIniCaixa: 0, saldoIniBanco: 0 };
+        const data = db[id];
 
+        // Atualizar inputs de saldo inicial
         document.getElementById('f_saldo_ini_caixa').value = data.saldoIniCaixa ? formatBRL(data.saldoIniCaixa) : '';
-        document.getElementById('f_saldo_ini_banco').value = (data.saldoIniBanco ?? data.saldoIni) ? formatBRL(data.saldoIniBanco ?? data.saldoIni) : '';
+        document.getElementById('f_saldo_ini_banco').value = data.saldoIniBanco ? formatBRL(data.saldoIniBanco) : '';
 
-        document.getElementById('tituloEntradas').textContent = `Entradas${getFiltroLabel()}`;
-        document.getElementById('tituloSaidas').textContent = `Saídas${getFiltroLabel()}`;
-
-        const lists = {
-            Rp: document.getElementById('listR_pend'),
-            Rc: document.getElementById('listR_conf'),
-            Pp: document.getElementById('listP_pend'),
-            Pc: document.getElementById('listP_conf')
+        const lists = { 
+            Rp: document.getElementById('listR_pend'), Rc: document.getElementById('listR_conf'),
+            Pp: document.getElementById('listP_pend'), Pc: document.getElementById('listP_conf')
         };
-
         Object.values(lists).forEach(l => l.innerHTML = '');
 
-        let tR = 0, tP = 0;
-        let saldoCaixaPrev = Number(data.saldoIniCaixa || 0);
-        let saldoBancoPrev = Number((data.saldoIniBanco ?? data.saldoIni) || 0);
-        let saldoCaixaReal = Number(data.saldoIniCaixa || 0);
-        let saldoBancoReal = Number((data.saldoIniBanco ?? data.saldoIni) || 0);
+        let tR = 0, tP = 0, sCaixa = Number(data.saldoIniCaixa || 0), sBanco = Number(data.saldoIniBanco || 0);
+        let cR = 0, cP = 0;
 
-        const rPend = [];
-        const rConf = [];
-        const pPend = [];
-        const pConf = [];
+        const createRow = (item, type) => {
+            const isR = type === 'R';
+            return `
+                <div class="entry-row flex items-center gap-3 p-3 bg-white rounded-xl shadow-sm">
+                    <input type="checkbox" ${item.ok ? 'checked' : ''} onchange="window.toggleItem('${type}', ${item.id})" class="w-5 h-5 cursor-pointer">
+                    <div class="w-8 h-8 flex items-center justify-center bg-slate-100 rounded-lg text-[10px] font-black text-slate-500">${String(item.dia).padStart(2,'0')}</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-xs font-bold text-slate-700 truncate ${item.ok ? 'line-through opacity-40' : ''}">${item.desc}</div>
+                        <div class="text-[9px] font-bold uppercase ${item.conta === 'caixa' ? 'text-amber-500' : 'text-blue-500'}">${item.conta || 'banco'}</div>
+                    </div>
+                    <div class="metric-number text-sm ${isR ? 'text-emerald-600' : 'text-rose-500'}">${formatBRL(item.valor)}</div>
+                    <button onclick="window.editItem('${type}', ${item.id})" class="text-slate-300 hover:text-blue-500"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+                    <button onclick="window.delItem('${type}', ${item.id})" class="text-slate-300 hover:text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                </div>
+            `;
+        };
 
         data.R.sort((a,b) => a.dia - b.dia).forEach(item => {
-            const html = createListRow(item, 'R');
-            const conta = item.conta || 'banco';
-
-            tR += Number(item.valor || 0);
-
-            if (conta === 'caixa') saldoCaixaPrev += Number(item.valor || 0);
-            else saldoBancoPrev += Number(item.valor || 0);
-
+            tR += Number(item.valor);
             if (item.ok) {
-                if (conta === 'caixa') saldoCaixaReal += Number(item.valor || 0);
-                else saldoBancoReal += Number(item.valor || 0);
-
-                if (matchFiltroConta(item)) {
-                    rConf.push(item);
-                    lists.Rc.innerHTML += html;
-                }
+                if (item.conta === 'caixa') sCaixa += Number(item.valor); else sBanco += Number(item.valor);
+                lists.Rc.innerHTML += createRow(item, 'R'); cR++;
             } else {
-                if (matchFiltroConta(item)) {
-                    rPend.push(item);
-                    lists.Rp.innerHTML += html;
-                }
+                lists.Rp.innerHTML += createRow(item, 'R');
             }
         });
 
         data.P.sort((a,b) => a.dia - b.dia).forEach(item => {
-            const html = createListRow(item, 'P');
-            const conta = item.conta || 'banco';
-
-            tP += Number(item.valor || 0);
-
-            if (conta === 'caixa') saldoCaixaPrev -= Number(item.valor || 0);
-            else saldoBancoPrev -= Number(item.valor || 0);
-
+            tP += Number(item.valor);
             if (item.ok) {
-                if (conta === 'caixa') saldoCaixaReal -= Number(item.valor || 0);
-                else saldoBancoReal -= Number(item.valor || 0);
-
-                if (matchFiltroConta(item)) {
-                    pConf.push(item);
-                    lists.Pc.innerHTML += html;
-                }
+                if (item.conta === 'caixa') sCaixa -= Number(item.valor); else sBanco -= Number(item.valor);
+                lists.Pc.innerHTML += createRow(item, 'P'); cP++;
             } else {
-                if (matchFiltroConta(item)) {
-                    pPend.push(item);
-                    lists.Pp.innerHTML += html;
-                }
+                lists.Pp.innerHTML += createRow(item, 'P');
             }
         });
 
-        updateSectionStats('countR_pend', 'sumR_pend', rPend);
-        updateSectionStats('countR_conf', 'sumR_conf', rConf);
-        updateSectionStats('countP_pend', 'sumP_pend', pPend);
-        updateSectionStats('countP_conf', 'sumP_conf', pConf);
-
-        if (!rPend.length) lists.Rp.innerHTML = emptyStateHTML('Nenhum lançamento pendente nesta visualização.');
-        if (!rConf.length) lists.Rc.innerHTML = emptyStateHTML('Nenhum lançamento confirmado nesta visualização.');
-        if (!pPend.length) lists.Pp.innerHTML = emptyStateHTML('Nenhum lançamento pendente nesta visualização.');
-        if (!pConf.length) lists.Pc.innerHTML = emptyStateHTML('Nenhum lançamento quitado nesta visualização.');
-
-        const totalSaldo = saldoCaixaPrev + saldoBancoPrev;
-        const saldoReal = saldoCaixaReal + saldoBancoReal;
-        const totalSaldoEl = document.getElementById('totalSaldo');
-
         document.getElementById('totalR').innerText = formatBRL(tR);
         document.getElementById('totalP').innerText = formatBRL(tP);
-        document.getElementById('saldoCaixa').innerText = formatBRL(saldoCaixaReal);
-        document.getElementById('saldoBanco').innerText = formatBRL(saldoBancoReal);
-        document.getElementById('realMao').innerText = formatBRL(saldoReal);
+        document.getElementById('totalSaldo').innerText = formatBRL((sCaixa + sBanco) + (tR - data.R.filter(x=>x.ok).reduce((a,b)=>a+b.valor,0)) - (tP - data.P.filter(x=>x.ok).reduce((a,b)=>a+b.valor,0)));
+        document.getElementById('realMao').innerText = formatBRL(sCaixa + sBanco);
+        document.getElementById('saldoCaixa').innerText = `Caixa: ${formatBRL(sCaixa)}`;
+        document.getElementById('saldoBanco').innerText = `Banco: ${formatBRL(sBanco)}`;
+        document.getElementById('countR_conf').innerText = cR;
+        document.getElementById('countP_conf').innerText = cP;
 
-        totalSaldoEl.innerText = formatBRL(totalSaldo);
-        totalSaldoEl.className = `metric-number text-[30px] md:text-[40px] ${totalSaldo < 0 ? 'negative-val' : 'text-white'}`;
-
-        updateCollapseState();
-        updateFormCollapseState();
-        applyCompactMode();
-        applyUltraFocusMode();
         lucide.createIcons();
     }
 
-    window.toggleItem = async (type, itemId) => {
-        const id = getMonthKey();
-        ensureMonthData(id);
-        const item = db[id][type].find(i => i.id == itemId);
-        if (item) item.ok = !item.ok;
-        render();
-        sync(id);
-    };
+    // --- EVENTOS ---
+    function bindEvents() {
+        const vInput = document.getElementById('f_valor');
+        vInput.oninput = () => applyMoneyMask(vInput);
+        
+        document.getElementById('f_saldo_ini_caixa').onblur = (e) => {
+            db[getMonthKey()].saldoIniCaixa = parseBRL(e.target.value);
+            sync(getMonthKey()); render();
+        };
+        document.getElementById('f_saldo_ini_banco').onblur = (e) => {
+            db[getMonthKey()].saldoIniBanco = parseBRL(e.target.value);
+            sync(getMonthKey()); render();
+        };
 
-    window.editItem = (type, itemId) => {
-        const id = getMonthKey();
-        ensureMonthData(id);
+        document.getElementById('btnAddR').onclick = () => addItem('R');
+        document.getElementById('btnAddP').onclick = () => addItem('P');
+        
+        // Collapses
+        const setupToggle = (btnId, wrapId) => {
+            document.getElementById(btnId).onclick = () => document.getElementById(wrapId).classList.toggle('open');
+        };
+        setupToggle('btnToggleRConf', 'wrapR_conf');
+        setupToggle('btnTogglePConf', 'wrapP_conf');
+        setupToggle('btnToggleSaldoIni', 'wrapSaldoIni');
 
-        const item = db[id][type].find(i => i.id == itemId);
-        if (!item) return;
+        document.getElementById('btnUltraFocus').onclick = () => {
+            modoUltraFoco = !modoUltraFoco;
+            localStorage.setItem('ultraFoco', modoUltraFoco);
+            document.body.classList.toggle('ultra-focus');
+        };
 
-        editingItem = { dbKey: id, type, itemId };
+        document.getElementById('btnExportJSON').onclick = () => {
+            const blob = new Blob([JSON.stringify(db)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = `backup_financeiro_${new Date().getTime()}.json`;
+            a.click();
+        };
+    }
 
-        document.getElementById('edit_dia').value = item.dia;
-        document.getElementById('edit_desc').value = item.desc;
-        document.getElementById('edit_valor').value = formatBRL(item.valor);
-        document.getElementById('edit_ok').checked = !!item.ok;
-        document.getElementById('edit_conta').value = item.conta || 'banco';
-
-        const modal = document.getElementById('editModal');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-
-        lucide.createIcons();
-    };
-
-    window.closeEditModal = () => {
-        const modal = document.getElementById('editModal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        editingItem = null;
-    };
-
-    window.saveEdit = async () => {
-        if (!editingItem) return;
-
-        const { dbKey, type, itemId } = editingItem;
-        const item = db[dbKey][type].find(i => i.id == itemId);
-        if (!item) return;
-
-        const novoDia = parseInt(document.getElementById('edit_dia').value) || item.dia;
-        const novaDesc = document.getElementById('edit_desc').value.trim().toUpperCase();
-        const novoValor = parseBRL(document.getElementById('edit_valor').value) || item.valor;
-        const novoStatus = document.getElementById('edit_ok').checked;
-        const novaConta = document.getElementById('edit_conta').value || 'banco';
-
-        item.dia = novoDia;
-        item.desc = novaDesc || item.desc;
-        item.valor = novoValor;
-        item.ok = novoStatus;
-        item.conta = novaConta;
-
-        await sync(dbKey);
-        render();
-        closeEditModal();
-    };
-
-    window.delItem = async (type, itemId, desc) => {
-        const id = getMonthKey();
-        ensureMonthData(id);
-
-        const match = String(desc).match(/(.+)\s\(\d+\/\d+\)$/);
-
-        if (match && confirm(`Apagar TODAS as parcelas de "${match[1]}"?`)) {
-            for (const k of Object.keys(db)) {
-                if (db[k]) {
-                    db[k] = getDefaultMonthData(db[k]);
-                    db[k][type] = db[k][type].filter(i => !String(i.desc).startsWith(match[1]));
-                    await sync(k);
-                }
-            }
-        } else if (confirm("Excluir?")) {
-            db[id][type] = db[id][type].filter(i => i.id != itemId);
-            await sync(id);
-        }
-
-        render();
-    };
-
-    const addItem = async (type) => {
+    async function addItem(type) {
         const desc = document.getElementById('f_desc').value.trim().toUpperCase();
         const valor = parseBRL(document.getElementById('f_valor').value);
-        const dia = parseInt(document.getElementById('f_dia').value) || new Date().getDate();
+        const dia = Math.min(31, Math.max(1, parseInt(document.getElementById('f_dia').value) || new Date().getDate()));
         const parc = parseInt(document.getElementById('f_parc').value) || 1;
-        const conta = document.getElementById('f_conta').value || 'banco';
+        const conta = document.getElementById('f_conta').value;
 
-        if (!desc || valor <= 0) return;
+        if (!desc || valor <= 0) return alert("Preencha descrição e valor!");
 
         let m = parseInt(document.getElementById('f_mes').value);
         let a = parseInt(document.getElementById('f_ano').value);
 
         for (let i = 0; i < parc; i++) {
-            const mesId = `${m}_${a}`;
-            ensureMonthData(mesId);
-
-            db[mesId][type].push({
-                id: Date.now() + i + Math.random(),
+            const key = `${m}_${a}`;
+            if (!db[key]) db[key] = { R: [], P: [], saldoIniCaixa: 0, saldoIniBanco: 0 };
+            
+            db[key][type].push({
+                id: Date.now() + Math.random(),
                 dia,
                 desc: parc > 1 ? `${desc} (${i+1}/${parc})` : desc,
                 valor,
                 ok: false,
                 conta
             });
-
-            await sync(mesId);
-
-            m++;
-            if (m > 11) {
-                m = 0;
-                a++;
-            }
+            await sync(key);
+            if (++m > 11) { m = 0; a++; }
         }
 
+        // Limpar formulário e focar no dia para próximo lançamento
         document.getElementById('f_desc').value = '';
         document.getElementById('f_valor').value = '';
-        document.getElementById('f_parc').value = 1;
-        document.getElementById('f_conta').value = 'banco';
-
+        document.getElementById('f_dia').focus();
         render();
-    };
-
-    function openTransferModal() {
-        const modal = document.getElementById('transferModal');
-        document.getElementById('trans_dia').value = new Date().getDate();
-        document.getElementById('trans_valor').value = '';
-        document.getElementById('trans_origem').value = 'banco';
-        document.getElementById('trans_destino').value = 'caixa';
-        document.getElementById('trans_obs').value = '';
-        document.getElementById('trans_ok').checked = true;
-
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        lucide.createIcons();
     }
 
-    window.closeTransferModal = () => {
-        const modal = document.getElementById('transferModal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
+    // --- FUNÇÕES GLOBAIS (WINDOW) ---
+    window.toggleItem = async (type, id) => {
+        const key = getMonthKey();
+        const item = db[key][type].find(x => x.id === id);
+        if (item) item.ok = !item.ok;
+        await sync(key); render();
     };
 
-    async function saveTransfer() {
-        const id = getMonthKey();
-        ensureMonthData(id);
+    window.delItem = async (type, id) => {
+        if (!confirm("Excluir lançamento?")) return;
+        const key = getMonthKey();
+        db[key][type] = db[key][type].filter(x => x.id !== id);
+        await sync(key); render();
+    };
 
-        const dia = parseInt(document.getElementById('trans_dia').value) || new Date().getDate();
-        const valor = parseBRL(document.getElementById('trans_valor').value);
-        const origem = document.getElementById('trans_origem').value;
-        const destino = document.getElementById('trans_destino').value;
-        const obs = document.getElementById('trans_obs').value.trim().toUpperCase();
-        const ok = document.getElementById('trans_ok').checked;
+    window.editItem = (type, id) => {
+        const key = getMonthKey();
+        const item = db[key][type].find(x => x.id === id);
+        editingItem = { type, id, key };
+        
+        document.getElementById('edit_dia').value = item.dia;
+        document.getElementById('edit_desc').value = item.desc;
+        document.getElementById('edit_valor').value = formatBRL(item.valor);
+        document.getElementById('edit_conta').value = item.conta || 'banco';
+        document.getElementById('edit_ok').checked = item.ok;
+        
+        document.getElementById('editModal').classList.remove('hidden');
+        document.getElementById('edit_valor').oninput = (e) => applyMoneyMask(e.target);
+    };
 
-        if (valor <= 0) {
-            alert('Informe um valor válido.');
-            return;
-        }
+    window.closeEditModal = () => document.getElementById('editModal').classList.add('hidden');
 
-        if (origem === destino) {
-            alert('Origem e destino precisam ser diferentes.');
-            return;
-        }
+    window.saveEdit = async () => {
+        const item = db[editingItem.key][editingItem.type].find(x => x.id === editingItem.id);
+        item.dia = parseInt(document.getElementById('edit_dia').value);
+        item.desc = document.getElementById('edit_desc').value.toUpperCase();
+        item.valor = parseBRL(document.getElementById('edit_valor').value);
+        item.conta = document.getElementById('edit_conta').value;
+        item.ok = document.getElementById('edit_ok').checked;
 
-        const descSaidaBase = origem === 'caixa' ? 'TRANSFERÊNCIA P/ BANCO' : 'TRANSFERÊNCIA P/ CAIXA';
-        const descEntradaBase = origem === 'caixa' ? 'TRANSFERÊNCIA DO CAIXA' : 'TRANSFERÊNCIA DO BANCO';
-
-        const descSaida = obs ? `${descSaidaBase} - ${obs}` : descSaidaBase;
-        const descEntrada = obs ? `${descEntradaBase} - ${obs}` : descEntradaBase;
-
-        db[id].P.push({
-            id: Date.now() + Math.random(),
-            dia,
-            desc: descSaida,
-            valor,
-            ok,
-            conta: origem
-        });
-
-        db[id].R.push({
-            id: Date.now() + Math.random() + 1,
-            dia,
-            desc: descEntrada,
-            valor,
-            ok,
-            conta: destino
-        });
-
-        await sync(id);
+        await sync(editingItem.key);
         render();
-        closeTransferModal();
-    }
-
-    function exportarCSV(f) {
-        const id = getMonthKey();
-        const data = ensureMonthData(id);
-
-        let csv = `Tipo;Dia;Descricao;Conta;Valor;Status\n`;
-
-        data.R.forEach(i => csv += `Entrada;${i.dia};${i.desc};${i.conta || 'banco'};${i.valor};${i.ok ? 'OK' : 'PEND'}\n`);
-        data.P.forEach(i => csv += `Saida;${i.dia};${i.desc};${i.conta || 'banco'};${i.valor};${i.ok ? 'OK' : 'PEND'}\n`);
-
-        const b = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
-        const l = document.createElement("a");
-        l.href = URL.createObjectURL(b);
-        l.download = (f || `Financeiro_${id}`) + ".csv";
-        l.click();
-    }
-
-    function exportarJSON() {
-        const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json;charset=utf-8' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `BACKUP_FINANCEIRO_V27_6.json`;
-        link.click();
-    }
-
-    function verificarBackupAutomatico() {
-        const h = new Date().toLocaleDateString('pt-br').replace(/\//g, '-');
-        if (localStorage.getItem('last_backup_v27_6') !== h) {
-            setTimeout(() => {
-                exportarCSV(`AUTO_BACKUP_${h}`);
-                localStorage.setItem('last_backup_v27_6', h);
-            }, 5000);
-        }
-    }
-
-    document.getElementById('btnImportJSON').onclick = () => {
-        const i = document.createElement('input');
-        i.type = 'file';
-        i.accept = '.json';
-
-        i.onchange = e => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const r = new FileReader();
-            r.onload = async ev => {
-                try {
-                    const imp = JSON.parse(ev.target.result);
-                    if (!confirm("Substituir / mesclar dados do backup?")) return;
-
-                    for (const [k, v] of Object.entries(imp)) {
-                        db[k] = getDefaultMonthData(v);
-
-                        db[k].R = db[k].R.map(item => ({
-                            ...item,
-                            conta: item.conta || 'banco'
-                        }));
-
-                        db[k].P = db[k].P.map(item => ({
-                            ...item,
-                            conta: item.conta || 'banco'
-                        }));
-
-                        await setDoc(doc(db_fire, "financeiro", k), db[k]);
-                    }
-
-                    render();
-                    alert("Backup importado com sucesso.");
-                } catch (err) {
-                    console.error(err);
-                    alert("Arquivo JSON inválido.");
-                }
-            };
-            r.readAsText(file);
-        };
-
-        i.click();
-    };
-
-    document.getElementById('btnRelatorio').onclick = () => {
-        const ano = document.getElementById('f_ano').value;
-        document.getElementById('labelAnoReport').innerText = ano;
-
-        const body = document.getElementById('bodyRelatorioAnual');
-        body.innerHTML = '';
-
-        for (let m = 0; m < 12; m++) {
-            const d = getDefaultMonthData(db[`${m}_${ano}`] || {});
-            const ent = d.R.reduce((a,b) => a + Number(b.valor || 0), 0);
-            const sai = d.P.reduce((a,b) => a + Number(b.valor || 0), 0);
-            const saldo = ent - sai;
-
-            body.innerHTML += `
-                <tr class="border-b border-[#edf3fa] transition-all">
-                    <td class="py-3">
-                        <span class="inline-flex px-3 py-1 rounded-full bg-[#f5f9ff] text-slate-700 font-black text-[11px] border border-[#e1ebf8]">
-                            ${mesesNomes[m]}
-                        </span>
-                    </td>
-                    <td class="py-3 text-emerald-600 font-bold">${formatBRL(ent)}</td>
-                    <td class="py-3 text-rose-500 font-bold">${formatBRL(sai)}</td>
-                    <td class="py-3 font-black ${saldo < 0 ? 'text-rose-500' : 'text-slate-800'}">${formatBRL(saldo)}</td>
-                    <td class="py-3 text-right">
-                        <button onclick="window.irParaMes(${m})" class="bg-[#4b7fff] text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.16em] shadow-sm hover:bg-[#3f73f3] transition-all">
-                            Ver
-                        </button>
-                    </td>
-                </tr>
-            `;
-        }
-
-        document.getElementById('mainContent').classList.add('hidden');
-        document.getElementById('filterSection').classList.add('hidden');
-        document.getElementById('summarySection').classList.add('hidden');
-        document.getElementById('sectionAnual').classList.remove('hidden');
-        lucide.createIcons();
-    };
-
-    window.irParaMes = (m) => {
-        document.getElementById('f_mes').value = m;
-        document.getElementById('btnCloseAnual').click();
-        render();
-    };
-
-    document.getElementById('btnCloseAnual').onclick = () => {
-        document.getElementById('mainContent').classList.remove('hidden');
-        document.getElementById('filterSection').classList.remove('hidden');
-        document.getElementById('summarySection').classList.remove('hidden');
-        document.getElementById('sectionAnual').classList.add('hidden');
+        closeEditModal();
     };
 
     init();
