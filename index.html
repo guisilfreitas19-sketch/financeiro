@@ -3,44 +3,47 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro Pro v27</title>
+    <title>Financeiro Pro v27.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-top: #f2f7ff;
-            --bg-bottom: #fbfdff;
+            --bg-top: #f3f8ff;
+            --bg-bottom: #fcfdff;
+
             --panel: #ffffff;
-            --panel-soft: #f8fbff;
-            --line: #dfe9f5;
+            --panel-soft: #f9fbff;
+
+            --line: #dde8f5;
             --line-soft: #e9f0f8;
-            --text: #17324d;
-            --muted: #7690ab;
 
-            --blue: #2f6fed;
-            --blue-2: #4f8cff;
+            --text: #18324a;
+            --muted: #7c93ac;
+
+            --blue: #3d7bfd;
+            --blue-2: #5d95ff;
             --blue-soft: #eef5ff;
-            --blue-line: #cfe0ff;
+            --blue-line: #d1e2ff;
 
-            --green: #15b67a;
-            --green-soft: #effdf7;
-            --green-line: #caf3df;
+            --green: #18b778;
+            --green-soft: #eefdf6;
+            --green-line: #c8f3dd;
 
-            --red: #f25572;
+            --red: #f35d78;
             --red-soft: #fff3f6;
-            --red-line: #ffd7df;
+            --red-line: #ffd8df;
 
-            --amber: #f4a11a;
+            --amber: #f3a31f;
             --amber-soft: #fff8ea;
-            --amber-line: #ffe1a8;
+            --amber-line: #ffe3ae;
 
-            --violet: #7c66ff;
-            --violet-soft: #f3efff;
-            --violet-line: #ddd4ff;
+            --violet: #7a68ff;
+            --violet-soft: #f2efff;
+            --violet-line: #ddd6ff;
 
-            --shadow-1: 0 10px 30px rgba(48, 88, 140, .08);
-            --shadow-2: 0 3px 10px rgba(48, 88, 140, .05);
+            --shadow-1: 0 14px 36px rgba(56, 96, 150, .08);
+            --shadow-2: 0 4px 14px rgba(56, 96, 150, .05);
         }
 
         * { box-sizing: border-box; }
@@ -48,8 +51,8 @@
 
         body {
             background:
-                radial-gradient(circle at top left, rgba(88, 149, 255, .10), transparent 30%),
-                radial-gradient(circle at top right, rgba(124, 102, 255, .08), transparent 28%),
+                radial-gradient(circle at top left, rgba(93,149,255,.11), transparent 28%),
+                radial-gradient(circle at top right, rgba(122,104,255,.08), transparent 24%),
                 linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: var(--text);
@@ -62,10 +65,10 @@
         }
 
         .shell-card {
-            background: rgba(255,255,255,.86);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(223,233,245,.9);
-            border-radius: 24px;
+            background: rgba(255,255,255,.84);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(221,232,245,.88);
+            border-radius: 28px;
             box-shadow: var(--shadow-1);
         }
 
@@ -77,7 +80,7 @@
         }
 
         .panel-soft {
-            background: linear-gradient(180deg, #ffffff 0%, #fafeff 100%);
+            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
             border: 1px solid var(--line-soft);
             border-radius: 20px;
             box-shadow: var(--shadow-2);
@@ -85,15 +88,15 @@
 
         .hero-main {
             background:
-                radial-gradient(circle at top right, rgba(255,255,255,.22), transparent 30%),
-                linear-gradient(135deg, #5c89ff 0%, #3b73ff 50%, #6e78ff 100%);
+                radial-gradient(circle at 85% 10%, rgba(255,255,255,.23), transparent 24%),
+                linear-gradient(135deg, #6b96ff 0%, #417dff 48%, #6e7fff 100%);
             color: white;
             border: none;
-            box-shadow: 0 18px 40px rgba(79,140,255,.24);
+            box-shadow: 0 20px 42px rgba(79,140,255,.26);
         }
 
         .metric-card {
-            min-height: 132px;
+            min-height: 134px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -104,12 +107,12 @@
         .metric-card::after {
             content: "";
             position: absolute;
-            inset: auto -18px -26px auto;
-            width: 90px;
-            height: 90px;
+            right: -16px;
+            bottom: -26px;
+            width: 96px;
+            height: 96px;
             border-radius: 999px;
-            background: rgba(255,255,255,.16);
-            filter: blur(0px);
+            background: rgba(255,255,255,.15);
         }
 
         .metric-card.soft-blue {
@@ -117,7 +120,7 @@
         }
 
         .metric-card.soft-green {
-            background: linear-gradient(180deg, #ffffff 0%, #f5fffb 100%);
+            background: linear-gradient(180deg, #ffffff 0%, #f4fff9 100%);
         }
 
         .metric-card.soft-red {
@@ -125,7 +128,7 @@
         }
 
         .metric-card.soft-amber {
-            background: linear-gradient(180deg, #ffffff 0%, #fffaf1 100%);
+            background: linear-gradient(180deg, #ffffff 0%, #fffaf2 100%);
         }
 
         .metric-number {
@@ -149,14 +152,14 @@
             display: inline-flex;
             align-items: center;
             gap: .4rem;
-            padding: .38rem .68rem;
+            padding: .38rem .72rem;
             border-radius: 999px;
             font-size: 9px;
             font-weight: 800;
             letter-spacing: .08em;
             text-transform: uppercase;
             background: var(--green-soft);
-            color: #0f9f67;
+            color: #0f9d67;
             border: 1px solid var(--green-line);
         }
 
@@ -182,7 +185,7 @@
         .premium-input,
         .premium-select {
             width: 100%;
-            border-radius: 16px;
+            border-radius: 15px;
             border: 1px solid var(--line);
             background: #fff;
             outline: none;
@@ -193,30 +196,30 @@
         .premium-input:focus,
         .premium-select:focus {
             border-color: var(--blue-2);
-            box-shadow: 0 0 0 4px rgba(79,140,255,.12);
+            box-shadow: 0 0 0 4px rgba(93,149,255,.12);
         }
 
         .money-input {
-            border: 2px solid #d8e7ff;
+            border: 2px solid #d9e8ff;
             box-shadow: inset 0 2px 5px rgba(75,118,172,.04);
         }
 
         .money-input:focus {
             border-color: var(--blue);
             box-shadow:
-                0 0 0 4px rgba(79,140,255,.12),
+                0 0 0 4px rgba(93,149,255,.12),
                 inset 0 2px 5px rgba(75,118,172,.04);
         }
 
         .metric-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 14px;
+            width: 40px;
+            height: 40px;
+            border-radius: 15px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             background: rgba(255,255,255,.18);
-            border: 1px solid rgba(255,255,255,.25);
+            border: 1px solid rgba(255,255,255,.26);
         }
 
         .metric-icon-soft {
@@ -227,16 +230,79 @@
             align-items: center;
             justify-content: center;
             border: 1px solid #e3ecf8;
-            background: #ffffff;
-            box-shadow: 0 4px 12px rgba(48,88,140,.05);
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(56,96,150,.05);
+        }
+
+        .filter-btn {
+            border: 1px solid var(--line);
+            background: #fff;
+            color: #5f7893;
+            border-radius: 13px;
+            padding: .74rem 1rem;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            line-height: 1;
+            transition: .18s ease;
+            box-shadow: 0 3px 10px rgba(56,96,150,.03);
+        }
+
+        .filter-btn:hover {
+            background: #f8fbff;
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #6592ff 0%, #467dff 100%);
+            color: white;
+            border-color: #4d82ff;
+            box-shadow: 0 10px 22px rgba(93,149,255,.2);
+        }
+
+        .toolbar-card {
+            background: linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(248,251,255,.96) 100%);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            box-shadow: var(--shadow-2);
+        }
+
+        .form-wrap {
+            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            box-shadow: var(--shadow-2);
+        }
+
+        .form-block {
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid #e8eff8;
+            background: linear-gradient(180deg, #ffffff 0%, #fafdff 100%);
         }
 
         .section-box {
             padding: 18px;
-            border-radius: 22px;
+            border-radius: 24px;
             border: 1px solid var(--line);
-            background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(249,252,255,.98) 100%);
+            background: linear-gradient(180deg, rgba(255,255,255,.99) 0%, rgba(249,252,255,.98) 100%);
             box-shadow: var(--shadow-2);
+        }
+
+        .section-shell {
+            border-radius: 20px;
+            padding: 12px;
+        }
+
+        .section-shell.green {
+            background: linear-gradient(180deg, #f3fff9 0%, #ffffff 100%);
+            border: 1px solid #d9f7e8;
+        }
+
+        .section-shell.red {
+            background: linear-gradient(180deg, #fff7f9 0%, #ffffff 100%);
+            border: 1px solid #ffe3e9;
         }
 
         .section-header {
@@ -244,9 +310,9 @@
             align-items: center;
             justify-content: space-between;
             gap: 1rem;
-            padding: 0 2px 14px 2px;
+            padding: 0 4px 14px 4px;
             border-bottom: 1px solid #edf3fa;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .section-left {
@@ -257,94 +323,8 @@
 
         .section-pill {
             width: 8px;
-            height: 30px;
+            height: 32px;
             border-radius: 999px;
-        }
-
-        .section-top-green {
-            background: linear-gradient(90deg, #effdf7 0%, rgba(255,255,255,0) 100%);
-            border-radius: 18px;
-            padding: 12px 14px;
-            margin: -4px -4px 14px -4px;
-            border: 1px solid var(--green-line);
-        }
-
-        .section-top-red {
-            background: linear-gradient(90deg, #fff3f6 0%, rgba(255,255,255,0) 100%);
-            border-radius: 18px;
-            padding: 12px 14px;
-            margin: -4px -4px 14px -4px;
-            border: 1px solid var(--red-line);
-        }
-
-        .tag-chip {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: .34rem .62rem;
-            border-radius: 999px;
-            font-size: 9px;
-            font-weight: 800;
-            line-height: 1;
-        }
-
-        .filter-btn {
-            border: 1px solid var(--line);
-            background: #fff;
-            color: #5d7691;
-            border-radius: 13px;
-            padding: .74rem 1rem;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-            line-height: 1;
-            transition: .18s ease;
-            box-shadow: 0 3px 10px rgba(48,88,140,.03);
-        }
-
-        .filter-btn:hover {
-            background: #f8fbff;
-            transform: translateY(-1px);
-        }
-
-        .filter-btn.active {
-            background: linear-gradient(135deg, #5a87ff 0%, #4279ff 100%);
-            color: white;
-            border-color: #4b7fff;
-            box-shadow: 0 10px 20px rgba(79,140,255,.2);
-        }
-
-        .entry-row {
-            transition: all .18s ease;
-            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-        }
-
-        .entry-row:hover {
-            transform: translateY(-1px);
-            border-color: #cfe0ff;
-            box-shadow: 0 12px 24px rgba(48,88,140,.08);
-        }
-
-        .empty-state {
-            border: 1px dashed #d8e5f4;
-            background: linear-gradient(180deg, #fbfdff 0%, #f7fbff 100%);
-            border-radius: 18px;
-            padding: 18px;
-            text-align: center;
-            color: var(--muted);
-        }
-
-        .empty-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 14px;
-            margin: 0 auto 10px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #ffffff;
-            border: 1px solid #e4edf8;
         }
 
         .subgroup {
@@ -353,8 +333,8 @@
         }
 
         .subgroup.green {
-            background: linear-gradient(180deg, #fcfffd 0%, #f6fffb 100%);
-            border: 1px solid #e1f7ec;
+            background: linear-gradient(180deg, #fcfffd 0%, #f5fff9 100%);
+            border: 1px solid #e0f7ec;
         }
 
         .subgroup.red {
@@ -404,11 +384,69 @@
             padding: .3rem .55rem;
         }
 
-        .form-block {
-            padding: 14px;
+        .collapse-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            border-radius: 12px;
+            padding: .55rem .75rem;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            line-height: 1;
+            transition: .18s ease;
+            background: #fff;
+            border: 1px solid #e6eef8;
+            color: #5f7893;
+        }
+
+        .collapse-btn:hover {
+            background: #f8fbff;
+            transform: translateY(-1px);
+        }
+
+        .tag-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: .34rem .62rem;
+            border-radius: 999px;
+            font-size: 9px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .entry-row {
+            transition: all .18s ease;
+            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+        }
+
+        .entry-row:hover {
+            transform: translateY(-1px);
+            border-color: #cfe0ff;
+            box-shadow: 0 12px 24px rgba(56,96,150,.08);
+        }
+
+        .empty-state {
+            border: 1px dashed #d8e5f4;
+            background: linear-gradient(180deg, #fbfdff 0%, #f7fbff 100%);
             border-radius: 18px;
-            border: 1px solid #e8eff8;
-            background: linear-gradient(180deg, #ffffff 0%, #fafdff 100%);
+            padding: 18px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .empty-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            margin: 0 auto 10px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border: 1px solid #e4edf8;
         }
 
         .scroll-soft::-webkit-scrollbar {
@@ -421,7 +459,7 @@
             border-radius: 999px;
         }
 
-        .negative-val { color: #ffd7e0 !important; }
+        .negative-val { color: #ffe0e7 !important; }
 
         input[type="checkbox"] {
             appearance: none;
@@ -437,9 +475,9 @@
         }
 
         input[type="checkbox"]:checked {
-            background: linear-gradient(135deg, #5a87ff 0%, #4279ff 100%);
-            border-color: #4b7fff;
-            box-shadow: 0 0 0 4px rgba(79,140,255,.1);
+            background: linear-gradient(135deg, #6592ff 0%, #467dff 100%);
+            border-color: #4d82ff;
+            box-shadow: 0 0 0 4px rgba(93,149,255,.1);
         }
 
         input[type="checkbox"]:checked::after {
@@ -467,7 +505,7 @@
     </style>
 </head>
 <body class="p-2 md:p-3">
-<div id="appContainer" class="app-shell viewport-fit max-w-[1620px] mx-auto flex flex-col gap-4">
+<div id="appContainer" class="app-shell viewport-fit max-w-[1640px] mx-auto flex flex-col gap-4">
 
     <div class="shell-card p-3 md:p-4 flex flex-col gap-4">
 
@@ -479,9 +517,9 @@
                 </div>
 
                 <div>
-                    <h1 class="text-xl md:text-[25px] font-black tracking-tight text-slate-800 uppercase leading-none">
+                    <h1 class="text-xl md:text-[26px] font-black tracking-tight text-slate-800 uppercase leading-none">
                         Financeiro<span class="text-blue-600">Pro</span>
-                        <span class="text-slate-300">v27</span>
+                        <span class="text-slate-300">v27.2</span>
                     </h1>
                     <div class="mt-2 flex items-center gap-2">
                         <div id="statusSync" class="status-badge">
@@ -514,46 +552,46 @@
                             <i data-lucide="bar-chart-4" class="w-5 h-5 text-blue-100"></i>
                         </div>
                     </div>
-                    <p class="compact-note text-blue-50 mt-3 relative z-10">Resultado previsto considerando todas as entradas e saídas do mês.</p>
+                    <p class="text-[12px] leading-[1.4] text-blue-50 mt-3 relative z-10">Resultado previsto considerando todas as entradas e saídas do mês.</p>
                 </div>
 
                 <div class="panel-soft metric-card soft-blue p-4">
                     <div class="flex items-start justify-between gap-3 relative z-10">
                         <div>
                             <span class="eyebrow text-slate-400 block mb-3">Saldo Real</span>
-                            <div id="realMao" class="metric-number text-[25px] md:text-[28px] text-slate-800">R$ 0,00</div>
+                            <div id="realMao" class="metric-number text-[24px] md:text-[28px] text-slate-800">R$ 0,00</div>
                         </div>
                         <div class="metric-icon-soft">
                             <i data-lucide="wallet" class="w-4 h-4 text-slate-500"></i>
                         </div>
                     </div>
-                    <p class="compact-note text-slate-400 mt-3 relative z-10">Somente o que já foi confirmado.</p>
+                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Somente valores já confirmados.</p>
                 </div>
 
                 <div class="panel-soft metric-card soft-amber p-4">
                     <div class="flex items-start justify-between gap-3 relative z-10">
                         <div>
                             <span class="eyebrow text-amber-600 block mb-3">Dinheiro Vivo</span>
-                            <div id="saldoCaixa" class="metric-number text-[25px] md:text-[28px] text-slate-800">R$ 0,00</div>
+                            <div id="saldoCaixa" class="metric-number text-[24px] md:text-[28px] text-slate-800">R$ 0,00</div>
                         </div>
                         <div class="metric-icon-soft">
                             <i data-lucide="hand-coins" class="w-4 h-4 text-amber-600"></i>
                         </div>
                     </div>
-                    <p class="compact-note text-slate-400 mt-3 relative z-10">Saldo real disponível em caixa.</p>
+                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Disponível em caixa.</p>
                 </div>
 
                 <div class="panel-soft metric-card soft-blue p-4">
                     <div class="flex items-start justify-between gap-3 relative z-10">
                         <div>
                             <span class="eyebrow text-blue-600 block mb-3">Banco</span>
-                            <div id="saldoBanco" class="metric-number text-[25px] md:text-[28px] text-slate-800">R$ 0,00</div>
+                            <div id="saldoBanco" class="metric-number text-[24px] md:text-[28px] text-slate-800">R$ 0,00</div>
                         </div>
                         <div class="metric-icon-soft">
                             <i data-lucide="landmark" class="w-4 h-4 text-blue-600"></i>
                         </div>
                     </div>
-                    <p class="compact-note text-slate-400 mt-3 relative z-10">Saldo real disponível em banco.</p>
+                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Disponível em conta bancária.</p>
                 </div>
             </div>
 
@@ -562,26 +600,26 @@
                     <div class="flex items-start justify-between gap-3 relative z-10">
                         <div>
                             <span class="eyebrow text-emerald-600 block mb-3">Entradas</span>
-                            <div id="totalR" class="metric-number text-[26px] md:text-[30px] text-slate-800">R$ 0,00</div>
+                            <div id="totalR" class="metric-number text-[25px] md:text-[30px] text-slate-800">R$ 0,00</div>
                         </div>
                         <div class="metric-icon-soft">
                             <i data-lucide="arrow-down-left" class="w-4 h-4 text-emerald-600"></i>
                         </div>
                     </div>
-                    <p class="compact-note text-slate-400 mt-3 relative z-10">Total lançado como recebimento no mês.</p>
+                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Total lançado como recebimento.</p>
                 </div>
 
                 <div class="panel-soft metric-card soft-red p-4 border border-[#ffe2e8]">
                     <div class="flex items-start justify-between gap-3 relative z-10">
                         <div>
                             <span class="eyebrow text-rose-600 block mb-3">Saídas</span>
-                            <div id="totalP" class="metric-number text-[26px] md:text-[30px] text-slate-800">R$ 0,00</div>
+                            <div id="totalP" class="metric-number text-[25px] md:text-[30px] text-slate-800">R$ 0,00</div>
                         </div>
                         <div class="metric-icon-soft">
                             <i data-lucide="arrow-up-right" class="w-4 h-4 text-rose-600"></i>
                         </div>
                     </div>
-                    <p class="compact-note text-slate-400 mt-3 relative z-10">Total lançado como pagamento no mês.</p>
+                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Total lançado como pagamento.</p>
                 </div>
             </div>
         </section>
@@ -616,10 +654,10 @@
 
         <!-- FILTRO -->
         <section id="filterSection" class="no-print">
-            <div class="panel p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="toolbar-card p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                     <h3 class="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">Filtro de Visualização</h3>
-                    <p class="compact-note text-slate-400 mt-1">Escolha se quer ver todos os lançamentos, só caixa ou só banco.</p>
+                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-1">Escolha se quer ver todos os lançamentos, só caixa ou só banco.</p>
                 </div>
 
                 <div class="flex items-center gap-2">
@@ -635,11 +673,11 @@
 
             <!-- FORM -->
             <aside class="lg:col-span-4 xl:col-span-3 no-print">
-                <div class="panel p-4 space-y-4">
+                <div class="form-wrap p-4 space-y-4">
                     <div class="flex items-start justify-between gap-2">
                         <div>
                             <h3 class="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">Novo Lançamento</h3>
-                            <p class="compact-note text-slate-400 mt-1">Preencha os dados e escolha a conta correta.</p>
+                            <p class="text-[12px] leading-[1.4] text-slate-400 mt-1">Preencha os dados e escolha a conta correta.</p>
                         </div>
 
                         <div class="w-10 h-10 rounded-2xl bg-[#eef5ff] flex items-center justify-center border border-[#d9e7ff] shrink-0">
@@ -656,12 +694,12 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             <div class="panel-soft p-3">
                                 <label class="eyebrow text-slate-400 block mb-2">Caixa</label>
-                                <input type="text" id="f_saldo_ini_caixa" class="premium-input money-input text-[20px] metric-number px-4 py-3 text-slate-800" placeholder="R$ 0,00">
+                                <input type="text" id="f_saldo_ini_caixa" class="premium-input money-input text-[18px] metric-number px-4 py-3 text-slate-800" placeholder="R$ 0,00">
                             </div>
 
                             <div class="panel-soft p-3">
                                 <label class="eyebrow text-slate-400 block mb-2">Banco</label>
-                                <input type="text" id="f_saldo_ini_banco" class="premium-input money-input text-[20px] metric-number px-4 py-3 text-slate-800" placeholder="R$ 0,00">
+                                <input type="text" id="f_saldo_ini_banco" class="premium-input money-input text-[18px] metric-number px-4 py-3 text-slate-800" placeholder="R$ 0,00">
                             </div>
                         </div>
                     </div>
@@ -708,7 +746,7 @@
 
                         <div>
                             <label class="eyebrow text-slate-400 block mb-2">Valor</label>
-                            <input type="text" id="f_valor" placeholder="R$ 0,00" class="premium-input money-input text-center px-4 py-3 text-[28px] metric-number text-slate-900">
+                            <input type="text" id="f_valor" placeholder="R$ 0,00" class="premium-input money-input text-center px-4 py-3 text-[26px] metric-number text-slate-900">
                         </div>
                     </div>
 
@@ -728,92 +766,102 @@
             <!-- LISTAS -->
             <div class="lg:col-span-8 xl:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-4">
 
-                <!-- ENTRADAS -->
                 <section class="section-box">
-                    <div class="section-top-green">
-                        <div class="section-header !border-none !mb-0 !pb-0">
+                    <div class="section-shell green">
+                        <div class="section-header">
                             <div class="section-left">
                                 <div class="section-pill bg-emerald-500"></div>
                                 <div>
                                     <h4 id="tituloEntradas" class="text-[13px] font-black text-slate-900 uppercase tracking-[0.16em] leading-none">Entradas</h4>
-                                    <p class="compact-note text-slate-400 mt-1">Controle do que ainda entra e do que já entrou.</p>
+                                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-1">Controle do que ainda entra e do que já entrou.</p>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="space-y-4">
-                        <div class="subgroup neutral">
-                            <div class="subgroup-header">
-                                <div class="subgroup-title">
-                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.16em]">A Receber</span>
+                        <div class="space-y-4">
+                            <div class="subgroup neutral">
+                                <div class="subgroup-header">
+                                    <div class="subgroup-title">
+                                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.16em]">A Receber</span>
+                                    </div>
+                                    <div class="subgroup-meta">
+                                        <span id="countR_pend" class="mini-count">0 itens</span>
+                                        <span id="sumR_pend" class="mini-total">R$ 0,00</span>
+                                        <span class="tag-chip bg-slate-100 text-slate-500">Pendente</span>
+                                    </div>
                                 </div>
-                                <div class="subgroup-meta">
-                                    <span id="countR_pend" class="mini-count">0 itens</span>
-                                    <span id="sumR_pend" class="mini-total">R$ 0,00</span>
-                                    <span class="tag-chip bg-slate-100 text-slate-500">Pendente</span>
+                                <div id="listR_pend" class="space-y-2.5"></div>
+                            </div>
+
+                            <div class="subgroup green">
+                                <div class="subgroup-header">
+                                    <div class="subgroup-title">
+                                        <span class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.16em]">Confirmadas</span>
+                                    </div>
+                                    <div class="subgroup-meta">
+                                        <span id="countR_conf" class="mini-count">0 itens</span>
+                                        <span id="sumR_conf" class="mini-total">R$ 0,00</span>
+                                        <span class="tag-chip bg-emerald-50 text-emerald-600">Ok</span>
+                                        <button id="btnToggleRConf" class="collapse-btn">
+                                            <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                                            Ver
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="wrapR_conf" class="hidden">
+                                    <div id="listR_conf" class="space-y-2.5"></div>
                                 </div>
                             </div>
-                            <div id="listR_pend" class="space-y-2.5"></div>
-                        </div>
-
-                        <div class="subgroup green">
-                            <div class="subgroup-header">
-                                <div class="subgroup-title">
-                                    <span class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.16em]">Confirmadas</span>
-                                </div>
-                                <div class="subgroup-meta">
-                                    <span id="countR_conf" class="mini-count">0 itens</span>
-                                    <span id="sumR_conf" class="mini-total">R$ 0,00</span>
-                                    <span class="tag-chip bg-emerald-50 text-emerald-600">Ok</span>
-                                </div>
-                            </div>
-                            <div id="listR_conf" class="space-y-2.5"></div>
                         </div>
                     </div>
                 </section>
 
-                <!-- SAÍDAS -->
                 <section class="section-box">
-                    <div class="section-top-red">
-                        <div class="section-header !border-none !mb-0 !pb-0">
+                    <div class="section-shell red">
+                        <div class="section-header">
                             <div class="section-left">
                                 <div class="section-pill bg-rose-500"></div>
                                 <div>
                                     <h4 id="tituloSaidas" class="text-[13px] font-black text-slate-900 uppercase tracking-[0.16em] leading-none">Saídas</h4>
-                                    <p class="compact-note text-slate-400 mt-1">Controle do que ainda precisa pagar e do que já foi quitado.</p>
+                                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-1">Controle do que ainda precisa pagar e do que já foi quitado.</p>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="space-y-4">
-                        <div class="subgroup neutral">
-                            <div class="subgroup-header">
-                                <div class="subgroup-title">
-                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.16em]">A Pagar</span>
+                        <div class="space-y-4">
+                            <div class="subgroup neutral">
+                                <div class="subgroup-header">
+                                    <div class="subgroup-title">
+                                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.16em]">A Pagar</span>
+                                    </div>
+                                    <div class="subgroup-meta">
+                                        <span id="countP_pend" class="mini-count">0 itens</span>
+                                        <span id="sumP_pend" class="mini-total">R$ 0,00</span>
+                                        <span class="tag-chip bg-slate-100 text-slate-500">Pendente</span>
+                                    </div>
                                 </div>
-                                <div class="subgroup-meta">
-                                    <span id="countP_pend" class="mini-count">0 itens</span>
-                                    <span id="sumP_pend" class="mini-total">R$ 0,00</span>
-                                    <span class="tag-chip bg-slate-100 text-slate-500">Pendente</span>
+                                <div id="listP_pend" class="space-y-2.5"></div>
+                            </div>
+
+                            <div class="subgroup red">
+                                <div class="subgroup-header">
+                                    <div class="subgroup-title">
+                                        <span class="text-[10px] font-black text-rose-600 uppercase tracking-[0.16em]">Quitadas</span>
+                                    </div>
+                                    <div class="subgroup-meta">
+                                        <span id="countP_conf" class="mini-count">0 itens</span>
+                                        <span id="sumP_conf" class="mini-total">R$ 0,00</span>
+                                        <span class="tag-chip bg-rose-50 text-rose-600">Ok</span>
+                                        <button id="btnTogglePConf" class="collapse-btn">
+                                            <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                                            Ver
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="wrapP_conf" class="hidden">
+                                    <div id="listP_conf" class="space-y-2.5"></div>
                                 </div>
                             </div>
-                            <div id="listP_pend" class="space-y-2.5"></div>
-                        </div>
-
-                        <div class="subgroup red">
-                            <div class="subgroup-header">
-                                <div class="subgroup-title">
-                                    <span class="text-[10px] font-black text-rose-600 uppercase tracking-[0.16em]">Quitadas</span>
-                                </div>
-                                <div class="subgroup-meta">
-                                    <span id="countP_conf" class="mini-count">0 itens</span>
-                                    <span id="sumP_conf" class="mini-total">R$ 0,00</span>
-                                    <span class="tag-chip bg-rose-50 text-rose-600">Ok</span>
-                                </div>
-                            </div>
-                            <div id="listP_conf" class="space-y-2.5"></div>
                         </div>
                     </div>
                 </section>
@@ -979,6 +1027,9 @@
     let db = {};
     let editingItem = null;
     let filtroConta = 'todos';
+    let mostrarRConf = false;
+    let mostrarPConf = false;
+
     const mesesNomes = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
     function getMonthKey() {
@@ -1044,12 +1095,47 @@
         });
     }
 
+    function bindCollapseButtons() {
+        document.getElementById('btnToggleRConf').onclick = () => {
+            mostrarRConf = !mostrarRConf;
+            updateCollapseState();
+        };
+
+        document.getElementById('btnTogglePConf').onclick = () => {
+            mostrarPConf = !mostrarPConf;
+            updateCollapseState();
+        };
+    }
+
+    function updateCollapseState() {
+        const wrapR = document.getElementById('wrapR_conf');
+        const wrapP = document.getElementById('wrapP_conf');
+        const btnR = document.getElementById('btnToggleRConf');
+        const btnP = document.getElementById('btnTogglePConf');
+
+        wrapR.classList.toggle('hidden', !mostrarRConf);
+        wrapP.classList.toggle('hidden', !mostrarPConf);
+
+        btnR.innerHTML = `
+            <i data-lucide="${mostrarRConf ? 'chevron-up' : 'chevron-down'}" class="w-3.5 h-3.5"></i>
+            ${mostrarRConf ? 'Ocultar' : 'Ver'}
+        `;
+
+        btnP.innerHTML = `
+            <i data-lucide="${mostrarPConf ? 'chevron-up' : 'chevron-down'}" class="w-3.5 h-3.5"></i>
+            ${mostrarPConf ? 'Ocultar' : 'Ver'}
+        `;
+
+        lucide.createIcons();
+    }
+
     async function init() {
         lucide.createIcons();
         setupSelectors();
         await loadData();
         bindEvents();
         setupFiltroConta();
+        bindCollapseButtons();
         render();
         verificarBackupAutomatico();
     }
@@ -1310,6 +1396,7 @@
         totalSaldoEl.innerText = formatBRL(totalSaldo);
         totalSaldoEl.className = `metric-number text-[30px] md:text-[40px] ${totalSaldo < 0 ? 'negative-val' : 'text-white'}`;
 
+        updateCollapseState();
         lucide.createIcons();
     }
 
@@ -1529,16 +1616,16 @@
         const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json;charset=utf-8' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `BACKUP_FINANCEIRO_V27.json`;
+        link.download = `BACKUP_FINANCEIRO_V27_2.json`;
         link.click();
     }
 
     function verificarBackupAutomatico() {
         const h = new Date().toLocaleDateString('pt-br').replace(/\//g, '-');
-        if (localStorage.getItem('last_backup_v27') !== h) {
+        if (localStorage.getItem('last_backup_v27_2') !== h) {
             setTimeout(() => {
                 exportarCSV(`AUTO_BACKUP_${h}`);
-                localStorage.setItem('last_backup_v27', h);
+                localStorage.setItem('last_backup_v27_2', h);
             }, 5000);
         }
     }
