@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro Pro v27.5</title>
+    <title>Financeiro Pro v27.6</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
@@ -133,8 +133,6 @@
             text-transform: uppercase;
             line-height: 1;
         }
-
-        .muted { color: var(--muted); }
 
         .status-badge {
             display: inline-flex;
@@ -357,7 +355,7 @@
         .mini-count {
             font-size: 10px;
             font-weight: 800;
-            color: var(--muted);
+            color: #7c93ac;
         }
 
         .mini-total {
@@ -445,7 +443,7 @@
             border-radius: 18px;
             padding: 18px;
             text-align: center;
-            color: var(--muted);
+            color: #7c93ac;
         }
 
         .empty-icon {
@@ -508,7 +506,6 @@
             50% { opacity: .35; }
         }
 
-        /* MODO COMPACTO */
         body.compact-mode .shell-card { border-radius: 22px; }
         body.compact-mode .panel,
         body.compact-mode .panel-soft,
@@ -556,10 +553,56 @@
         body.compact-mode .empty-state { padding: 12px; border-radius: 14px; }
         body.compact-mode .empty-icon { width: 30px; height: 30px; border-radius: 10px; margin-bottom: 8px; }
 
-        body.compact-mode .grid.grid-cols-2.gap-2.pt-1 { padding-top: 0; }
-        body.compact-mode .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: .65rem; }
-        body.compact-mode .space-y-3 > :not([hidden]) ~ :not([hidden]) { margin-top: .55rem; }
-        body.compact-mode .space-y-2\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: .45rem; }
+        /* ULTRA FOCO */
+        body.ultra-focus #filterSection,
+        body.ultra-focus #btnRelatorio,
+        body.ultra-focus #btnTransferencia,
+        body.ultra-focus #btnExportExcel,
+        body.ultra-focus #btnExportJSON,
+        body.ultra-focus #btnImportJSON,
+        body.ultra-focus .history-block,
+        body.ultra-focus #btnToggleSaldoIni,
+        body.ultra-focus #wrapSaldoIni,
+        body.ultra-focus .support-text,
+        body.ultra-focus .secondary-summary {
+            display: none !important;
+        }
+
+        body.ultra-focus #mainContent {
+            grid-template-columns: 1fr 1.3fr !important;
+        }
+
+        body.ultra-focus aside.lg\:col-span-4,
+        body.ultra-focus .lg\:col-span-8 {
+            grid-column: auto !important;
+        }
+
+        body.ultra-focus .hero-only {
+            display: grid !important;
+        }
+
+        body.ultra-focus .form-wrap {
+            position: sticky;
+            top: 10px;
+        }
+
+        body.ultra-focus .metric-card {
+            min-height: 110px;
+        }
+
+        body.ultra-focus .section-box {
+            padding: 14px;
+        }
+
+        body.ultra-focus .subgroup {
+            padding: 10px;
+        }
+
+        @media (max-width: 1023px) {
+            body.ultra-focus #mainContent {
+                grid-template-columns: 1fr !important;
+            }
+        }
 
         @media (min-width: 1024px) {
             .viewport-fit {
@@ -582,7 +625,7 @@
                 <div>
                     <h1 class="text-xl md:text-[26px] font-black tracking-tight text-slate-800 uppercase leading-none">
                         Financeiro<span class="text-blue-600">Pro</span>
-                        <span class="text-slate-300">v27.5</span>
+                        <span class="text-slate-300">v27.6</span>
                     </h1>
                     <div class="mt-2 flex items-center gap-2">
                         <div id="statusSync" class="status-badge">
@@ -614,10 +657,10 @@
                             <i data-lucide="bar-chart-4" class="w-5 h-5 text-blue-100"></i>
                         </div>
                     </div>
-                    <p class="text-[12px] leading-[1.4] text-blue-50 mt-3 relative z-10">Resultado previsto considerando todas as entradas e saídas do mês.</p>
+                    <p class="support-text text-[12px] leading-[1.4] text-blue-50 mt-3 relative z-10">Resultado previsto considerando todas as entradas e saídas do mês.</p>
                 </div>
 
-                <div class="panel-soft metric-card soft-blue p-4">
+                <div class="panel-soft metric-card soft-blue p-4 secondary-summary">
                     <div class="flex items-start justify-between gap-3 relative z-10">
                         <div>
                             <span class="eyebrow text-slate-400 block mb-3">Saldo Real</span>
@@ -627,10 +670,10 @@
                             <i data-lucide="wallet" class="w-4 h-4 text-slate-500"></i>
                         </div>
                     </div>
-                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Somente valores já confirmados.</p>
+                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Somente valores já confirmados.</p>
                 </div>
 
-                <div class="panel-soft metric-card soft-amber p-4">
+                <div class="panel-soft metric-card soft-amber p-4 secondary-summary">
                     <div class="flex items-start justify-between gap-3 relative z-10">
                         <div>
                             <span class="eyebrow text-amber-600 block mb-3">Dinheiro Vivo</span>
@@ -640,10 +683,10 @@
                             <i data-lucide="hand-coins" class="w-4 h-4 text-amber-600"></i>
                         </div>
                     </div>
-                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Disponível em caixa.</p>
+                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Disponível em caixa.</p>
                 </div>
 
-                <div class="panel-soft metric-card soft-blue p-4">
+                <div class="panel-soft metric-card soft-blue p-4 secondary-summary">
                     <div class="flex items-start justify-between gap-3 relative z-10">
                         <div>
                             <span class="eyebrow text-blue-600 block mb-3">Banco</span>
@@ -653,11 +696,11 @@
                             <i data-lucide="landmark" class="w-4 h-4 text-blue-600"></i>
                         </div>
                     </div>
-                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Disponível em conta bancária.</p>
+                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Disponível em conta bancária.</p>
                 </div>
             </div>
 
-            <div class="xl:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="xl:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3 hero-only">
                 <div class="panel-soft metric-card soft-green p-4 border border-[#daf6e9]">
                     <div class="flex items-start justify-between gap-3 relative z-10">
                         <div>
@@ -668,7 +711,7 @@
                             <i data-lucide="arrow-down-left" class="w-4 h-4 text-emerald-600"></i>
                         </div>
                     </div>
-                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Total lançado como recebimento.</p>
+                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Total lançado como recebimento.</p>
                 </div>
 
                 <div class="panel-soft metric-card soft-red p-4 border border-[#ffe2e8]">
@@ -681,7 +724,7 @@
                             <i data-lucide="arrow-up-right" class="w-4 h-4 text-rose-600"></i>
                         </div>
                     </div>
-                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Total lançado como pagamento.</p>
+                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-3 relative z-10">Total lançado como pagamento.</p>
                 </div>
             </div>
         </section>
@@ -700,6 +743,11 @@
             <button id="btnCompactMode" class="btn-premium bg-white border border-[#dfe9f5] text-slate-700 hover:bg-[#f8fbff]">
                 <i data-lucide="panel-top-close" class="w-3.5 h-3.5"></i>
                 Compacto
+            </button>
+
+            <button id="btnUltraFocus" class="btn-premium bg-[#eff5ff] border border-[#d5e3ff] text-[#416fe8] hover:bg-[#e8f0ff]">
+                <i data-lucide="focus" class="w-3.5 h-3.5"></i>
+                Ultra Foco
             </button>
 
             <button id="btnExportExcel" class="btn-premium bg-white border border-[#dfe9f5] text-slate-700 hover:bg-[#f8fbff]">
@@ -722,7 +770,7 @@
             <div class="toolbar-card p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                     <h3 class="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">Filtro de Visualização</h3>
-                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-1">Escolha se quer ver todos os lançamentos, só caixa ou só banco.</p>
+                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-1">Escolha se quer ver todos os lançamentos, só caixa ou só banco.</p>
                 </div>
 
                 <div class="flex items-center gap-2">
@@ -739,8 +787,8 @@
                 <div class="form-wrap p-4 space-y-4">
                     <div class="flex items-start justify-between gap-2">
                         <div>
-                            <h3 class="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">Novo Lançamento</h3>
-                            <p class="text-[12px] leading-[1.4] text-slate-400 mt-1">Preencha os dados e escolha a conta correta.</p>
+                            <h3 class="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">Lançamento Rápido</h3>
+                            <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-1">Cadastre o essencial sem perder ritmo.</p>
                         </div>
 
                         <div class="w-10 h-10 rounded-2xl bg-[#eef5ff] flex items-center justify-center border border-[#d9e7ff] shrink-0">
@@ -861,7 +909,7 @@
                                 <div class="section-pill bg-emerald-500"></div>
                                 <div>
                                     <h4 id="tituloEntradas" class="text-[13px] font-black text-slate-900 uppercase tracking-[0.16em] leading-none">Entradas</h4>
-                                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-1">Controle do que ainda entra e do que já entrou.</p>
+                                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-1">Foco total no que ainda precisa entrar.</p>
                                 </div>
                             </div>
                         </div>
@@ -881,7 +929,7 @@
                                 <div id="listR_pend" class="space-y-2.5"></div>
                             </div>
 
-                            <div class="subgroup green">
+                            <div class="subgroup green history-block">
                                 <div class="subgroup-header">
                                     <div class="subgroup-title">
                                         <span class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.16em]">Confirmadas</span>
@@ -915,7 +963,7 @@
                                 <div class="section-pill bg-rose-500"></div>
                                 <div>
                                     <h4 id="tituloSaidas" class="text-[13px] font-black text-slate-900 uppercase tracking-[0.16em] leading-none">Saídas</h4>
-                                    <p class="text-[12px] leading-[1.4] text-slate-400 mt-1">Controle do que ainda precisa pagar e do que já foi quitado.</p>
+                                    <p class="support-text text-[12px] leading-[1.4] text-slate-400 mt-1">Foco total no que ainda precisa pagar.</p>
                                 </div>
                             </div>
                         </div>
@@ -935,7 +983,7 @@
                                 <div id="listP_pend" class="space-y-2.5"></div>
                             </div>
 
-                            <div class="subgroup red">
+                            <div class="subgroup red history-block">
                                 <div class="subgroup-header">
                                     <div class="subgroup-title">
                                         <span class="text-[10px] font-black text-rose-600 uppercase tracking-[0.16em]">Quitadas</span>
@@ -1125,6 +1173,7 @@
     let mostrarSaldoIni = false;
     let mostrarDadosLanc = true;
     let modoCompacto = false;
+    let modoUltraFoco = false;
 
     const mesesNomes = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
@@ -1220,17 +1269,47 @@
             <i data-lucide="${modoCompacto ? 'panel-top-open' : 'panel-top-close'}" class="w-3.5 h-3.5"></i>
             ${modoCompacto ? 'Normal' : 'Compacto'}
         `;
-        localStorage.setItem('financeiro_compacto_v275', modoCompacto ? '1' : '0');
-        lucide.createIcons();
+        localStorage.setItem('financeiro_compacto_v276', modoCompacto ? '1' : '0');
     }
 
     function setupCompactMode() {
-        modoCompacto = localStorage.getItem('financeiro_compacto_v275') === '1';
+        modoCompacto = localStorage.getItem('financeiro_compacto_v276') === '1';
         document.getElementById('btnCompactMode').onclick = () => {
             modoCompacto = !modoCompacto;
             applyCompactMode();
+            lucide.createIcons();
         };
-        applyCompactMode();
+    }
+
+    function applyUltraFocusMode() {
+        document.body.classList.toggle('ultra-focus', modoUltraFoco);
+
+        const btn = document.getElementById('btnUltraFocus');
+        btn.innerHTML = `
+            <i data-lucide="${modoUltraFoco ? 'focus' : 'focus'}" class="w-3.5 h-3.5"></i>
+            ${modoUltraFoco ? 'Sair Foco' : 'Ultra Foco'}
+        `;
+
+        localStorage.setItem('financeiro_ultrafoco_v276', modoUltraFoco ? '1' : '0');
+
+        if (modoUltraFoco) {
+            mostrarRConf = false;
+            mostrarPConf = false;
+            mostrarSaldoIni = false;
+            mostrarDadosLanc = true;
+        }
+
+        updateCollapseState();
+        updateFormCollapseState();
+    }
+
+    function setupUltraFocusMode() {
+        modoUltraFoco = localStorage.getItem('financeiro_ultrafoco_v276') === '1';
+        document.getElementById('btnUltraFocus').onclick = () => {
+            modoUltraFoco = !modoUltraFoco;
+            applyUltraFocusMode();
+            lucide.createIcons();
+        };
     }
 
     function updateCollapseState() {
@@ -1239,8 +1318,8 @@
         const btnR = document.getElementById('btnToggleRConf');
         const btnP = document.getElementById('btnTogglePConf');
 
-        wrapR.classList.toggle('open', mostrarRConf);
-        wrapP.classList.toggle('open', mostrarPConf);
+        wrapR.classList.toggle('open', !modoUltraFoco && mostrarRConf);
+        wrapP.classList.toggle('open', !modoUltraFoco && mostrarPConf);
 
         btnR.innerHTML = `
             <i data-lucide="${mostrarRConf ? 'chevron-up' : 'chevron-down'}" class="w-3.5 h-3.5"></i>
@@ -1259,7 +1338,7 @@
         const btnSaldo = document.getElementById('btnToggleSaldoIni');
         const btnDados = document.getElementById('btnToggleDadosLanc');
 
-        wrapSaldo.classList.toggle('open', mostrarSaldoIni);
+        wrapSaldo.classList.toggle('open', !modoUltraFoco && mostrarSaldoIni);
         wrapDados.classList.toggle('open', mostrarDadosLanc);
 
         btnSaldo.innerHTML = `
@@ -1281,6 +1360,7 @@
         setupFiltroConta();
         bindCollapseButtons();
         setupCompactMode();
+        setupUltraFocusMode();
         render();
         verificarBackupAutomatico();
     }
@@ -1544,6 +1624,7 @@
         updateCollapseState();
         updateFormCollapseState();
         applyCompactMode();
+        applyUltraFocusMode();
         lucide.createIcons();
     }
 
@@ -1763,16 +1844,16 @@
         const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json;charset=utf-8' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `BACKUP_FINANCEIRO_V27_5.json`;
+        link.download = `BACKUP_FINANCEIRO_V27_6.json`;
         link.click();
     }
 
     function verificarBackupAutomatico() {
         const h = new Date().toLocaleDateString('pt-br').replace(/\//g, '-');
-        if (localStorage.getItem('last_backup_v27_5') !== h) {
+        if (localStorage.getItem('last_backup_v27_6') !== h) {
             setTimeout(() => {
                 exportarCSV(`AUTO_BACKUP_${h}`);
-                localStorage.setItem('last_backup_v27_5', h);
+                localStorage.setItem('last_backup_v27_6', h);
             }, 5000);
         }
     }
