@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Financeiro Pro v26.1</title>
+    <title>Financeiro Pro v26.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -62,7 +62,7 @@
         }
 
         .metric-card {
-            min-height: 122px;
+            min-height: 126px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -83,9 +83,7 @@
             line-height: 1;
         }
 
-        .muted {
-            color: var(--muted);
-        }
+        .muted { color: var(--muted); }
 
         .status-badge {
             display: inline-flex;
@@ -118,9 +116,7 @@
             line-height: 1;
         }
 
-        .btn-premium:hover {
-            transform: translateY(-1px);
-        }
+        .btn-premium:hover { transform: translateY(-1px); }
 
         .premium-input,
         .premium-select {
@@ -191,6 +187,28 @@
             transform: translateY(-1px);
             box-shadow: 0 10px 20px rgba(15,23,42,.04);
             border-color: #dbeafe;
+        }
+
+        .metric-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,.12);
+            background: rgba(255,255,255,.08);
+        }
+
+        .metric-icon-soft {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
         }
 
         input[type="checkbox"] {
@@ -277,9 +295,9 @@
             <div>
                 <h1 class="text-xl md:text-[24px] font-black tracking-tight text-slate-900 uppercase leading-none">
                     Financeiro<span class="text-blue-600">Pro</span>
-                    <span class="text-slate-300">v26.1</span>
+                    <span class="text-slate-300">v26.2</span>
                 </h1>
-                <div class="mt-2">
+                <div class="mt-2 flex items-center gap-2">
                     <div id="statusSync" class="status-badge">
                         <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
                         Sincronizado
@@ -298,36 +316,56 @@
     </header>
 
     <!-- RESUMO -->
-    <section class="grid grid-cols-1 xl:grid-cols-12 gap-3">
+    <section id="summarySection" class="grid grid-cols-1 xl:grid-cols-12 gap-3">
         <div class="xl:col-span-7 grid grid-cols-1 md:grid-cols-3 gap-3">
             <div class="panel hero-main metric-card p-5 md:col-span-3">
-                <div>
-                    <span class="eyebrow text-blue-200 block mb-3">Previsão Final</span>
-                    <div id="totalSaldo" class="metric-number text-[30px] md:text-[38px]">R$ 0,00</div>
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <span class="eyebrow text-blue-200 block mb-3">Previsão Final</span>
+                        <div id="totalSaldo" class="metric-number text-[30px] md:text-[38px]">R$ 0,00</div>
+                    </div>
+                    <div class="metric-icon">
+                        <i data-lucide="bar-chart-4" class="w-5 h-5 text-blue-100"></i>
+                    </div>
                 </div>
                 <p class="compact-note text-slate-200 mt-3">Resultado previsto considerando todas as entradas e saídas do mês.</p>
             </div>
 
             <div class="panel-soft metric-card p-4">
-                <div>
-                    <span class="eyebrow text-slate-400 block mb-3">Saldo Real</span>
-                    <div id="realMao" class="metric-number text-[25px] md:text-[28px] text-slate-800">R$ 0,00</div>
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <span class="eyebrow text-slate-400 block mb-3">Saldo Real</span>
+                        <div id="realMao" class="metric-number text-[25px] md:text-[28px] text-slate-800">R$ 0,00</div>
+                    </div>
+                    <div class="metric-icon-soft">
+                        <i data-lucide="wallet" class="w-4 h-4 text-slate-500"></i>
+                    </div>
                 </div>
                 <p class="compact-note text-slate-400 mt-3">Somente o que já foi confirmado.</p>
             </div>
 
             <div class="panel-soft metric-card p-4">
-                <div>
-                    <span class="eyebrow text-amber-600 block mb-3">Dinheiro Vivo</span>
-                    <div id="saldoCaixa" class="metric-number text-[25px] md:text-[28px] text-slate-800">R$ 0,00</div>
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <span class="eyebrow text-amber-600 block mb-3">Dinheiro Vivo</span>
+                        <div id="saldoCaixa" class="metric-number text-[25px] md:text-[28px] text-slate-800">R$ 0,00</div>
+                    </div>
+                    <div class="metric-icon-soft">
+                        <i data-lucide="hand-coins" class="w-4 h-4 text-amber-600"></i>
+                    </div>
                 </div>
                 <p class="compact-note text-slate-400 mt-3">Saldo real disponível em caixa.</p>
             </div>
 
             <div class="panel-soft metric-card p-4">
-                <div>
-                    <span class="eyebrow text-blue-600 block mb-3">Banco</span>
-                    <div id="saldoBanco" class="metric-number text-[25px] md:text-[28px] text-slate-800">R$ 0,00</div>
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <span class="eyebrow text-blue-600 block mb-3">Banco</span>
+                        <div id="saldoBanco" class="metric-number text-[25px] md:text-[28px] text-slate-800">R$ 0,00</div>
+                    </div>
+                    <div class="metric-icon-soft">
+                        <i data-lucide="landmark" class="w-4 h-4 text-blue-600"></i>
+                    </div>
                 </div>
                 <p class="compact-note text-slate-400 mt-3">Saldo real disponível em banco.</p>
             </div>
@@ -335,17 +373,27 @@
 
         <div id="extraSaldos" class="xl:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div class="panel-soft metric-card p-4 border-l-4 border-l-emerald-500">
-                <div>
-                    <span class="eyebrow text-emerald-600 block mb-3">Entradas</span>
-                    <div id="totalR" class="metric-number text-[26px] md:text-[30px] text-slate-800">R$ 0,00</div>
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <span class="eyebrow text-emerald-600 block mb-3">Entradas</span>
+                        <div id="totalR" class="metric-number text-[26px] md:text-[30px] text-slate-800">R$ 0,00</div>
+                    </div>
+                    <div class="metric-icon-soft">
+                        <i data-lucide="arrow-down-left" class="w-4 h-4 text-emerald-600"></i>
+                    </div>
                 </div>
                 <p class="compact-note text-slate-400 mt-3">Total lançado como recebimento no mês.</p>
             </div>
 
             <div class="panel-soft metric-card p-4 border-l-4 border-l-rose-500">
-                <div>
-                    <span class="eyebrow text-rose-600 block mb-3">Saídas</span>
-                    <div id="totalP" class="metric-number text-[26px] md:text-[30px] text-slate-800">R$ 0,00</div>
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <span class="eyebrow text-rose-600 block mb-3">Saídas</span>
+                        <div id="totalP" class="metric-number text-[26px] md:text-[30px] text-slate-800">R$ 0,00</div>
+                    </div>
+                    <div class="metric-icon-soft">
+                        <i data-lucide="arrow-up-right" class="w-4 h-4 text-rose-600"></i>
+                    </div>
                 </div>
                 <p class="compact-note text-slate-400 mt-3">Total lançado como pagamento no mês.</p>
             </div>
@@ -357,6 +405,11 @@
         <button id="btnRelatorio" class="btn-premium bg-blue-600 text-white shadow-lg shadow-blue-100 hover:bg-blue-700">
             <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
             Relatório
+        </button>
+
+        <button id="btnTransferencia" class="btn-premium bg-violet-50 border border-violet-200 text-violet-700 hover:bg-violet-100">
+            <i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i>
+            Transferência
         </button>
 
         <button id="btnExportExcel" class="btn-premium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50">
@@ -473,7 +526,6 @@
         <!-- LISTAS -->
         <div class="lg:col-span-8 xl:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-4">
 
-            <!-- ENTRADAS -->
             <section class="panel p-4">
                 <div class="section-title">
                     <div class="section-left">
@@ -504,7 +556,6 @@
                 </div>
             </section>
 
-            <!-- SAÍDAS -->
             <section class="panel p-4">
                 <div class="section-title">
                     <div class="section-left">
@@ -618,6 +669,65 @@
     </div>
 </div>
 
+<!-- MODAL TRANSFERÊNCIA -->
+<div id="transferModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 items-center justify-center p-4">
+    <div class="panel w-full max-w-md p-4 space-y-4">
+        <div class="flex items-center justify-between">
+            <h3 class="text-[12px] font-black uppercase tracking-[0.2em] text-slate-700">Transferência entre contas</h3>
+            <button onclick="closeTransferModal()" class="p-2 rounded-xl hover:bg-slate-100">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+            <div>
+                <label class="eyebrow text-slate-400 block mb-2">Dia</label>
+                <input type="number" id="trans_dia" class="premium-input px-3 py-3 text-sm font-bold text-slate-700" placeholder="Dia">
+            </div>
+
+            <div>
+                <label class="eyebrow text-slate-400 block mb-2">Valor</label>
+                <input type="text" id="trans_valor" class="premium-input money-input text-center px-4 py-3 text-[20px] metric-number text-slate-900" placeholder="R$ 0,00">
+            </div>
+        </div>
+
+        <div>
+            <label class="eyebrow text-slate-400 block mb-2">Origem</label>
+            <select id="trans_origem" class="premium-select px-3 py-3 text-sm font-bold text-slate-700">
+                <option value="caixa">Dinheiro Vivo</option>
+                <option value="banco" selected>Banco</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="eyebrow text-slate-400 block mb-2">Destino</label>
+            <select id="trans_destino" class="premium-select px-3 py-3 text-sm font-bold text-slate-700">
+                <option value="caixa" selected>Dinheiro Vivo</option>
+                <option value="banco">Banco</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="eyebrow text-slate-400 block mb-2">Observação</label>
+            <input type="text" id="trans_obs" class="premium-input px-3 py-3 text-sm font-bold uppercase text-slate-700" placeholder="OPCIONAL">
+        </div>
+
+        <div class="flex items-center gap-2">
+            <input type="checkbox" id="trans_ok" checked>
+            <label for="trans_ok" class="text-sm font-semibold text-slate-600">Marcar como confirmado automaticamente</label>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 pt-2">
+            <button onclick="closeTransferModal()" class="btn-premium bg-slate-100 text-slate-700 hover:bg-slate-200 py-3">
+                Cancelar
+            </button>
+            <button id="btnSaveTransfer" class="btn-premium bg-violet-600 text-white hover:bg-violet-700 py-3">
+                Transferir
+            </button>
+        </div>
+    </div>
+</div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -679,8 +789,40 @@
         lucide.createIcons();
         setupSelectors();
         await loadData();
+        bindEvents();
         render();
         verificarBackupAutomatico();
+    }
+
+    function bindEvents() {
+        document.getElementById('f_valor').oninput = (e) => applyMoneyMask(e.target);
+        document.getElementById('f_saldo_ini_caixa').oninput = (e) => applyMoneyMask(e.target);
+        document.getElementById('f_saldo_ini_banco').oninput = (e) => applyMoneyMask(e.target);
+        document.getElementById('edit_valor').oninput = (e) => applyMoneyMask(e.target);
+        document.getElementById('trans_valor').oninput = (e) => applyMoneyMask(e.target);
+
+        document.getElementById('f_saldo_ini_caixa').onblur = async (e) => {
+            const id = getMonthKey();
+            ensureMonthData(id);
+            db[id].saldoIniCaixa = parseBRL(e.target.value);
+            render();
+            sync(id);
+        };
+
+        document.getElementById('f_saldo_ini_banco').onblur = async (e) => {
+            const id = getMonthKey();
+            ensureMonthData(id);
+            db[id].saldoIniBanco = parseBRL(e.target.value);
+            render();
+            sync(id);
+        };
+
+        document.getElementById('btnAddR').onclick = () => addItem('R');
+        document.getElementById('btnAddP').onclick = () => addItem('P');
+        document.getElementById('btnExportExcel').onclick = () => exportarCSV();
+        document.getElementById('btnExportJSON').onclick = () => exportarJSON();
+        document.getElementById('btnTransferencia').onclick = openTransferModal;
+        document.getElementById('btnSaveTransfer').onclick = saveTransfer;
     }
 
     function setupSelectors() {
@@ -863,27 +1005,6 @@
         lucide.createIcons();
     }
 
-    document.getElementById('f_valor').oninput = (e) => applyMoneyMask(e.target);
-    document.getElementById('f_saldo_ini_caixa').oninput = (e) => applyMoneyMask(e.target);
-    document.getElementById('f_saldo_ini_banco').oninput = (e) => applyMoneyMask(e.target);
-    document.getElementById('edit_valor').oninput = (e) => applyMoneyMask(e.target);
-
-    document.getElementById('f_saldo_ini_caixa').onblur = async (e) => {
-        const id = getMonthKey();
-        ensureMonthData(id);
-        db[id].saldoIniCaixa = parseBRL(e.target.value);
-        render();
-        sync(id);
-    };
-
-    document.getElementById('f_saldo_ini_banco').onblur = async (e) => {
-        const id = getMonthKey();
-        ensureMonthData(id);
-        db[id].saldoIniBanco = parseBRL(e.target.value);
-        render();
-        sync(id);
-    };
-
     window.toggleItem = async (type, itemId) => {
         const id = getMonthKey();
         ensureMonthData(id);
@@ -1010,8 +1131,75 @@
         render();
     };
 
-    document.getElementById('btnAddR').onclick = () => addItem('R');
-    document.getElementById('btnAddP').onclick = () => addItem('P');
+    function openTransferModal() {
+        const modal = document.getElementById('transferModal');
+        document.getElementById('trans_dia').value = new Date().getDate();
+        document.getElementById('trans_valor').value = '';
+        document.getElementById('trans_origem').value = 'banco';
+        document.getElementById('trans_destino').value = 'caixa';
+        document.getElementById('trans_obs').value = '';
+        document.getElementById('trans_ok').checked = true;
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        lucide.createIcons();
+    }
+
+    window.closeTransferModal = () => {
+        const modal = document.getElementById('transferModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    };
+
+    async function saveTransfer() {
+        const id = getMonthKey();
+        ensureMonthData(id);
+
+        const dia = parseInt(document.getElementById('trans_dia').value) || new Date().getDate();
+        const valor = parseBRL(document.getElementById('trans_valor').value);
+        const origem = document.getElementById('trans_origem').value;
+        const destino = document.getElementById('trans_destino').value;
+        const obs = document.getElementById('trans_obs').value.trim().toUpperCase();
+        const ok = document.getElementById('trans_ok').checked;
+
+        if (valor <= 0) {
+            alert('Informe um valor válido.');
+            return;
+        }
+
+        if (origem === destino) {
+            alert('Origem e destino precisam ser diferentes.');
+            return;
+        }
+
+        const descSaidaBase = origem === 'caixa' ? 'TRANSFERÊNCIA P/ BANCO' : 'TRANSFERÊNCIA P/ CAIXA';
+        const descEntradaBase = origem === 'caixa' ? 'TRANSFERÊNCIA DO CAIXA' : 'TRANSFERÊNCIA DO BANCO';
+
+        const descSaida = obs ? `${descSaidaBase} - ${obs}` : descSaidaBase;
+        const descEntrada = obs ? `${descEntradaBase} - ${obs}` : descEntradaBase;
+
+        db[id].P.push({
+            id: Date.now() + Math.random(),
+            dia,
+            desc: descSaida,
+            valor,
+            ok,
+            conta: origem
+        });
+
+        db[id].R.push({
+            id: Date.now() + Math.random() + 1,
+            dia,
+            desc: descEntrada,
+            valor,
+            ok,
+            conta: destino
+        });
+
+        await sync(id);
+        render();
+        closeTransferModal();
+    }
 
     function exportarCSV(f) {
         const id = getMonthKey();
@@ -1033,22 +1221,19 @@
         const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json;charset=utf-8' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `BACKUP_FINANCEIRO_V26_1.json`;
+        link.download = `BACKUP_FINANCEIRO_V26_2.json`;
         link.click();
     }
 
     function verificarBackupAutomatico() {
         const h = new Date().toLocaleDateString('pt-br').replace(/\//g, '-');
-        if (localStorage.getItem('last_backup_v26_1') !== h) {
+        if (localStorage.getItem('last_backup_v26_2') !== h) {
             setTimeout(() => {
                 exportarCSV(`AUTO_BACKUP_${h}`);
-                localStorage.setItem('last_backup_v26_1', h);
+                localStorage.setItem('last_backup_v26_2', h);
             }, 5000);
         }
     }
-
-    document.getElementById('btnExportExcel').onclick = () => exportarCSV();
-    document.getElementById('btnExportJSON').onclick = () => exportarJSON();
 
     document.getElementById('btnImportJSON').onclick = () => {
         const i = document.createElement('input');
@@ -1127,8 +1312,7 @@
         }
 
         document.getElementById('mainContent').classList.add('hidden');
-        document.getElementById('extraSaldos').classList.add('hidden');
-        document.querySelector('section.grid.grid-cols-1.xl\\:grid-cols-12.gap-3').classList.add('hidden');
+        document.getElementById('summarySection').classList.add('hidden');
         document.getElementById('sectionAnual').classList.remove('hidden');
         lucide.createIcons();
     };
@@ -1141,8 +1325,7 @@
 
     document.getElementById('btnCloseAnual').onclick = () => {
         document.getElementById('mainContent').classList.remove('hidden');
-        document.getElementById('extraSaldos').classList.remove('hidden');
-        document.querySelector('section.grid.grid-cols-1.xl\\:grid-cols-12.gap-3').classList.remove('hidden');
+        document.getElementById('summarySection').classList.remove('hidden');
         document.getElementById('sectionAnual').classList.add('hidden');
     };
 
