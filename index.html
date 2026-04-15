@@ -3,189 +3,186 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro Deep v32.0</title>
+    <title>Financeiro Side-by-Side v33.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #f0f4f8; 
+            background-color: #f8fafc;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            color: #1e293b;
+            color: #0f172a;
         }
 
-        /* Sidebar Escura mas não "Black" */
+        /* Sidebar Deep Slate - O 'escuro' que traz elegância */
         .sidebar-premium {
-            background: #0f172a; /* Azul Marinho Profundo */
+            background: #0f172a;
             color: white;
             border-radius: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
-        .card-entry {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-
-        .card-entry:hover {
-            border-color: #3b82f6;
-            transform: translateY(-2px);
-        }
-
-        /* Inputs dentro da área escura */
-        .input-deep {
+        .input-premium {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
             color: white;
-            padding: 12px;
+            padding: 10px 14px;
             font-weight: 600;
+            transition: all 0.2s;
         }
-        .input-deep:focus {
+        .input-premium:focus {
             background: rgba(255, 255, 255, 0.1);
             border-color: #3b82f6;
             outline: none;
         }
 
-        .badge-date {
+        .card-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            transition: all 0.2s;
+        }
+        .card-item:hover {
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .badge-day {
             background: #f1f5f9;
             color: #0f172a;
             font-family: 'JetBrains Mono', monospace;
-            padding: 4px 10px;
-            border-radius: 8px;
+            padding: 2px 8px;
+            border-radius: 6px;
             font-weight: 800;
+            font-size: 13px;
         }
 
-        .header-glass {
-            background: #ffffff;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .btn-main {
+        .btn-action {
             border-radius: 12px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             transition: all 0.2s;
         }
-        .btn-main:active { transform: scale(0.98); }
+        .btn-action:active { transform: scale(0.97); }
 
-        .item-done { opacity: 0.5; filter: grayscale(0.5); }
+        .done { opacity: 0.4; filter: grayscale(1); }
+        
+        /* Ajuste para telas grandes (Dashboard) */
+        @media (min-width: 1024px) {
+            .main-grid { height: calc(100vh - 40px); overflow: hidden; }
+            .scroll-area { height: calc(100vh - 220px); overflow-y: auto; padding-right: 8px; }
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="p-4 lg:p-6 overflow-x-hidden">
 
-    <header class="header-glass p-5 mb-8">
-        <div class="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-                <div class="bg-blue-600 p-2 rounded-xl">
-                    <i data-lucide="bar-chart-big" class="text-white w-6 h-6"></i>
+<div class="max-w-[1600px] mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 main-grid">
+        
+        <aside class="lg:col-span-3 flex flex-col gap-6">
+            <div class="sidebar-premium p-6 flex-1">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="bg-blue-600 p-2 rounded-lg">
+                        <i data-lucide="layout-dashboard" class="text-white w-5 h-5"></i>
+                    </div>
+                    <h1 class="text-lg font-black tracking-tighter italic">METRA<span class="text-blue-500">CLOUD</span></h1>
                 </div>
-                <h1 class="text-xl font-black uppercase tracking-tighter">Dash<span class="text-blue-600">Pro</span></h1>
-            </div>
-            
-            <div class="flex items-center gap-4 bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
-                <select id="f_mes" class="bg-transparent font-bold px-3 py-1 outline-none text-slate-600"></select>
-                <select id="f_ano" class="bg-blue-600 text-white font-black px-6 py-2 rounded-xl outline-none shadow-lg shadow-blue-100"></select>
-            </div>
-        </div>
-    </header>
 
-    <main class="max-w-[1400px] mx-auto p-4 md:p-0">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <aside class="lg:col-span-4">
-                <div class="sidebar-premium p-8 shadow-2xl sticky top-8">
-                    <h2 class="text-lg font-black mb-8 flex items-center gap-2">
-                        <i data-lucide="plus-circle" class="text-blue-400"></i> LANÇAMENTO
-                    </h2>
-                    
-                    <div class="space-y-6">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-[10px] font-bold text-slate-400 uppercase mb-2 block">Dia do Mês</label>
-                                <input type="number" id="f_dia" class="input-deep w-full text-center" placeholder="00">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-slate-400 uppercase mb-2 block">Parcelas</label>
-                                <input type="number" id="f_parc" value="1" class="input-deep w-full text-center">
-                            </div>
-                        </div>
-
+                <div class="space-y-5">
+                    <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="text-[10px] font-bold text-slate-400 uppercase mb-2 block">O que é isso?</label>
-                            <input type="text" id="f_desc" class="input-deep w-full uppercase" placeholder="DESCRIÇÃO">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block tracking-wider">Dia</label>
+                            <input type="number" id="f_dia" class="input-premium w-full text-center" placeholder="01">
                         </div>
-
                         <div>
-                            <label class="text-[10px] font-bold text-slate-400 uppercase mb-2 block">Onde está o dinheiro?</label>
-                            <select id="f_conta" class="input-deep w-full">
-                                <option value="banco">🏦 BANCO INTER</option>
-                                <option value="caixa">💵 EM MÃO (DINHEIRO)</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 uppercase mb-2 block">Quanto? (Valor)</label>
-                            <input type="text" id="f_valor" class="input-deep w-full text-2xl font-black text-center text-blue-400" placeholder="R$ 0,00">
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4 pt-4">
-                            <button id="btnAddR" class="btn-main bg-blue-600 hover:bg-blue-500 text-white p-4 shadow-lg shadow-blue-900/20">GANHO (+)</button>
-                            <button id="btnAddP" class="btn-main bg-slate-700 hover:bg-slate-600 text-white p-4">GASTO (-)</button>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block tracking-wider">Parc.</label>
+                            <input type="number" id="f_parc" value="1" class="input-premium w-full text-center">
                         </div>
                     </div>
 
-                    <div class="mt-10 pt-8 border-t border-slate-800">
-                        <p class="text-[10px] font-black text-slate-500 uppercase mb-4">Resumo rápido</p>
-                        <div class="flex justify-between mb-2">
-                            <span class="text-xs text-slate-400">Previsão:</span>
-                            <span id="totalSaldo" class="text-xs font-bold text-white">R$ 0,00</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-xs text-slate-400">Confirmado:</span>
-                            <span id="realMao" class="text-xs font-bold text-blue-400">R$ 0,00</span>
-                        </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block tracking-wider">Descrição</label>
+                        <input type="text" id="f_desc" class="input-premium w-full uppercase" placeholder="EX: VENDA SOFTWARE">
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block tracking-wider">Conta</label>
+                        <select id="f_conta" class="input-premium w-full">
+                            <option value="banco">🏦 BANCO INTER</option>
+                            <option value="caixa">💵 EM MÃO</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block tracking-wider">Valor</label>
+                        <input type="text" id="f_valor" class="input-premium w-full text-xl font-black text-blue-400" placeholder="R$ 0,00">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <button id="btnAddR" class="btn-action bg-emerald-600 hover:bg-emerald-500 text-white py-3 shadow-lg shadow-emerald-900/20">Entrada</button>
+                        <button id="btnAddP" class="btn-action bg-slate-700 hover:bg-slate-600 text-white py-3">Saída</button>
                     </div>
                 </div>
-            </aside>
 
-            <div class="lg:col-span-8 space-y-12">
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-white p-6 rounded-2xl border-l-8 border-emerald-500 shadow-sm">
-                        <p class="text-[10px] font-black text-slate-400 uppercase">Receitas Totais</p>
+                <div class="mt-8 pt-8 border-t border-slate-800">
+                    <div class="flex items-center gap-3 mb-4">
+                        <select id="f_mes" class="bg-transparent text-xs font-bold uppercase outline-none text-slate-400"></select>
+                        <select id="f_ano" class="bg-transparent text-xs font-bold outline-none text-slate-400"></select>
+                    </div>
+                    <p class="text-[10px] font-black text-slate-500 uppercase mb-2">Saldo Projetado</p>
+                    <h2 id="totalSaldo" class="text-2xl font-black text-white tracking-tighter">R$ 0,00</h2>
+                    <p id="realMao" class="text-[11px] font-bold text-blue-400 mt-1 uppercase">Saldos Reais: R$ 0,00</p>
+                </div>
+            </div>
+        </aside>
+
+        <div class="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <div class="flex flex-col gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 flex justify-between items-center shadow-sm">
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Total Receitas</p>
                         <h3 id="totalR" class="text-2xl font-black text-emerald-600 mt-1">R$ 0,00</h3>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border-l-8 border-rose-500 shadow-sm">
-                        <p class="text-[10px] font-black text-slate-400 uppercase">Despesas Totais</p>
-                        <h3 id="totalP" class="text-2xl font-black text-rose-600 mt-1">R$ 0,00</h3>
-                    </div>
+                    <i data-lucide="arrow-up-right" class="text-emerald-500 w-8 h-8 opacity-20"></i>
                 </div>
 
-                <section>
-                    <h2 class="text-xs font-black uppercase tracking-[3px] text-slate-400 mb-6 flex items-center gap-2">
-                        <span class="p-1 bg-emerald-100 text-emerald-600 rounded"> <i data-lucide="trending-up" class="w-3 h-3"></i> </span> 
-                        Entradas
-                    </h2>
-                    <div id="listR_pend" class="space-y-3"></div>
-                    <div id="listR_conf" class="mt-4 space-y-2 opacity-60"></div>
-                </section>
-
-                <section>
-                    <h2 class="text-xs font-black uppercase tracking-[3px] text-slate-400 mb-6 flex items-center gap-2">
-                        <span class="p-1 bg-rose-100 text-rose-600 rounded"> <i data-lucide="trending-down" class="w-3 h-3"></i> </span> 
-                        Saídas
-                    </h2>
-                    <div id="listP_pend" class="space-y-3"></div>
-                    <div id="listP_conf" class="mt-4 space-y-2 opacity-60"></div>
-                </section>
-
+                <div class="scroll-area">
+                    <h4 class="text-[11px] font-black text-slate-400 uppercase mb-4 tracking-tighter">Pendentes</h4>
+                    <div id="listR_pend" class="space-y-2"></div>
+                    
+                    <h4 class="text-[11px] font-black text-slate-300 uppercase mt-8 mb-4 tracking-tighter">Confirmadas</h4>
+                    <div id="listR_conf" class="space-y-2"></div>
+                </div>
             </div>
+
+            <div class="flex flex-col gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 flex justify-between items-center shadow-sm">
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Total Despesas</p>
+                        <h3 id="totalP" class="text-2xl font-black text-rose-600 mt-1">R$ 0,00</h3>
+                    </div>
+                    <i data-lucide="arrow-down-right" class="text-rose-500 w-8 h-8 opacity-20"></i>
+                </div>
+
+                <div class="scroll-area">
+                    <h4 class="text-[11px] font-black text-slate-400 uppercase mb-4 tracking-tighter">A Pagar</h4>
+                    <div id="listP_pend" class="space-y-2"></div>
+                    
+                    <h4 class="text-[11px] font-black text-slate-300 uppercase mt-8 mb-4 tracking-tighter">Quitadas</h4>
+                    <div id="listP_conf" class="space-y-2"></div>
+                </div>
+            </div>
+
         </div>
-    </main>
+    </div>
+</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -215,7 +212,7 @@
     }
 
     async function init() {
-        const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+        const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
         const mS = document.getElementById('f_mes');
         const aS = document.getElementById('f_ano');
         const n = new Date();
@@ -244,18 +241,18 @@
         let tr=0, tp=0, sc=0, sb=0;
 
         const card = (it, type) => `
-            <div class="card-entry flex items-center justify-between p-4 ${it.ok ? 'item-done' : ''}">
-                <div class="flex items-center gap-4">
-                    <span class="badge-date">${String(it.dia).padStart(2,'0')}</span>
+            <div class="card-item flex items-center justify-between p-3 ${it.ok ? 'done' : ''}">
+                <div class="flex items-center gap-3">
+                    <span class="badge-day">${String(it.dia).padStart(2,'0')}</span>
                     <div>
-                        <p class="text-[13px] font-extrabold uppercase text-slate-700">${it.desc}</p>
-                        <p class="text-[9px] font-black text-blue-500 uppercase">${it.conta}</p>
+                        <p class="text-[12px] font-bold uppercase text-slate-700 leading-none">${it.desc}</p>
+                        <p class="text-[9px] font-black text-slate-400 uppercase mt-1">${it.conta}</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-4">
-                    <span class="font-bold ${type==='R'?'text-emerald-600':'text-rose-600'}">${formatBRL(it.valor)}</span>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-black ${type==='R'?'text-emerald-600':'text-rose-600'}">${formatBRL(it.valor)}</span>
                     <input type="checkbox" ${it.ok?'checked':''} onchange="window.tk('${type}', ${it.id})" class="w-5 h-5 accent-blue-600 cursor-pointer">
-                    <button onclick="window.del('${type}', ${it.id})" class="text-slate-300 hover:text-rose-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <button onclick="window.del('${type}', ${it.id})" class="text-slate-200 hover:text-rose-500"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
                 </div>
             </div>
         `;
@@ -272,7 +269,7 @@
         document.getElementById('totalR').innerText = formatBRL(tr);
         document.getElementById('totalP').innerText = formatBRL(tp);
         document.getElementById('totalSaldo').innerText = formatBRL(tr - tp);
-        document.getElementById('realMao').innerText = formatBRL(sc+sb);
+        document.getElementById('realMao').innerText = `Saldos Reais: ${formatBRL(sc+sb)}`;
         lucide.createIcons();
     }
 
