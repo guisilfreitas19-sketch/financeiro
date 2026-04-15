@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro Pro v29.0</title>
+    <title>Financeiro Pro v29.1 Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-top: #f3f8ff; --bg-bottom: #fcfdff;
-            --panel: #ffffff; --line: #dde8f5;
-            --text: #18324a; --blue: #ff7a00; /* Laranja Inter */
-            --inter: #ff7a00; --dinheiro: #18b778;
-            --shadow: 0 14px 36px rgba(56, 96, 150, .08);
+            --bg-top: #f4f7fa; --bg-bottom: #fdfeff;
+            --panel: #ffffff; --line: #e2e8f0;
+            --text: #1e293b; --blue: #ff7a00; /* Laranja Inter */
+            --inter: #ff7a00; --dinheiro: #10b981;
+            --shadow: 0 10px 25px rgba(56, 96, 150, .06);
+            --shadow-card: 0 2px 6px rgba(0, 0, 0, .02);
         }
 
         * { box-sizing: border-box; outline: none !important; }
         body {
-            background: radial-gradient(circle at top left, rgba(255,122,0,.08), transparent 28%),
+            background: radial-gradient(circle at top left, rgba(255,122,0,0.05), transparent 35%),
                         linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: var(--text);
@@ -26,138 +27,155 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .shell-card { background: rgba(255,255,255,.84); backdrop-filter: blur(12px); border: 1px solid rgba(221,232,245,.8); border-radius: 32px; box-shadow: var(--shadow); }
-        .panel { background: #fff; border: 1px solid var(--line); border-radius: 24px; box-shadow: 0 4px 12px rgba(56,96,150,.05); }
+        .shell-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 32px; box-shadow: var(--shadow); }
+        .panel { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; box-shadow: var(--shadow-card); }
         
-        .metric-card { position: relative; overflow: hidden; min-height: 135px; transition: all 0.3s ease; }
-        .metric-card::after { content: ""; position: absolute; right: -20px; bottom: -20px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,0.1); }
-        .hero-main { background: linear-gradient(135deg, #ff9500 0%, #ff7a00 100%); color: white; border: none; }
+        .metric-card { position: relative; overflow: hidden; min-height: 130px; transition: all 0.3s ease; }
+        .metric-card::after { content: ""; position: absolute; right: -25px; bottom: -25px; width: 110px; height: 110px; border-radius: 50%; background: rgba(255,255,255,0.08); }
+        .hero-main { background: linear-gradient(135deg, #ff9d2e 0%, #ff7a00 100%); color: white; border: none; }
 
-        .metric-number { font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: -0.04em; }
-        .eyebrow { font-size: 9px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #7c93ac; }
+        .metric-number { font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: -0.05em; }
+        .eyebrow { font-size: 10px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: #64748b; }
 
-        .btn-premium { display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; border-radius: 16px; padding: 0.8rem 1.2rem; font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.2s; cursor: pointer; border: 1px solid transparent; }
-        .btn-premium:hover { transform: translateY(-2px); filter: brightness(1.05); }
+        .btn-premium { display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; border-radius: 14px; padding: 0.75rem 1.25rem; font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; transition: all 0.2s; cursor: pointer; border: 1px solid transparent; }
+        .btn-premium:hover { transform: translateY(-1px); filter: brightness(1.03); box-shadow: 0 4px 10px rgba(255,122,0,0.15); }
         .btn-premium:active { transform: translateY(0); }
 
-        .premium-input, .premium-select { width: 100%; border-radius: 16px; border: 1px solid var(--line); background: #fff; padding: 0.9rem 1.1rem; transition: all 0.2s; color: var(--text); font-weight: 600; font-size: 14px; }
-        .premium-input:focus { border-color: var(--inter); box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
+        .premium-input, .premium-select { width: 100%; border-radius: 14px; border: 1px solid #e2e8f0; background: #ffffff; padding: 0.85rem 1rem; transition: all 0.2s; color: var(--text); font-weight: 600; font-size: 14px; }
+        .premium-input:focus { border-color: var(--inter); box-shadow: 0 0 0 4px rgba(255,122,0,0.08); }
 
-        .entry-row { transition: all 0.2s; border: 1px solid #edf3fa; background: #fff; }
-        .entry-row:hover { transform: translateX(5px); border-color: var(--inter); background: #fffbf5; }
+        /* Nova Estrutura da Linha (Entry Row) */
+        .entry-row { 
+            transition: all 0.25s ease; 
+            background: #ffffff; 
+            border: 1px solid #f1f5f9; 
+            border-radius: 16px;
+            box-shadow: var(--shadow-card);
+        }
+        .entry-row:hover { 
+            transform: translateY(-2px); 
+            border-color: #e2e8f0; 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.03); 
+            background: #fafafa;
+        }
 
-        /* Estilo para itens quitados - Melhorando a visibilidade */
-        .item-quitado { background-color: #f8fafc !important; border-color: #e2e8f0 !important; }
-        .text-quitado { color: #94a3b8 !important; text-decoration: line-through; text-decoration-color: #cbd5e1; }
+        /* Ocultar ações e mostrar no Hover */
+        .action-buttons { opacity: 0; transition: opacity 0.2s ease; }
+        .entry-row:hover .action-buttons { opacity: 1; }
 
-        .collapse-panel { display: grid; grid-template-rows: 0fr; opacity: 0; transition: all 0.35s ease; overflow: hidden; }
+        /* Estilo para itens quitados (Sem fundo cinza, apenas texto claro) */
+        .item-quitado { }
+        .text-quitado { color: #cbd5e1 !important; text-decoration: line-through; text-decoration-color: #e2e8f0; }
+        .item-quitado .day-badge { background-color: #f8fafc; color: #cbd5e1; border-color: #f1f5f9; }
+
+        .collapse-panel { display: grid; grid-template-rows: 0fr; opacity: 0; transition: all 0.3s ease; overflow: hidden; }
         .collapse-panel.open { grid-template-rows: 1fr; opacity: 1; }
 
         body.ultra-focus #filterSection, body.ultra-focus #btnRelatorio, body.ultra-focus .history-block { display: none !important; }
         body.ultra-focus #mainContent { grid-template-columns: 1fr 1.6fr !important; }
         
-        .status-sync { display: inline-flex; align-items: center; gap: 6px; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-        .loading-dot { animation: blink 1s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .status-sync { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .loading-dot { animation: blink 1.2s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         @media (max-width: 1024px) { #mainContent { grid-template-columns: 1fr !important; } }
     </style>
 </head>
-<body class="p-3 md:p-6">
+<body class="p-4 md:p-8">
 
-<div id="appContainer" class="max-w-[1640px] mx-auto flex flex-col gap-5">
+<div id="appContainer" class="max-w-[1600px] mx-auto flex flex-col gap-6">
     
-    <div class="shell-card p-5 md:p-8">
+    <div class="shell-card p-6 md:p-10">
         
-        <header class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+        <header class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10 pb-6 border-b border-slate-100">
             <div class="flex items-center gap-5">
-                <div class="w-16 h-16 rounded-3xl bg-white flex items-center justify-center border border-slate-200 shadow-sm">
-                    <i data-lucide="wallet" class="w-8 h-8 text-[#ff7a00]"></i>
+                <div class="w-16 h-16 rounded-3xl bg-white flex items-center justify-center border border-slate-100 shadow-sm">
+                    <i data-lucide="banknote" class="w-8 h-8 text-[#ff7a00]"></i>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-black tracking-tight uppercase">Financeiro<span class="text-[#ff7a00]">Pro</span> <span class="text-slate-300 text-xl font-medium">v29.0</span></h1>
-                    <div id="statusSync" class="status-sync text-emerald-500 mt-1">
+                    <h1 class="text-3xl font-black tracking-tighter uppercase">Financeiro<span class="text-[#ff7a00]">Pro</span> <span class="text-slate-300 text-xl font-medium tracking-normal">v29.1</span></h1>
+                    <div id="statusSync" class="status-sync text-emerald-600 mt-1">
                         <div class="w-2 h-2 rounded-full bg-emerald-500"></div> Sincronizado
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3 bg-slate-100/50 p-2.5 rounded-2xl border border-slate-200">
+            <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-2xl border border-slate-100 shadow-inner">
                 <i data-lucide="calendar" class="w-4 h-4 text-slate-400 ml-2"></i>
                 <select id="f_mes" class="bg-transparent font-bold text-sm px-2 outline-none cursor-pointer text-slate-700"></select>
-                <select id="f_ano" class="bg-[#ff7a00] text-white font-bold text-sm px-4 py-2 rounded-xl outline-none cursor-pointer shadow-md shadow-orange-100"></select>
+                <select id="f_ano" class="bg-[#ff7a00] text-white font-bold text-sm px-5 py-2.5 rounded-xl outline-none cursor-pointer shadow-md shadow-orange-100"></select>
             </div>
         </header>
 
-        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             <div class="panel hero-main metric-card p-6 md:col-span-2 lg:col-span-1">
-                <span class="eyebrow text-orange-50">Previsão Final</span>
+                <span class="eyebrow text-orange-50/90">Previsão Final</span>
                 <div id="totalSaldo" class="metric-number text-4xl mt-3">R$ 0,00</div>
-                <p class="text-[10px] text-orange-50/80 mt-5 uppercase font-extrabold tracking-wider">Balanço do mês selecionado</p>
+                <p class="text-[10px] text-orange-50/70 mt-5 uppercase font-extrabold tracking-wider">Balanço total previsto</p>
             </div>
 
             <div class="panel p-6 metric-card">
-                <span class="eyebrow">Dinheiro em Mão (Ok)</span>
-                <div id="realMao" class="metric-number text-3xl text-slate-800 mt-3">R$ 0,00</div>
+                <span class="eyebrow">Dinheiro em Mão</span>
+                <div id="realMao" class="metric-number text-3xl text-slate-900 mt-3">R$ 0,00</div>
                 <div class="flex gap-2 mt-5">
-                    <span id="saldoCaixa" class="text-[9px] font-black bg-emerald-50 text-emerald-600 px-2.5 py-1.5 rounded-lg border border-emerald-100 uppercase">Dinheiro: R$ 0</span>
-                    <span id="saldoBanco" class="text-[9px] font-black bg-orange-50 text-[#ff7a00] px-2.5 py-1.5 rounded-lg border border-orange-100 uppercase">Inter: R$ 0</span>
+                    <span id="saldoCaixa" class="text-[10px] font-black bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full border border-emerald-100 uppercase">Dinheiro: R$ 0</span>
+                    <span id="saldoBanco" class="text-[10px] font-black bg-orange-50 text-[#ff7a00] px-3 py-1.5 rounded-full border border-orange-100 uppercase">Inter: R$ 0</span>
                 </div>
             </div>
 
             <div class="panel p-6 metric-card border-l-4 border-l-emerald-500">
-                <span class="eyebrow text-emerald-600">Total Recebido</span>
-                <div id="totalR" class="metric-number text-3xl text-slate-800 mt-3">R$ 0,00</div>
-                <i data-lucide="trending-up" class="absolute right-6 bottom-6 w-6 h-6 text-emerald-100"></i>
+                <span class="eyebrow text-emerald-700">Total Recebido</span>
+                <div id="totalR" class="metric-number text-3xl text-slate-900 mt-3">R$ 0,00</div>
+                <i data-lucide="trending-up" class="absolute right-6 bottom-6 w-6 h-6 text-emerald-100/70"></i>
             </div>
 
             <div class="panel p-6 metric-card border-l-4 border-l-rose-500">
-                <span class="eyebrow text-rose-600">Total Pago</span>
-                <div id="totalP" class="metric-number text-3xl text-slate-800 mt-3">R$ 0,00</div>
-                <i data-lucide="trending-down" class="absolute right-6 bottom-6 w-6 h-6 text-rose-100"></i>
+                <span class="eyebrow text-rose-700">Total Pago</span>
+                <div id="totalP" class="metric-number text-3xl text-slate-900 mt-3">R$ 0,00</div>
+                <i data-lucide="trending-down" class="absolute right-6 bottom-6 w-6 h-6 text-rose-100/70"></i>
             </div>
         </section>
 
-        <div class="flex flex-wrap gap-3 mb-8 no-print border-b border-slate-100 pb-6">
+        <div class="flex flex-wrap gap-3 mb-10 no-print border-b border-slate-100 pb-8">
             <button id="btnRelatorio" class="btn-premium bg-slate-900 text-white">
                 <i data-lucide="bar-chart-3" class="w-4 h-4"></i> Relatório
             </button>
             <button id="btnTransferencia" class="btn-premium bg-[#ff7a00] text-white">
-                <i data-lucide="arrow-left-right" class="w-4 h-4"></i> Transferir (Inter/Dinheiro)
+                <i data-lucide="arrow-left-right" class="w-4 h-4"></i> Transferência
             </button>
             <button id="btnUltraFocus" class="btn-premium bg-white border-slate-200 text-slate-600">
                 <i data-lucide="zap" class="w-4 h-4 text-orange-500"></i> Ultra Foco
             </button>
             <div class="flex-1"></div>
-            <button id="btnExportJSON" class="btn-premium bg-slate-50 text-slate-500 border-slate-200">
-                <i data-lucide="download" class="w-4 h-4"></i> Exportar Dados
+            <button id="btnExportJSON" class="btn-premium bg-slate-50 text-slate-500 border-slate-100">
+                <i data-lucide="download" class="w-4 h-4"></i> Exportar
             </button>
         </div>
 
-        <main id="mainContent" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <main id="mainContent" class="grid grid-cols-1 lg:grid-cols-12 gap-10">
             
             <aside class="lg:col-span-4 xl:col-span-3 space-y-6 no-print">
-                <div class="panel p-6 space-y-5 bg-slate-50/30">
-                    <h3 class="text-xs font-black uppercase tracking-widest text-slate-700">Novo Lançamento</h3>
+                <div class="panel p-7 space-y-6 bg-slate-50/50 border border-slate-100">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-slate-600">Novo Lançamento</h3>
                     
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="text-[10px] font-black uppercase text-slate-400 block mb-2">Dia</label>
-                            <input type="number" id="f_dia" min="1" max="31" class="premium-input text-center">
+                            <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Dia</label>
+                            <input type="number" id="f_dia" min="1" max="31" class="premium-input text-center" placeholder="--">
                         </div>
                         <div>
-                            <label class="text-[10px] font-black uppercase text-slate-400 block mb-2">Parc.</label>
+                            <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Parc.</label>
                             <input type="number" id="f_parc" min="1" value="1" class="premium-input text-center">
                         </div>
                     </div>
 
                     <div>
-                        <label class="text-[10px] font-black uppercase text-slate-400 block mb-2">Descrição</label>
-                        <input type="text" id="f_desc" class="premium-input uppercase" placeholder="EX: ALUGUEL, SALÁRIO...">
+                        <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Descrição</label>
+                        <input type="text" id="f_desc" class="premium-input uppercase" placeholder="EX: ALUGUEL, MERCADO...">
                     </div>
 
                     <div>
-                        <label class="text-[10px] font-black uppercase text-slate-400 block mb-2">Onde movimentou?</label>
+                        <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Conta</label>
                         <select id="f_conta" class="premium-select">
                             <option value="banco">🏦 BANCO INTER</option>
                             <option value="caixa">💵 DINHEIRO EM MÃO</option>
@@ -165,74 +183,80 @@
                     </div>
 
                     <div>
-                        <label class="text-[10px] font-black uppercase text-slate-400 block mb-2">Valor</label>
-                        <input type="text" id="f_valor" class="premium-input text-2xl metric-number text-center text-slate-800" placeholder="R$ 0,00">
+                        <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Valor</label>
+                        <input type="text" id="f_valor" class="premium-input text-2xl metric-number text-center text-slate-900 shadow-inner bg-slate-50" placeholder="R$ 0,00">
                     </div>
 
                     <div class="grid grid-cols-2 gap-4 pt-2">
-                        <button id="btnAddR" class="btn-premium bg-emerald-500 text-white py-4 shadow-lg shadow-emerald-50">
+                        <button id="btnAddR" class="btn-premium bg-emerald-600 text-white py-4 shadow-lg shadow-emerald-100/50">
                             <i data-lucide="plus-circle" class="w-5 h-5"></i> Ganho
                         </button>
-                        <button id="btnAddP" class="btn-premium bg-rose-500 text-white py-4 shadow-lg shadow-rose-50">
+                        <button id="btnAddP" class="btn-premium bg-rose-600 text-white py-4 shadow-lg shadow-rose-100/50">
                             <i data-lucide="minus-circle" class="w-5 h-5"></i> Gasto
                         </button>
                     </div>
                 </div>
 
-                <div class="panel p-6">
-                    <button id="btnToggleSaldoIni" class="flex items-center justify-between w-full mb-2">
+                <div class="panel p-6 border border-slate-100">
+                    <button id="btnToggleSaldoIni" class="flex items-center justify-between w-full mb-1">
                         <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Saldos Iniciais</span>
-                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="iconSaldoIni"></i>
                     </button>
                     
                     <div id="wrapSaldoIni" class="collapse-panel">
-                        <div class="space-y-5 pt-4 border-t border-slate-100 mt-2">
+                        <div class="space-y-5 pt-5 border-t border-slate-100 mt-3">
                             <div>
                                 <div class="flex items-center gap-2 mb-2">
                                     <i data-lucide="banknote" class="w-3.5 h-3.5 text-emerald-500"></i>
-                                    <label class="text-[9px] font-black uppercase text-slate-400">Dinheiro em Mão</label>
+                                    <label class="text-[10px] font-black uppercase text-slate-500">Dinheiro</label>
                                 </div>
-                                <input type="text" id="f_saldo_ini_caixa" class="premium-input text-lg metric-number border-emerald-100" placeholder="R$ 0,00">
+                                <input type="text" id="f_saldo_ini_caixa" class="premium-input text-lg metric-number border-emerald-100 bg-emerald-50/30" placeholder="R$ 0,00">
                             </div>
                             <div>
                                 <div class="flex items-center gap-2 mb-2">
                                     <i data-lucide="landmark" class="w-3.5 h-3.5 text-orange-500"></i>
-                                    <label class="text-[9px] font-black uppercase text-slate-400">Saldo no Inter</label>
+                                    <label class="text-[10px] font-black uppercase text-slate-500">Inter</label>
                                 </div>
-                                <input type="text" id="f_saldo_ini_banco" class="premium-input text-lg metric-number border-orange-100" placeholder="R$ 0,00">
+                                <input type="text" id="f_saldo_ini_banco" class="premium-input text-lg metric-number border-orange-100 bg-orange-50/30" placeholder="R$ 0,00">
                             </div>
                         </div>
                     </div>
                 </div>
             </aside>
 
-            <div class="lg:col-span-8 xl:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-8">
+            <div class="lg:col-span-8 xl:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-10">
                 
-                <section class="space-y-5">
-                    <div class="flex items-center gap-3 eyebrow text-emerald-600 border-b border-slate-100 pb-3">
-                        <div class="w-2 h-6 bg-emerald-500 rounded-full"></div> Entradas (Ganhos)
+                <section class="space-y-6">
+                    <div class="flex items-center gap-3 eyebrow text-emerald-700 border-b border-slate-100 pb-4">
+                        <div class="w-1.5 h-6 bg-emerald-500 rounded-full"></div> Entradas (Ganhos)
                     </div>
-                    <div id="listR_pend" class="space-y-3"></div>
-                    <div class="history-block pt-6">
-                        <button id="btnToggleRConf" class="flex items-center gap-2 text-[10px] font-black uppercase text-slate-400 hover:text-emerald-600 transition-colors">
+                    <div id="listR_pend" class="space-y-4"></div>
+                    
+                    <div class="history-block pt-8 border-t border-slate-100 mt-10">
+                        <button id="btnToggleRConf" class="flex items-center gap-2.5 text-[10px] font-black uppercase text-slate-400 hover:text-emerald-700 transition-colors">
                             <i data-lucide="check-circle" class="w-4 h-4"></i> Confirmadas (<span id="countR_conf">0</span>)
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 ml-1 transition-transform" id="iconRConf"></i>
                         </button>
                         <div id="wrapR_conf" class="collapse-panel">
-                            <div id="listR_conf" class="space-y-2 mt-3"></div> </div>
+                            <div id="listR_conf" class="space-y-3 mt-5"></div>
+                        </div>
                     </div>
                 </section>
 
-                <section class="space-y-5">
-                    <div class="flex items-center gap-3 eyebrow text-rose-600 border-b border-slate-100 pb-3">
-                        <div class="w-2 h-6 bg-rose-500 rounded-full"></div> Saídas (Gastos)
+                <section class="space-y-6">
+                    <div class="flex items-center gap-3 eyebrow text-rose-700 border-b border-slate-100 pb-4">
+                        <div class="w-1.5 h-6 bg-rose-500 rounded-full"></div> Saídas (Gastos)
                     </div>
-                    <div id="listP_pend" class="space-y-3"></div>
-                    <div class="history-block pt-6">
-                        <button id="btnTogglePConf" class="flex items-center gap-2 text-[10px] font-black uppercase text-slate-400 hover:text-rose-600 transition-colors">
+                    <div id="listP_pend" class="space-y-4"></div>
+                    
+                    <div class="history-block pt-8 border-t border-slate-100 mt-10">
+                        <button id="btnTogglePConf" class="flex items-center gap-2.5 text-[10px] font-black uppercase text-slate-400 hover:text-rose-700 transition-colors">
                             <i data-lucide="check-circle" class="w-4 h-4"></i> Quitadas (<span id="countP_conf">0</span>)
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 ml-1 transition-transform" id="iconPConf"></i>
                         </button>
                         <div id="wrapP_conf" class="collapse-panel">
-                            <div id="listP_conf" class="space-y-2 mt-3"></div> </div>
+                            <div id="listP_conf" class="space-y-3 mt-5"></div>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -240,60 +264,74 @@
     </div>
 </div>
 
-<div id="editModal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="panel w-full max-w-md p-8 space-y-5">
-        <h3 class="text-sm font-black uppercase tracking-widest text-slate-700">Editar Registro</h3>
-        <div>
-            <label class="text-[10px] font-black uppercase text-slate-400 block mb-2">Dia</label>
-            <input type="number" id="edit_dia" class="premium-input">
+<div id="editModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300">
+    <div class="panel w-full max-w-lg p-10 space-y-6 shadow-2xl">
+        <h3 class="text-sm font-black uppercase tracking-widest text-slate-800 pb-3 border-b border-slate-100">Editar Registro</h3>
+        
+        <div class="grid grid-cols-4 gap-4">
+            <div>
+                <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Dia</label>
+                <input type="number" id="edit_dia" class="premium-input text-center">
+            </div>
+            <div class="col-span-3">
+                <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Descrição</label>
+                <input type="text" id="edit_desc" class="premium-input uppercase">
+            </div>
         </div>
+        
         <div>
-            <label class="text-[10px] font-black uppercase text-slate-400 block mb-2">Descrição</label>
-            <input type="text" id="edit_desc" class="premium-input uppercase">
+            <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Valor</label>
+            <input type="text" id="edit_valor" class="premium-input text-center text-3xl metric-number bg-slate-50 shadow-inner">
         </div>
+        
         <div>
-            <label class="text-[10px] font-black uppercase text-slate-400 block mb-2">Valor</label>
-            <input type="text" id="edit_valor" class="premium-input text-center text-xl metric-number">
-        </div>
-        <div>
-            <label class="text-[10px] font-black uppercase text-slate-400 block mb-2">Conta</label>
+            <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Conta</label>
             <select id="edit_conta" class="premium-select">
-                <option value="banco">🏦 INTER</option>
-                <option value="caixa">💵 DINHEIRO</option>
+                <option value="banco">🏦 BANCO INTER</option>
+                <option value="caixa">💵 DINHEIRO EM MÃO</option>
             </select>
         </div>
-        <div class="flex items-center gap-3">
-            <input type="checkbox" id="edit_ok" class="w-5 h-5 rounded-md text-orange-600">
-            <label for="edit_ok" class="text-xs font-bold text-slate-600 uppercase">Confirmado / Quitado</label>
+        
+        <div class="flex items-center gap-3 bg-slate-50 p-4 rounded-xl border border-slate-100">
+            <input type="checkbox" id="edit_ok" class="w-6 h-6 rounded-lg text-orange-600 accent-orange-500 cursor-pointer">
+            <label for="edit_ok" class="text-xs font-bold text-slate-700 uppercase cursor-pointer">Lançamento Confirmado / Quitado</label>
         </div>
-        <div class="grid grid-cols-2 gap-3 pt-2">
+        
+        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
             <button onclick="closeEditModal()" class="btn-premium bg-slate-100 text-slate-600">Cancelar</button>
-            <button onclick="saveEdit()" class="btn-premium bg-[#ff7a00] text-white">Salvar</button>
+            <button onclick="saveEdit()" class="btn-premium bg-[#ff7a00] text-white">Salvar Alterações</button>
         </div>
     </div>
 </div>
 
-<div id="transferModal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="panel w-full max-w-md p-8 space-y-5">
-        <h3 class="text-sm font-black uppercase tracking-widest text-slate-700">Transferência de Capital</h3>
+<div id="transferModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="panel w-full max-w-md p-10 space-y-6 shadow-2xl">
+        <h3 class="text-sm font-black uppercase tracking-widest text-slate-800 pb-3 border-b border-slate-100">Transferência de Capital</h3>
         <div>
-            <label class="text-[10px] font-black uppercase text-slate-400 block mb-2">Valor</label>
-            <input type="text" id="trans_valor" class="premium-input text-center text-2xl metric-number" placeholder="R$ 0,00">
+            <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Valor</label>
+            <input type="text" id="trans_valor" class="premium-input text-center text-3xl metric-number bg-slate-50 shadow-inner" placeholder="R$ 0,00">
         </div>
-        <div class="grid grid-cols-2 gap-3">
-            <div>
-                <label class="text-[10px] font-black uppercase text-slate-400 block mb-2">Sair de:</label>
-                <select id="trans_origem" class="premium-select">
-                    <option value="banco">INTER</option>
+        <div class="grid grid-cols-11 gap-2 items-center bg-slate-50 p-5 rounded-2xl border border-slate-100 shadow-inner">
+            <div class="col-span-5">
+                <label class="text-[9px] font-black uppercase text-slate-400 block mb-1.5">Sair de:</label>
+                <select id="trans_origem" class="premium-select text-xs padding-sm">
+                    <option value="banco">BANCO INTER</option>
                     <option value="caixa">DINHEIRO</option>
                 </select>
             </div>
-            <div class="flex items-center justify-center pt-6 text-slate-300">
-                <i data-lucide="arrow-right"></i>
+            <div class="col-span-1 flex items-center justify-center pt-5 text-slate-300">
+                <i data-lucide="arrow-right-circle" class="w-6 h-6"></i>
+            </div>
+            <div class="col-span-5">
+                <label class="text-[9px] font-black uppercase text-slate-400 block mb-1.5">Para:</label>
+                <select id="trans_destino" class="premium-select text-xs padding-sm bg-slate-100" disabled>
+                    <option value="caixa">DINHEIRO</option>
+                    <option value="banco">BANCO INTER</option>
+                </select>
             </div>
         </div>
-        <button onclick="executeTransfer()" class="btn-premium w-full bg-[#ff7a00] text-white py-4 shadow-lg shadow-orange-100">Executar Transferência</button>
-        <button onclick="document.getElementById('transferModal').classList.add('hidden')" class="w-full text-[10px] font-black uppercase text-slate-400 mt-2">Cancelar</button>
+        <button onclick="executeTransfer()" class="btn-premium w-full bg-[#ff7a00] text-white py-4 shadow-lg shadow-orange-100/50">Executar Transferência</button>
+        <button onclick="document.getElementById('transferModal').classList.add('hidden')" class="w-full text-[11px] font-bold uppercase text-slate-400 mt-2 hover:text-rose-500 transition-colors">Cancelar</button>
     </div>
 </div>
 
@@ -301,6 +339,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+    // Configuração permanece a mesma
     const firebaseConfig = {
         apiKey: "AIzaSyCi8znMRngui3EI6tODeuczGcUV2o3U90c",
         authDomain: "financeiro-guilherme-49a5b.firebaseapp.com",
@@ -387,20 +426,28 @@
         let tR = 0, tP = 0, sCaixa = Number(data.saldoIniCaixa || 0), sBanco = Number(data.saldoIniBanco || 0);
         let cR = 0, cP = 0;
 
+        // NOVA FUNÇÃO CREATE ROW - DESIGN PREMIUM
         const createRow = (item, type) => `
-            <div class="entry-row flex items-center gap-4 p-4 rounded-2xl shadow-sm ${item.ok ? 'item-quitado' : ''}">
+            <div class="entry-row flex items-center gap-4 p-5 ${item.ok ? 'item-quitado' : ''}">
                 <input type="checkbox" ${item.ok ? 'checked' : ''} onchange="window.toggleItem('${type}', ${item.id})" class="w-5 h-5 cursor-pointer accent-orange-500">
-                <div class="w-10 h-10 flex items-center justify-center bg-slate-50 rounded-xl text-xs font-black text-slate-400 border border-slate-100">${String(item.dia).padStart(2,'0')}</div>
+                
+                <div class="day-badge w-11 h-11 flex flex-col items-center justify-center bg-white rounded-2xl text-slate-500 border border-slate-100 shadow-sm">
+                    <span class="text-[9px] font-extrabold uppercase tracking-widest opacity-60">Dia</span>
+                    <span class="text-lg font-bold metric-number -mt-1">${String(item.dia).padStart(2,'0')}</span>
+                </div>
+
                 <div class="flex-1 min-w-0">
-                    <div class="text-xs font-black ${item.ok ? 'text-quitado' : 'text-slate-700'} truncate">${item.desc}</div>
-                    <div class="text-[9px] font-extrabold uppercase mt-1 ${item.ok ? 'text-slate-300' : (item.conta === 'caixa' ? 'text-emerald-500' : 'text-orange-500')}">
+                    <div class="text-[13px] font-bold ${item.ok ? 'text-quitado' : 'text-slate-800'} truncate uppercase tracking-tight">${item.desc}</div>
+                    <div class="text-[9px] font-black uppercase mt-1 ${item.ok ? 'text-slate-300' : (item.conta === 'caixa' ? 'text-emerald-600' : 'text-orange-600')}">
                         ${item.conta === 'caixa' ? '💵 DINHEIRO' : '🏦 INTER'}
                     </div>
                 </div>
-                <div class="metric-number text-sm font-bold ${item.ok ? 'text-slate-300' : (type === 'R' ? 'text-emerald-600' : 'text-rose-500')}">${formatBRL(item.valor)}</div>
-                <div class="flex gap-1 ml-2">
-                    <button onclick="window.editItem('${type}', ${item.id})" class="p-2 text-slate-300 hover:text-orange-500 transition-colors"><i data-lucide="pencil" class="w-4 h-4"></i></button>
-                    <button onclick="window.delItem('${type}', ${item.id})" class="p-2 text-slate-300 hover:text-rose-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+
+                <div class="metric-number text-base font-bold ${item.ok ? 'text-slate-300' : (type === 'R' ? 'text-emerald-600' : 'text-rose-600')}">${formatBRL(item.valor)}</div>
+                
+                <div class="action-buttons flex gap-1 ml-2">
+                    <button onclick="window.editItem('${type}', ${item.id})" class="p-2.5 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-orange-500 hover:border-orange-100 hover:bg-orange-50 transition-all"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+                    <button onclick="window.delItem('${type}', ${item.id})" class="p-2.5 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-rose-600 hover:border-rose-100 hover:bg-rose-50 transition-all"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                 </div>
             </div>
         `;
@@ -453,13 +500,33 @@
             sync(getMonthKey()); render();
         };
 
+        // AJUSTE NOS TOGGLES PARA ANIMAR O ÍCONE
+        const togglePanel = (btnId, wrapId, iconId) => {
+            document.getElementById(btnId).onclick = () => {
+                const wrap = document.getElementById(wrapId);
+                const icon = document.getElementById(iconId);
+                wrap.classList.toggle('open');
+                if(icon) icon.style.transform = wrap.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        }
+
         document.getElementById('btnAddR').onclick = () => addItem('R');
         document.getElementById('btnAddP').onclick = () => addItem('P');
-        document.getElementById('btnToggleSaldoIni').onclick = () => document.getElementById('wrapSaldoIni').classList.toggle('open');
-        document.getElementById('btnToggleRConf').onclick = () => document.getElementById('wrapR_conf').classList.toggle('open');
-        document.getElementById('btnTogglePConf').onclick = () => document.getElementById('wrapP_conf').classList.toggle('open');
         
-        document.getElementById('btnTransferencia').onclick = () => document.getElementById('transferModal').classList.remove('hidden');
+        togglePanel('btnToggleSaldoIni', 'wrapSaldoIni', 'iconSaldoIni');
+        togglePanel('btnToggleRConf', 'wrapR_conf', 'iconRConf');
+        togglePanel('btnTogglePConf', 'wrapP_conf', 'iconPConf');
+        
+        document.getElementById('btnTransferencia').onclick = () => {
+            document.getElementById('trans_valor').value = '';
+            document.getElementById('transferModal').classList.remove('hidden');
+        }
+
+        // Lógica de destino automático na transferência
+        document.getElementById('trans_origem').onchange = (e) => {
+            const dest = document.getElementById('trans_destino');
+            dest.value = e.target.value === 'banco' ? 'caixa' : 'banco';
+        }
 
         document.getElementById('btnUltraFocus').onclick = () => {
             modoUltraFoco = !modoUltraFoco;
