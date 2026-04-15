@@ -3,335 +3,251 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro Pro v29.1 Premium</title>
+    <title>Financeiro Elite v30.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-top: #f4f7fa; --bg-bottom: #fdfeff;
-            --panel: #ffffff; --line: #e2e8f0;
-            --text: #1e293b; --blue: #ff7a00; /* Laranja Inter */
-            --inter: #ff7a00; --dinheiro: #10b981;
-            --shadow: 0 10px 25px rgba(56, 96, 150, .06);
-            --shadow-card: 0 2px 6px rgba(0, 0, 0, .02);
+            --bg: #f8fafc;
+            --accent: #ff7a00;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.8);
         }
 
-        * { box-sizing: border-box; outline: none !important; }
         body {
-            background: radial-gradient(circle at top left, rgba(255,122,0,0.05), transparent 35%),
-                        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(255, 122, 0, 0.03) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.02) 0px, transparent 50%);
             font-family: 'Plus Jakarta Sans', sans-serif;
-            color: var(--text);
-            min-height: 100vh;
+            color: var(--text-main);
             -webkit-font-smoothing: antialiased;
         }
 
-        .shell-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 32px; box-shadow: var(--shadow); }
-        .panel { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; box-shadow: var(--shadow-card); }
-        
-        .metric-card { position: relative; overflow: hidden; min-height: 130px; transition: all 0.3s ease; }
-        .metric-card::after { content: ""; position: absolute; right: -25px; bottom: -25px; width: 110px; height: 110px; border-radius: 50%; background: rgba(255,255,255,0.08); }
-        .hero-main { background: linear-gradient(135deg, #ff9d2e 0%, #ff7a00 100%); color: white; border: none; }
-
-        .metric-number { font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: -0.05em; }
-        .eyebrow { font-size: 10px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: #64748b; }
-
-        .btn-premium { display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; border-radius: 14px; padding: 0.75rem 1.25rem; font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; transition: all 0.2s; cursor: pointer; border: 1px solid transparent; }
-        .btn-premium:hover { transform: translateY(-1px); filter: brightness(1.03); box-shadow: 0 4px 10px rgba(255,122,0,0.15); }
-        .btn-premium:active { transform: translateY(0); }
-
-        .premium-input, .premium-select { width: 100%; border-radius: 14px; border: 1px solid #e2e8f0; background: #ffffff; padding: 0.85rem 1rem; transition: all 0.2s; color: var(--text); font-weight: 600; font-size: 14px; }
-        .premium-input:focus { border-color: var(--inter); box-shadow: 0 0 0 4px rgba(255,122,0,0.08); }
-
-        /* Nova Estrutura da Linha (Entry Row) */
-        .entry-row { 
-            transition: all 0.25s ease; 
-            background: #ffffff; 
-            border: 1px solid #f1f5f9; 
-            border-radius: 16px;
-            box-shadow: var(--shadow-card);
-        }
-        .entry-row:hover { 
-            transform: translateY(-2px); 
-            border-color: #e2e8f0; 
-            box-shadow: 0 6px 15px rgba(0,0,0,0.03); 
-            background: #fafafa;
+        /* Glassmorphism */
+        .glass-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.02), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+            border-radius: 24px;
         }
 
-        /* Ocultar ações e mostrar no Hover */
-        .action-buttons { opacity: 0; transition: opacity 0.2s ease; }
-        .entry-row:hover .action-buttons { opacity: 1; }
+        /* Inputs Estilizados */
+        .input-premium {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        .input-premium:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.05);
+            transform: translateY(-1px);
+        }
 
-        /* Estilo para itens quitados (Sem fundo cinza, apenas texto claro) */
-        .item-quitado { }
-        .text-quitado { color: #cbd5e1 !important; text-decoration: line-through; text-decoration-color: #e2e8f0; }
-        .item-quitado .day-badge { background-color: #f8fafc; color: #cbd5e1; border-color: #f1f5f9; }
+        /* Cards de Lançamento */
+        .entry-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+            background: #ffffff;
+        }
+        .entry-card:hover {
+            transform: scale(1.01) translateY(-2px);
+            box-shadow: 0 12px 20px -10px rgba(0,0,0,0.05);
+            border-color: #f1f5f9;
+        }
 
-        .collapse-panel { display: grid; grid-template-rows: 0fr; opacity: 0; transition: all 0.3s ease; overflow: hidden; }
-        .collapse-panel.open { grid-template-rows: 1fr; opacity: 1; }
+        .btn-action {
+            transition: all 0.2s;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 11px;
+        }
+        .btn-action:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
 
-        body.ultra-focus #filterSection, body.ultra-focus #btnRelatorio, body.ultra-focus .history-block { display: none !important; }
-        body.ultra-focus #mainContent { grid-template-columns: 1fr 1.6fr !important; }
-        
-        .status-sync { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .loading-dot { animation: blink 1.2s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        /* Badges */
+        .badge-status {
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
 
-        @media (max-width: 1024px) { #mainContent { grid-template-columns: 1fr !important; } }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+
+        .hide-actions .action-btns { opacity: 0; }
+        .entry-card:hover .action-btns { opacity: 1; }
+
+        .ultra-focus-mode .sidebar, .ultra-focus-mode .header-extra { display: none; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 md:p-8 min-h-screen">
 
-<div id="appContainer" class="max-w-[1600px] mx-auto flex flex-col gap-6">
+<div class="max-w-[1400px] mx-auto">
     
-    <div class="shell-card p-6 md:p-10">
-        
-        <header class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10 pb-6 border-b border-slate-100">
-            <div class="flex items-center gap-5">
-                <div class="w-16 h-16 rounded-3xl bg-white flex items-center justify-center border border-slate-100 shadow-sm">
-                    <i data-lucide="banknote" class="w-8 h-8 text-[#ff7a00]"></i>
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+        <div>
+            <div class="flex items-center gap-3 mb-1">
+                <div class="w-10 h-10 bg-[#ff7a00] rounded-xl flex items-center justify-center shadow-lg shadow-orange-200">
+                    <i data-lucide="layers" class="text-white w-6 h-6"></i>
                 </div>
-                <div>
-                    <h1 class="text-3xl font-black tracking-tighter uppercase">Financeiro<span class="text-[#ff7a00]">Pro</span> <span class="text-slate-300 text-xl font-medium tracking-normal">v29.1</span></h1>
-                    <div id="statusSync" class="status-sync text-emerald-600 mt-1">
-                        <div class="w-2 h-2 rounded-full bg-emerald-500"></div> Sincronizado
-                    </div>
-                </div>
+                <h1 class="text-2xl font-extrabold tracking-tighter">FINANCEIRO<span class="text-[#ff7a00]">ELITE</span></h1>
             </div>
-
-            <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-2xl border border-slate-100 shadow-inner">
-                <i data-lucide="calendar" class="w-4 h-4 text-slate-400 ml-2"></i>
-                <select id="f_mes" class="bg-transparent font-bold text-sm px-2 outline-none cursor-pointer text-slate-700"></select>
-                <select id="f_ano" class="bg-[#ff7a00] text-white font-bold text-sm px-5 py-2.5 rounded-xl outline-none cursor-pointer shadow-md shadow-orange-100"></select>
-            </div>
-        </header>
-
-        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-            <div class="panel hero-main metric-card p-6 md:col-span-2 lg:col-span-1">
-                <span class="eyebrow text-orange-50/90">Previsão Final</span>
-                <div id="totalSaldo" class="metric-number text-4xl mt-3">R$ 0,00</div>
-                <p class="text-[10px] text-orange-50/70 mt-5 uppercase font-extrabold tracking-wider">Balanço total previsto</p>
-            </div>
-
-            <div class="panel p-6 metric-card">
-                <span class="eyebrow">Dinheiro em Mão</span>
-                <div id="realMao" class="metric-number text-3xl text-slate-900 mt-3">R$ 0,00</div>
-                <div class="flex gap-2 mt-5">
-                    <span id="saldoCaixa" class="text-[10px] font-black bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full border border-emerald-100 uppercase">Dinheiro: R$ 0</span>
-                    <span id="saldoBanco" class="text-[10px] font-black bg-orange-50 text-[#ff7a00] px-3 py-1.5 rounded-full border border-orange-100 uppercase">Inter: R$ 0</span>
-                </div>
-            </div>
-
-            <div class="panel p-6 metric-card border-l-4 border-l-emerald-500">
-                <span class="eyebrow text-emerald-700">Total Recebido</span>
-                <div id="totalR" class="metric-number text-3xl text-slate-900 mt-3">R$ 0,00</div>
-                <i data-lucide="trending-up" class="absolute right-6 bottom-6 w-6 h-6 text-emerald-100/70"></i>
-            </div>
-
-            <div class="panel p-6 metric-card border-l-4 border-l-rose-500">
-                <span class="eyebrow text-rose-700">Total Pago</span>
-                <div id="totalP" class="metric-number text-3xl text-slate-900 mt-3">R$ 0,00</div>
-                <i data-lucide="trending-down" class="absolute right-6 bottom-6 w-6 h-6 text-rose-100/70"></i>
-            </div>
-        </section>
-
-        <div class="flex flex-wrap gap-3 mb-10 no-print border-b border-slate-100 pb-8">
-            <button id="btnRelatorio" class="btn-premium bg-slate-900 text-white">
-                <i data-lucide="bar-chart-3" class="w-4 h-4"></i> Relatório
-            </button>
-            <button id="btnTransferencia" class="btn-premium bg-[#ff7a00] text-white">
-                <i data-lucide="arrow-left-right" class="w-4 h-4"></i> Transferência
-            </button>
-            <button id="btnUltraFocus" class="btn-premium bg-white border-slate-200 text-slate-600">
-                <i data-lucide="zap" class="w-4 h-4 text-orange-500"></i> Ultra Foco
-            </button>
-            <div class="flex-1"></div>
-            <button id="btnExportJSON" class="btn-premium bg-slate-50 text-slate-500 border-slate-100">
-                <i data-lucide="download" class="w-4 h-4"></i> Exportar
-            </button>
+            <p class="text-slate-400 text-xs font-medium ml-1">Gestão de Fluxo de Caixa v30.0</p>
         </div>
 
-        <main id="mainContent" class="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            
-            <aside class="lg:col-span-4 xl:col-span-3 space-y-6 no-print">
-                <div class="panel p-7 space-y-6 bg-slate-50/50 border border-slate-100">
-                    <h3 class="text-xs font-black uppercase tracking-widest text-slate-600">Novo Lançamento</h3>
-                    
+        <div class="flex items-center gap-4 bg-white p-1.5 rounded-2xl shadow-sm border border-slate-100">
+            <select id="f_mes" class="bg-transparent font-bold text-sm px-4 outline-none"></select>
+            <select id="f_ano" class="bg-slate-900 text-white font-bold text-sm px-6 py-2.5 rounded-xl outline-none"></select>
+        </div>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div class="glass-panel p-6 border-l-4 border-l-[#ff7a00]">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Saldo Previsto</span>
+            <div id="totalSaldo" class="text-3xl font-black mt-1 tracking-tight">R$ 0,00</div>
+            <div class="mt-4 flex gap-2">
+                 <span id="saldoCaixa" class="badge-status bg-emerald-50 text-emerald-600">Dinheiro: R$ 0</span>
+                 <span id="saldoBanco" class="badge-status bg-blue-50 text-blue-600">Inter: R$ 0</span>
+            </div>
+        </div>
+        <div class="glass-panel p-6">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Receitas</span>
+            <div id="totalR" class="text-3xl font-black mt-1 text-emerald-500 tracking-tight">R$ 0,00</div>
+            <div class="w-full bg-slate-100 h-1.5 rounded-full mt-4 overflow-hidden">
+                <div class="bg-emerald-500 h-full" style="width: 70%"></div>
+            </div>
+        </div>
+        <div class="glass-panel p-6">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Despesas</span>
+            <div id="totalP" class="text-3xl font-black mt-1 text-rose-500 tracking-tight">R$ 0,00</div>
+            <div class="w-full bg-slate-100 h-1.5 rounded-full mt-4 overflow-hidden">
+                <div class="bg-rose-500 h-full" style="width: 40%"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <div class="lg:col-span-4 sidebar">
+            <div class="glass-panel p-8 sticky top-8">
+                <h2 class="text-sm font-black uppercase mb-6 flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-4 h-4 text-orange-500"></i> Novo Registro
+                </h2>
+                
+                <div class="space-y-5">
                     <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Dia</label>
-                            <input type="number" id="f_dia" min="1" max="31" class="premium-input text-center" placeholder="--">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Dia</label>
+                            <input type="number" id="f_dia" class="input-premium" placeholder="01">
                         </div>
-                        <div>
-                            <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Parc.</label>
-                            <input type="number" id="f_parc" min="1" value="1" class="premium-input text-center">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Parcelas</label>
+                            <input type="number" id="f_parc" value="1" class="input-premium">
                         </div>
                     </div>
 
-                    <div>
-                        <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Descrição</label>
-                        <input type="text" id="f_desc" class="premium-input uppercase" placeholder="EX: ALUGUEL, MERCADO...">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Descrição</label>
+                        <input type="text" id="f_desc" class="input-premium uppercase" placeholder="Ex: Venda SaaS">
                     </div>
 
-                    <div>
-                        <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Conta</label>
-                        <select id="f_conta" class="premium-select">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Conta</label>
+                        <select id="f_conta" class="input-premium">
                             <option value="banco">🏦 BANCO INTER</option>
                             <option value="caixa">💵 DINHEIRO EM MÃO</option>
                         </select>
                     </div>
 
-                    <div>
-                        <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Valor</label>
-                        <input type="text" id="f_valor" class="premium-input text-2xl metric-number text-center text-slate-900 shadow-inner bg-slate-50" placeholder="R$ 0,00">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Valor</label>
+                        <input type="text" id="f_valor" class="input-premium text-2xl font-bold text-slate-900" placeholder="R$ 0,00">
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4 pt-2">
-                        <button id="btnAddR" class="btn-premium bg-emerald-600 text-white py-4 shadow-lg shadow-emerald-100/50">
-                            <i data-lucide="plus-circle" class="w-5 h-5"></i> Ganho
-                        </button>
-                        <button id="btnAddP" class="btn-premium bg-rose-600 text-white py-4 shadow-lg shadow-rose-100/50">
-                            <i data-lucide="minus-circle" class="w-5 h-5"></i> Gasto
-                        </button>
+                    <div class="grid grid-cols-2 gap-4 pt-4">
+                        <button id="btnAddR" class="btn-action bg-emerald-500 text-white p-4 shadow-lg shadow-emerald-100">Entrada</button>
+                        <button id="btnAddP" class="btn-action bg-rose-500 text-white p-4 shadow-lg shadow-rose-100">Saída</button>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="panel p-6 border border-slate-100">
-                    <button id="btnToggleSaldoIni" class="flex items-center justify-between w-full mb-1">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Saldos Iniciais</span>
-                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="iconSaldoIni"></i>
-                    </button>
-                    
-                    <div id="wrapSaldoIni" class="collapse-panel">
-                        <div class="space-y-5 pt-5 border-t border-slate-100 mt-3">
-                            <div>
-                                <div class="flex items-center gap-2 mb-2">
-                                    <i data-lucide="banknote" class="w-3.5 h-3.5 text-emerald-500"></i>
-                                    <label class="text-[10px] font-black uppercase text-slate-500">Dinheiro</label>
-                                </div>
-                                <input type="text" id="f_saldo_ini_caixa" class="premium-input text-lg metric-number border-emerald-100 bg-emerald-50/30" placeholder="R$ 0,00">
-                            </div>
-                            <div>
-                                <div class="flex items-center gap-2 mb-2">
-                                    <i data-lucide="landmark" class="w-3.5 h-3.5 text-orange-500"></i>
-                                    <label class="text-[10px] font-black uppercase text-slate-500">Inter</label>
-                                </div>
-                                <input type="text" id="f_saldo_ini_banco" class="premium-input text-lg metric-number border-orange-100 bg-orange-50/30" placeholder="R$ 0,00">
-                            </div>
-                        </div>
-                    </div>
+        <div class="lg:col-span-8 space-y-10">
+            
+            <section>
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xs font-black uppercase tracking-[2px] text-slate-400 flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-emerald-500"></div> Próximos Recebimentos
+                    </h3>
                 </div>
-            </aside>
-
-            <div class="lg:col-span-8 xl:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-10">
+                <div id="listR_pend" class="space-y-3"></div>
                 
-                <section class="space-y-6">
-                    <div class="flex items-center gap-3 eyebrow text-emerald-700 border-b border-slate-100 pb-4">
-                        <div class="w-1.5 h-6 bg-emerald-500 rounded-full"></div> Entradas (Ganhos)
+                <div class="mt-6">
+                    <button id="btnToggleRConf" class="text-[10px] font-bold text-slate-400 hover:text-slate-600 flex items-center gap-2 uppercase">
+                        <i data-lucide="check-check" class="w-4 h-4"></i> Ver Recebidos (<span id="countR_conf">0</span>)
+                    </button>
+                    <div id="wrapR_conf" class="hidden mt-4 space-y-2">
+                        <div id="listR_conf"></div>
                     </div>
-                    <div id="listR_pend" class="space-y-4"></div>
-                    
-                    <div class="history-block pt-8 border-t border-slate-100 mt-10">
-                        <button id="btnToggleRConf" class="flex items-center gap-2.5 text-[10px] font-black uppercase text-slate-400 hover:text-emerald-700 transition-colors">
-                            <i data-lucide="check-circle" class="w-4 h-4"></i> Confirmadas (<span id="countR_conf">0</span>)
-                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 ml-1 transition-transform" id="iconRConf"></i>
-                        </button>
-                        <div id="wrapR_conf" class="collapse-panel">
-                            <div id="listR_conf" class="space-y-3 mt-5"></div>
-                        </div>
-                    </div>
-                </section>
+                </div>
+            </section>
 
-                <section class="space-y-6">
-                    <div class="flex items-center gap-3 eyebrow text-rose-700 border-b border-slate-100 pb-4">
-                        <div class="w-1.5 h-6 bg-rose-500 rounded-full"></div> Saídas (Gastos)
+            <section>
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xs font-black uppercase tracking-[2px] text-slate-400 flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-rose-500"></div> Contas a Pagar
+                    </h3>
+                </div>
+                <div id="listP_pend" class="space-y-3"></div>
+
+                <div class="mt-6">
+                    <button id="btnTogglePConf" class="text-[10px] font-bold text-slate-400 hover:text-slate-600 flex items-center gap-2 uppercase">
+                        <i data-lucide="check-check" class="w-4 h-4"></i> Ver Pagos (<span id="countP_conf">0</span>)
+                    </button>
+                    <div id="wrapP_conf" class="hidden mt-4 space-y-2">
+                        <div id="listP_conf"></div>
                     </div>
-                    <div id="listP_pend" class="space-y-4"></div>
-                    
-                    <div class="history-block pt-8 border-t border-slate-100 mt-10">
-                        <button id="btnTogglePConf" class="flex items-center gap-2.5 text-[10px] font-black uppercase text-slate-400 hover:text-rose-700 transition-colors">
-                            <i data-lucide="check-circle" class="w-4 h-4"></i> Quitadas (<span id="countP_conf">0</span>)
-                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 ml-1 transition-transform" id="iconPConf"></i>
-                        </button>
-                        <div id="wrapP_conf" class="collapse-panel">
-                            <div id="listP_conf" class="space-y-3 mt-5"></div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </main>
+                </div>
+            </section>
+        </div>
     </div>
 </div>
 
-<div id="editModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300">
-    <div class="panel w-full max-w-lg p-10 space-y-6 shadow-2xl">
-        <h3 class="text-sm font-black uppercase tracking-widest text-slate-800 pb-3 border-b border-slate-100">Editar Registro</h3>
-        
-        <div class="grid grid-cols-4 gap-4">
-            <div>
-                <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Dia</label>
-                <input type="number" id="edit_dia" class="premium-input text-center">
-            </div>
-            <div class="col-span-3">
-                <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Descrição</label>
-                <input type="text" id="edit_desc" class="premium-input uppercase">
-            </div>
-        </div>
-        
-        <div>
-            <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Valor</label>
-            <input type="text" id="edit_valor" class="premium-input text-center text-3xl metric-number bg-slate-50 shadow-inner">
-        </div>
-        
-        <div>
-            <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Conta</label>
-            <select id="edit_conta" class="premium-select">
-                <option value="banco">🏦 BANCO INTER</option>
-                <option value="caixa">💵 DINHEIRO EM MÃO</option>
+<div id="editModal" class="hidden fixed inset-0 z-50 bg-slate-900/20 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-panel w-full max-w-md p-8 bg-white">
+        <h3 class="text-lg font-black mb-6">Editar Lançamento</h3>
+        <div class="space-y-4">
+            <input type="number" id="edit_dia" class="input-premium w-full" placeholder="Dia">
+            <input type="text" id="edit_desc" class="input-premium w-full uppercase" placeholder="Descrição">
+            <input type="text" id="edit_valor" class="input-premium w-full text-xl font-bold">
+            <select id="edit_conta" class="input-premium w-full">
+                <option value="banco">INTER</option>
+                <option value="caixa">DINHEIRO</option>
             </select>
-        </div>
-        
-        <div class="flex items-center gap-3 bg-slate-50 p-4 rounded-xl border border-slate-100">
-            <input type="checkbox" id="edit_ok" class="w-6 h-6 rounded-lg text-orange-600 accent-orange-500 cursor-pointer">
-            <label for="edit_ok" class="text-xs font-bold text-slate-700 uppercase cursor-pointer">Lançamento Confirmado / Quitado</label>
-        </div>
-        
-        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
-            <button onclick="closeEditModal()" class="btn-premium bg-slate-100 text-slate-600">Cancelar</button>
-            <button onclick="saveEdit()" class="btn-premium bg-[#ff7a00] text-white">Salvar Alterações</button>
-        </div>
-    </div>
-</div>
-
-<div id="transferModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="panel w-full max-w-md p-10 space-y-6 shadow-2xl">
-        <h3 class="text-sm font-black uppercase tracking-widest text-slate-800 pb-3 border-b border-slate-100">Transferência de Capital</h3>
-        <div>
-            <label class="text-[10px] font-black uppercase text-slate-500 block mb-2">Valor</label>
-            <input type="text" id="trans_valor" class="premium-input text-center text-3xl metric-number bg-slate-50 shadow-inner" placeholder="R$ 0,00">
-        </div>
-        <div class="grid grid-cols-11 gap-2 items-center bg-slate-50 p-5 rounded-2xl border border-slate-100 shadow-inner">
-            <div class="col-span-5">
-                <label class="text-[9px] font-black uppercase text-slate-400 block mb-1.5">Sair de:</label>
-                <select id="trans_origem" class="premium-select text-xs padding-sm">
-                    <option value="banco">BANCO INTER</option>
-                    <option value="caixa">DINHEIRO</option>
-                </select>
+            <div class="flex items-center gap-2 p-2">
+                <input type="checkbox" id="edit_ok" class="w-5 h-5 accent-orange-500">
+                <label class="text-xs font-bold text-slate-500 uppercase">Confirmar Pagamento</label>
             </div>
-            <div class="col-span-1 flex items-center justify-center pt-5 text-slate-300">
-                <i data-lucide="arrow-right-circle" class="w-6 h-6"></i>
-            </div>
-            <div class="col-span-5">
-                <label class="text-[9px] font-black uppercase text-slate-400 block mb-1.5">Para:</label>
-                <select id="trans_destino" class="premium-select text-xs padding-sm bg-slate-100" disabled>
-                    <option value="caixa">DINHEIRO</option>
-                    <option value="banco">BANCO INTER</option>
-                </select>
+            <div class="grid grid-cols-2 gap-4 pt-4">
+                <button onclick="closeEditModal()" class="btn-action bg-slate-100 text-slate-600 p-3">Cancelar</button>
+                <button onclick="saveEdit()" class="btn-action bg-slate-900 text-white p-3">Salvar</button>
             </div>
         </div>
-        <button onclick="executeTransfer()" class="btn-premium w-full bg-[#ff7a00] text-white py-4 shadow-lg shadow-orange-100/50">Executar Transferência</button>
-        <button onclick="document.getElementById('transferModal').classList.add('hidden')" class="w-full text-[11px] font-bold uppercase text-slate-400 mt-2 hover:text-rose-500 transition-colors">Cancelar</button>
     </div>
 </div>
 
@@ -339,7 +255,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Configuração permanece a mesma
     const firebaseConfig = {
         apiKey: "AIzaSyCi8znMRngui3EI6tODeuczGcUV2o3U90c",
         authDomain: "financeiro-guilherme-49a5b.firebaseapp.com",
@@ -353,7 +268,6 @@
     const db_fire = getFirestore(app);
     let db = {};
     let editingItem = null;
-    let modoUltraFoco = localStorage.getItem('ultraFoco') === 'true';
 
     const formatBRL = (v) => Number(v || 0).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     const parseBRL = (t) => parseFloat(String(t || '').replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
@@ -375,7 +289,6 @@
         await loadData();
         bindEvents();
         render();
-        if(modoUltraFoco) document.body.classList.add('ultra-focus');
         lucide.createIcons();
     }
 
@@ -393,29 +306,18 @@
     }
 
     async function loadData() {
-        try {
-            const snap = await getDocs(collection(db_fire, "financeiro"));
-            snap.forEach(d => db[d.id] = d.data());
-        } catch (e) { console.error(e); }
+        const snap = await getDocs(collection(db_fire, "financeiro"));
+        snap.forEach(d => db[d.id] = d.data());
     }
 
     async function sync(id) {
-        document.getElementById('statusSync').innerHTML = `<div class="w-2 h-2 rounded-full bg-blue-500 loading-dot"></div> Sincronizando...`;
-        try {
-            await setDoc(doc(db_fire, "financeiro", id), db[id]);
-            document.getElementById('statusSync').innerHTML = `<div class="w-2 h-2 rounded-full bg-emerald-500"></div> Sincronizado`;
-        } catch (e) { 
-            document.getElementById('statusSync').innerHTML = `<div class="w-2 h-2 rounded-full bg-rose-500"></div> Erro`;
-        }
+        await setDoc(doc(db_fire, "financeiro", id), db[id]);
     }
 
     function render() {
         const id = getMonthKey();
         if (!db[id]) db[id] = { R: [], P: [], saldoIniCaixa: 0, saldoIniBanco: 0 };
         const data = db[id];
-
-        document.getElementById('f_saldo_ini_caixa').value = data.saldoIniCaixa ? formatBRL(data.saldoIniCaixa) : '';
-        document.getElementById('f_saldo_ini_banco').value = data.saldoIniBanco ? formatBRL(data.saldoIniBanco) : '';
 
         const lists = { 
             Rp: document.getElementById('listR_pend'), Rc: document.getElementById('listR_conf'),
@@ -424,30 +326,29 @@
         Object.values(lists).forEach(l => l.innerHTML = '');
 
         let tR = 0, tP = 0, sCaixa = Number(data.saldoIniCaixa || 0), sBanco = Number(data.saldoIniBanco || 0);
-        let cR = 0, cP = 0;
 
-        // NOVA FUNÇÃO CREATE ROW - DESIGN PREMIUM
         const createRow = (item, type) => `
-            <div class="entry-row flex items-center gap-4 p-5 ${item.ok ? 'item-quitado' : ''}">
-                <input type="checkbox" ${item.ok ? 'checked' : ''} onchange="window.toggleItem('${type}', ${item.id})" class="w-5 h-5 cursor-pointer accent-orange-500">
-                
-                <div class="day-badge w-11 h-11 flex flex-col items-center justify-center bg-white rounded-2xl text-slate-500 border border-slate-100 shadow-sm">
-                    <span class="text-[9px] font-extrabold uppercase tracking-widest opacity-60">Dia</span>
-                    <span class="text-lg font-bold metric-number -mt-1">${String(item.dia).padStart(2,'0')}</span>
-                </div>
-
-                <div class="flex-1 min-w-0">
-                    <div class="text-[13px] font-bold ${item.ok ? 'text-quitado' : 'text-slate-800'} truncate uppercase tracking-tight">${item.desc}</div>
-                    <div class="text-[9px] font-black uppercase mt-1 ${item.ok ? 'text-slate-300' : (item.conta === 'caixa' ? 'text-emerald-600' : 'text-orange-600')}">
-                        ${item.conta === 'caixa' ? '💵 DINHEIRO' : '🏦 INTER'}
+            <div class="entry-card flex items-center justify-between p-4 rounded-2xl ${item.ok ? 'opacity-50' : ''}">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-xs font-black text-slate-400">
+                        ${String(item.dia).padStart(2,'0')}
+                    </div>
+                    <div>
+                        <div class="text-[13px] font-bold uppercase tracking-tight">${item.desc}</div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-[9px] font-black ${item.conta === 'caixa' ? 'text-emerald-500' : 'text-blue-500'} uppercase">
+                                ${item.conta === 'caixa' ? 'Dinheiro' : 'Inter'}
+                            </span>
+                        </div>
                     </div>
                 </div>
-
-                <div class="metric-number text-base font-bold ${item.ok ? 'text-slate-300' : (type === 'R' ? 'text-emerald-600' : 'text-rose-600')}">${formatBRL(item.valor)}</div>
-                
-                <div class="action-buttons flex gap-1 ml-2">
-                    <button onclick="window.editItem('${type}', ${item.id})" class="p-2.5 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-orange-500 hover:border-orange-100 hover:bg-orange-50 transition-all"><i data-lucide="pencil" class="w-4 h-4"></i></button>
-                    <button onclick="window.delItem('${type}', ${item.id})" class="p-2.5 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-rose-600 hover:border-rose-100 hover:bg-rose-50 transition-all"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                <div class="flex items-center gap-6">
+                    <div class="font-bold text-sm ${type === 'R' ? 'text-emerald-600' : 'text-rose-600'}">${formatBRL(item.valor)}</div>
+                    <div class="action-btns flex gap-1">
+                        <input type="checkbox" ${item.ok ? 'checked' : ''} onchange="window.toggleItem('${type}', ${item.id})" class="w-5 h-5 accent-orange-500 cursor-pointer mr-2">
+                        <button onclick="window.editItem('${type}', ${item.id})" class="p-2 text-slate-300 hover:text-orange-500 transition-colors"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+                        <button onclick="window.delItem('${type}', ${item.id})" class="p-2 text-slate-300 hover:text-rose-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>
                 </div>
             </div>
         `;
@@ -456,7 +357,7 @@
             tR += Number(item.valor);
             if (item.ok) {
                 if (item.conta === 'caixa') sCaixa += Number(item.valor); else sBanco += Number(item.valor);
-                lists.Rc.innerHTML += createRow(item, 'R'); cR++;
+                lists.Rc.innerHTML += createRow(item, 'R');
             } else {
                 lists.Rp.innerHTML += createRow(item, 'R');
             }
@@ -466,7 +367,7 @@
             tP += Number(item.valor);
             if (item.ok) {
                 if (item.conta === 'caixa') sCaixa -= Number(item.valor); else sBanco -= Number(item.valor);
-                lists.Pc.innerHTML += createRow(item, 'P'); cP++;
+                lists.Pc.innerHTML += createRow(item, 'P');
             } else {
                 lists.Pp.innerHTML += createRow(item, 'P');
             }
@@ -474,79 +375,27 @@
 
         document.getElementById('totalR').innerText = formatBRL(tR);
         document.getElementById('totalP').innerText = formatBRL(tP);
-        document.getElementById('totalSaldo').innerText = formatBRL((sCaixa + sBanco) + (tR - data.R.filter(x=>x.ok).reduce((a,b)=>a+b.valor,0)) - (tP - data.P.filter(x=>x.ok).reduce((a,b)=>a+b.valor,0)));
-        document.getElementById('realMao').innerText = formatBRL(sCaixa + sBanco);
+        document.getElementById('totalSaldo').innerText = formatBRL(sCaixa + sBanco);
         document.getElementById('saldoCaixa').innerText = `Dinheiro: ${formatBRL(sCaixa)}`;
         document.getElementById('saldoBanco').innerText = `Inter: ${formatBRL(sBanco)}`;
-        document.getElementById('countR_conf').innerText = cR;
-        document.getElementById('countP_conf').innerText = cP;
+        document.getElementById('countR_conf').innerText = data.R.filter(x=>x.ok).length;
+        document.getElementById('countP_conf').innerText = data.P.filter(x=>x.ok).length;
 
         lucide.createIcons();
     }
 
     function bindEvents() {
-        const vInput = document.getElementById('f_valor');
-        vInput.oninput = () => applyMoneyMask(vInput);
-        document.getElementById('f_saldo_ini_caixa').oninput = (e) => applyMoneyMask(e.target);
-        document.getElementById('f_saldo_ini_banco').oninput = (e) => applyMoneyMask(e.target);
-        document.getElementById('trans_valor').oninput = (e) => applyMoneyMask(e.target);
-        
-        document.getElementById('f_saldo_ini_caixa').onblur = (e) => {
-            db[getMonthKey()].saldoIniCaixa = parseBRL(e.target.value);
-            sync(getMonthKey()); render();
-        };
-        document.getElementById('f_saldo_ini_banco').onblur = (e) => {
-            db[getMonthKey()].saldoIniBanco = parseBRL(e.target.value);
-            sync(getMonthKey()); render();
-        };
-
-        // AJUSTE NOS TOGGLES PARA ANIMAR O ÍCONE
-        const togglePanel = (btnId, wrapId, iconId) => {
-            document.getElementById(btnId).onclick = () => {
-                const wrap = document.getElementById(wrapId);
-                const icon = document.getElementById(iconId);
-                wrap.classList.toggle('open');
-                if(icon) icon.style.transform = wrap.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
-            }
-        }
-
+        document.getElementById('f_valor').oninput = (e) => applyMoneyMask(e.target);
         document.getElementById('btnAddR').onclick = () => addItem('R');
         document.getElementById('btnAddP').onclick = () => addItem('P');
-        
-        togglePanel('btnToggleSaldoIni', 'wrapSaldoIni', 'iconSaldoIni');
-        togglePanel('btnToggleRConf', 'wrapR_conf', 'iconRConf');
-        togglePanel('btnTogglePConf', 'wrapP_conf', 'iconPConf');
-        
-        document.getElementById('btnTransferencia').onclick = () => {
-            document.getElementById('trans_valor').value = '';
-            document.getElementById('transferModal').classList.remove('hidden');
-        }
-
-        // Lógica de destino automático na transferência
-        document.getElementById('trans_origem').onchange = (e) => {
-            const dest = document.getElementById('trans_destino');
-            dest.value = e.target.value === 'banco' ? 'caixa' : 'banco';
-        }
-
-        document.getElementById('btnUltraFocus').onclick = () => {
-            modoUltraFoco = !modoUltraFoco;
-            localStorage.setItem('ultraFoco', modoUltraFoco);
-            document.body.classList.toggle('ultra-focus');
-        };
-
-        document.getElementById('btnExportJSON').onclick = () => {
-            const blob = new Blob([JSON.stringify(db, null, 2)], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = `backup_v29_${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-        };
+        document.getElementById('btnToggleRConf').onclick = () => document.getElementById('wrapR_conf').classList.toggle('hidden');
+        document.getElementById('btnTogglePConf').onclick = () => document.getElementById('wrapP_conf').classList.toggle('hidden');
     }
 
     async function addItem(type) {
         const desc = document.getElementById('f_desc').value.trim().toUpperCase();
         const valor = parseBRL(document.getElementById('f_valor').value);
-        const dia = Math.min(31, Math.max(1, parseInt(document.getElementById('f_dia').value) || new Date().getDate()));
+        const dia = parseInt(document.getElementById('f_dia').value) || new Date().getDate();
         const parc = parseInt(document.getElementById('f_parc').value) || 1;
         const conta = document.getElementById('f_conta').value;
 
@@ -562,43 +411,13 @@
             await sync(key);
             if (++m > 11) { m = 0; a++; }
         }
-
-        document.getElementById('f_desc').value = '';
-        document.getElementById('f_valor').value = '';
-        document.getElementById('f_dia').focus();
         render();
     }
-
-    window.executeTransfer = async () => {
-        const valor = parseBRL(document.getElementById('trans_valor').value);
-        const origem = document.getElementById('trans_origem').value;
-        const destino = origem === 'banco' ? 'caixa' : 'banco';
-        const key = getMonthKey();
-
-        if (valor <= 0) return alert("Valor inválido.");
-
-        const dLabel = destino === 'caixa' ? 'DINHEIRO' : 'INTER';
-        const oLabel = origem === 'caixa' ? 'DINHEIRO' : 'INTER';
-
-        db[key].P.push({ id: Date.now(), dia: new Date().getDate(), desc: `TRANSF. P/ ${dLabel}`, valor, ok: true, conta: origem });
-        db[key].R.push({ id: Date.now()+1, dia: new Date().getDate(), desc: `TRANSF. DE ${oLabel}`, valor, ok: true, conta: destino });
-
-        await sync(key);
-        document.getElementById('transferModal').classList.add('hidden');
-        render();
-    };
 
     window.toggleItem = async (type, id) => {
         const key = getMonthKey();
         const item = db[key][type].find(x => x.id === id);
         if (item) item.ok = !item.ok;
-        await sync(key); render();
-    };
-
-    window.delItem = async (type, id) => {
-        if (!confirm("Excluir lançamento?")) return;
-        const key = getMonthKey();
-        db[key][type] = db[key][type].filter(x => x.id !== id);
         await sync(key); render();
     };
 
@@ -609,10 +428,8 @@
         document.getElementById('edit_dia').value = item.dia;
         document.getElementById('edit_desc').value = item.desc;
         document.getElementById('edit_valor').value = formatBRL(item.valor);
-        document.getElementById('edit_conta').value = item.conta || 'banco';
         document.getElementById('edit_ok').checked = item.ok;
         document.getElementById('editModal').classList.remove('hidden');
-        document.getElementById('edit_valor').oninput = (e) => applyMoneyMask(e.target);
     };
 
     window.closeEditModal = () => document.getElementById('editModal').classList.add('hidden');
@@ -622,11 +439,16 @@
         item.dia = parseInt(document.getElementById('edit_dia').value);
         item.desc = document.getElementById('edit_desc').value.toUpperCase();
         item.valor = parseBRL(document.getElementById('edit_valor').value);
-        item.conta = document.getElementById('edit_conta').value;
         item.ok = document.getElementById('edit_ok').checked;
         await sync(editingItem.key);
-        render();
-        closeEditModal();
+        render(); closeEditModal();
+    };
+
+    window.delItem = async (type, id) => {
+        if (!confirm("Excluir?")) return;
+        const key = getMonthKey();
+        db[key][type] = db[key][type].filter(x => x.id !== id);
+        await sync(key); render();
     };
 
     init();
