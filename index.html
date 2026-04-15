@@ -46,6 +46,10 @@
         .entry-row { transition: all 0.2s; border: 1px solid #edf3fa; background: #fff; }
         .entry-row:hover { transform: translateX(5px); border-color: var(--inter); background: #fffbf5; }
 
+        /* Estilo para itens quitados - Melhorando a visibilidade */
+        .item-quitado { background-color: #f8fafc !important; border-color: #e2e8f0 !important; }
+        .text-quitado { color: #94a3b8 !important; text-decoration: line-through; text-decoration-color: #cbd5e1; }
+
         .collapse-panel { display: grid; grid-template-rows: 0fr; opacity: 0; transition: all 0.35s ease; overflow: hidden; }
         .collapse-panel.open { grid-template-rows: 1fr; opacity: 1; }
 
@@ -65,11 +69,10 @@
     
     <div class="shell-card p-5 md:p-8">
         
-        <!-- HEADER -->
         <header class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
             <div class="flex items-center gap-5">
                 <div class="w-16 h-16 rounded-3xl bg-white flex items-center justify-center border border-slate-200 shadow-sm">
-                    <i data-lucide="orange" class="w-8 h-8 text-[#ff7a00]"></i>
+                    <i data-lucide="wallet" class="w-8 h-8 text-[#ff7a00]"></i>
                 </div>
                 <div>
                     <h1 class="text-3xl font-black tracking-tight uppercase">Financeiro<span class="text-[#ff7a00]">Pro</span> <span class="text-slate-300 text-xl font-medium">v29.0</span></h1>
@@ -86,7 +89,6 @@
             </div>
         </header>
 
-        <!-- DASHBOARD METRICS -->
         <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
             <div class="panel hero-main metric-card p-6 md:col-span-2 lg:col-span-1">
                 <span class="eyebrow text-orange-50">Previsão Final</span>
@@ -116,7 +118,6 @@
             </div>
         </section>
 
-        <!-- TOOLBAR -->
         <div class="flex flex-wrap gap-3 mb-8 no-print border-b border-slate-100 pb-6">
             <button id="btnRelatorio" class="btn-premium bg-slate-900 text-white">
                 <i data-lucide="bar-chart-3" class="w-4 h-4"></i> Relatório
@@ -135,7 +136,6 @@
 
         <main id="mainContent" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- LATERAL: FORMULÁRIO -->
             <aside class="lg:col-span-4 xl:col-span-3 space-y-6 no-print">
                 <div class="panel p-6 space-y-5 bg-slate-50/30">
                     <h3 class="text-xs font-black uppercase tracking-widest text-slate-700">Novo Lançamento</h3>
@@ -179,7 +179,6 @@
                     </div>
                 </div>
 
-                <!-- SALDOS INICIAIS -->
                 <div class="panel p-6">
                     <button id="btnToggleSaldoIni" class="flex items-center justify-between w-full mb-2">
                         <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Saldos Iniciais</span>
@@ -207,7 +206,6 @@
                 </div>
             </aside>
 
-            <!-- CONTEÚDO: LISTAGENS -->
             <div class="lg:col-span-8 xl:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-8">
                 
                 <section class="space-y-5">
@@ -220,8 +218,7 @@
                             <i data-lucide="check-circle" class="w-4 h-4"></i> Confirmadas (<span id="countR_conf">0</span>)
                         </button>
                         <div id="wrapR_conf" class="collapse-panel">
-                            <div id="listR_conf" class="space-y-2 mt-3 opacity-60"></div>
-                        </div>
+                            <div id="listR_conf" class="space-y-2 mt-3"></div> </div>
                     </div>
                 </section>
 
@@ -235,8 +232,7 @@
                             <i data-lucide="check-circle" class="w-4 h-4"></i> Quitadas (<span id="countP_conf">0</span>)
                         </button>
                         <div id="wrapP_conf" class="collapse-panel">
-                            <div id="listP_conf" class="space-y-2 mt-3 opacity-60"></div>
-                        </div>
+                            <div id="listP_conf" class="space-y-2 mt-3"></div> </div>
                     </div>
                 </section>
             </div>
@@ -244,7 +240,6 @@
     </div>
 </div>
 
-<!-- MODAL EDICAO -->
 <div id="editModal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="panel w-full max-w-md p-8 space-y-5">
         <h3 class="text-sm font-black uppercase tracking-widest text-slate-700">Editar Registro</h3>
@@ -278,7 +273,6 @@
     </div>
 </div>
 
-<!-- MODAL TRANSFERÊNCIA -->
 <div id="transferModal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="panel w-full max-w-md p-8 space-y-5">
         <h3 class="text-sm font-black uppercase tracking-widest text-slate-700">Transferência de Capital</h3>
@@ -394,16 +388,16 @@
         let cR = 0, cP = 0;
 
         const createRow = (item, type) => `
-            <div class="entry-row flex items-center gap-4 p-4 rounded-2xl shadow-sm">
+            <div class="entry-row flex items-center gap-4 p-4 rounded-2xl shadow-sm ${item.ok ? 'item-quitado' : ''}">
                 <input type="checkbox" ${item.ok ? 'checked' : ''} onchange="window.toggleItem('${type}', ${item.id})" class="w-5 h-5 cursor-pointer accent-orange-500">
                 <div class="w-10 h-10 flex items-center justify-center bg-slate-50 rounded-xl text-xs font-black text-slate-400 border border-slate-100">${String(item.dia).padStart(2,'0')}</div>
                 <div class="flex-1 min-w-0">
-                    <div class="text-xs font-black text-slate-700 truncate ${item.ok ? 'line-through opacity-30' : ''}">${item.desc}</div>
-                    <div class="text-[9px] font-extrabold uppercase mt-1 ${item.conta === 'caixa' ? 'text-emerald-500' : 'text-orange-500'}">
+                    <div class="text-xs font-black ${item.ok ? 'text-quitado' : 'text-slate-700'} truncate">${item.desc}</div>
+                    <div class="text-[9px] font-extrabold uppercase mt-1 ${item.ok ? 'text-slate-300' : (item.conta === 'caixa' ? 'text-emerald-500' : 'text-orange-500')}">
                         ${item.conta === 'caixa' ? '💵 DINHEIRO' : '🏦 INTER'}
                     </div>
                 </div>
-                <div class="metric-number text-sm font-bold ${type === 'R' ? 'text-emerald-600' : 'text-rose-500'}">${formatBRL(item.valor)}</div>
+                <div class="metric-number text-sm font-bold ${item.ok ? 'text-slate-300' : (type === 'R' ? 'text-emerald-600' : 'text-rose-500')}">${formatBRL(item.valor)}</div>
                 <div class="flex gap-1 ml-2">
                     <button onclick="window.editItem('${type}', ${item.id})" class="p-2 text-slate-300 hover:text-orange-500 transition-colors"><i data-lucide="pencil" class="w-4 h-4"></i></button>
                     <button onclick="window.delItem('${type}', ${item.id})" class="p-2 text-slate-300 hover:text-rose-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
