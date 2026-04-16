@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Metra Cloud v5.3 - Ajuste Final de Saldo</title>
+    <title>Financeiro v5.4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -11,12 +11,10 @@
         body { background-color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; height: 100vh; overflow: hidden; }
         .sidebar-dark { background: #0f172a; color: white; border-radius: 24px; height: 100%; }
         .input-premium { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: white; padding: 8px; font-weight: 600; font-size: 12px; }
-        .card-item { background: white; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 4px; padding: 6px 10px; transition: all 0.2s; }
+        .card-item { background: white; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 4px; padding: 6px 10px; }
         .done { opacity: 0.4; filter: grayscale(1); background: #f1f5f9; }
         .month-summary { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; }
         .scroll-list { height: calc(100vh - 350px); overflow-y: auto; padding-right: 4px; }
-        .scroll-list::-webkit-scrollbar { width: 4px; }
-        .scroll-list::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
         .filter-btn { padding: 4px 14px; border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; border: 1px solid #e2e8f0; background: white; color: #64748b; }
         .filter-btn.active { background: #0f172a; color: white; border-color: #0f172a; }
         .caixa-card { background: white; padding: 10px 14px; border-radius: 12px; border: 1px solid #e2e8f0; }
@@ -30,8 +28,8 @@
         <aside class="lg:col-span-3 h-full">
             <div class="sidebar-dark p-6 flex flex-col shadow-2xl">
                 <div class="flex items-center justify-between mb-6">
-                    <h1 class="text-sm font-black tracking-tighter text-white uppercase italic">METRA CLOUD <span class="text-blue-500">v5.3</span></h1>
-                    <i data-lucide="layout-dashboard" class="w-4 h-4 text-slate-500"></i>
+                    <h1 class="text-sm font-black tracking-tighter text-white uppercase italic">FINANCEIRO <span class="text-blue-500 text-[10px]">v5.4</span></h1>
+                    <i data-lucide="wallet" class="w-4 h-4 text-slate-500"></i>
                 </div>
 
                 <div class="space-y-3 mb-6">
@@ -40,32 +38,30 @@
                         <input type="number" id="f_parc" value="1" class="input-premium text-center">
                     </div>
                     <input type="text" id="f_desc" class="input-premium w-full uppercase" placeholder="DESCRIÇÃO">
-                    <select id="f_conta" class="input-premium w-full text-xs cursor-pointer">
+                    <select id="f_conta" class="input-premium w-full text-xs">
                         <option value="banco">🏦 BANCO INTER</option>
                         <option value="vivo">💵 DINHEIRO VIVO</option>
                     </select>
                     <input type="text" id="f_valor" class="input-premium w-full text-xl font-black text-blue-400 text-center" placeholder="R$ 0,00">
                     <div class="grid grid-cols-2 gap-2">
-                        <button id="btnAddR" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl uppercase text-[10px] transition-all">Entrada</button>
-                        <button id="btnAddP" class="bg-slate-700 hover:bg-slate-600 text-white font-black py-3 rounded-xl uppercase text-[10px] transition-all">Saída</button>
+                        <button id="btnAddR" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl uppercase text-[10px]">Entrada</button>
+                        <button id="btnAddP" class="bg-slate-700 hover:bg-slate-600 text-white font-black py-3 rounded-xl uppercase text-[10px]">Saída</button>
                     </div>
                 </div>
 
                 <div class="mt-auto pt-4 border-t border-slate-800 flex justify-between">
                     <div class="flex gap-3">
-                        <select id="f_mes" class="bg-transparent text-[11px] font-bold uppercase text-slate-400 outline-none cursor-pointer"></select>
-                        <select id="f_ano" class="bg-transparent text-[11px] font-bold text-slate-400 outline-none cursor-pointer"></select>
+                        <select id="f_mes" class="bg-transparent text-[11px] font-bold uppercase text-slate-400 outline-none"></select>
+                        <select id="f_ano" class="bg-transparent text-[11px] font-bold text-slate-400 outline-none"></select>
                     </div>
-                    <button onclick="window.showTransferPopup()" class="text-slate-500 hover:text-white"><i data-lucide="repeat" class="w-4 h-4"></i></button>
                 </div>
             </div>
         </aside>
 
         <main class="lg:col-span-9 flex flex-col h-full">
-            
             <div class="month-summary flex justify-between items-center shadow-lg">
                 <div>
-                    <p class="text-blue-100 text-[10px] font-extrabold uppercase tracking-widest mb-1">Saldo Projetado (Final do Mês)</p>
+                    <p class="text-blue-100 text-[10px] font-extrabold uppercase tracking-widest mb-1">Saldo Projetado Final (Mês)</p>
                     <h2 id="totalSaldo" class="text-4xl font-black italic">R$ 0,00</h2>
                 </div>
                 <div class="flex gap-10">
@@ -90,38 +86,31 @@
                 <div class="flex-1 grid grid-cols-2 gap-3 w-full">
                     <div class="caixa-card flex justify-between items-center border-l-4 border-l-blue-500 shadow-sm">
                         <div>
-                            <span class="text-[9px] font-black text-slate-400 uppercase">Saldo em Conta (Inter)</span>
+                            <span class="text-[9px] font-black text-slate-400 uppercase">Banco Inter (Atual)</span>
                             <h4 id="labelBanco" class="text-base font-black text-slate-800">R$ 0,00</h4>
                         </div>
-                        <div class="bg-blue-50 p-2 rounded-lg text-blue-500"><i data-lucide="landmark" class="w-4 h-4"></i></div>
+                        <i data-lucide="landmark" class="w-4 h-4 text-blue-500"></i>
                     </div>
                     <div class="caixa-card flex justify-between items-center border-l-4 border-l-emerald-500 shadow-sm">
                         <div>
-                            <span class="text-[9px] font-black text-slate-400 uppercase">Saldo em Mãos (Vivo)</span>
+                            <span class="text-[9px] font-black text-slate-400 uppercase">Dinheiro Vivo (Atual)</span>
                             <h4 id="labelVivo" class="text-base font-black text-slate-800">R$ 0,00</h4>
                         </div>
-                        <div class="bg-emerald-50 p-2 rounded-lg text-emerald-500"><i data-lucide="banknote" class="w-4 h-4"></i></div>
+                        <i data-lucide="banknote" class="w-4 h-4 text-emerald-500"></i>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full overflow-hidden">
                 <div class="flex flex-col">
-                    <div class="flex justify-between items-center mb-2 px-1">
-                        <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-tighter">Fluxo de Receitas</h3>
-                        <span id="countR" class="text-[9px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">0</span>
-                    </div>
+                    <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-tighter mb-2 px-1">Fluxo de Receitas</h3>
                     <div id="listR_wrapper" class="scroll-list">
                         <div id="listR_pend"></div>
                         <div id="listR_conf" class="mt-4 border-t border-dashed border-slate-200 pt-3"></div>
                     </div>
                 </div>
-                
                 <div class="flex flex-col">
-                    <div class="flex justify-between items-center mb-2 px-1">
-                        <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-tighter">Fluxo de Despesas</h3>
-                        <span id="countP" class="text-[9px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">0</span>
-                    </div>
+                    <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-tighter mb-2 px-1">Fluxo de Despesas</h3>
                     <div id="listP_wrapper" class="scroll-list">
                         <div id="listP_pend"></div>
                         <div id="listP_conf" class="mt-4 border-t border-dashed border-slate-200 pt-3"></div>
@@ -189,17 +178,14 @@
         
         ['listR_pend', 'listR_conf', 'listP_pend', 'listP_conf'].forEach(id => document.getElementById(id).innerHTML = '');
         
-        let tR_mes = 0, tP_mes = 0;
-        let sAtualInter = data.initBanco || 0;
-        let sAtualVivo = data.initVivo || 0;
-        let cR = 0, cP = 0;
+        let tR = 0, tP = 0, sInter = Number(data.initBanco || 0), sVivo = Number(data.initVivo || 0);
 
         const row = (it, type) => `
             <div class="card-item flex items-center justify-between ${it.ok ? 'done' : ''}">
                 <div class="flex items-center gap-3">
                     <span class="text-[10px] font-black text-slate-400 w-5">${String(it.dia).padStart(2,'0')}</span>
                     <div>
-                        <p class="text-[11px] font-bold text-slate-700 uppercase leading-none mb-1">${it.desc}</p>
+                        <p class="text-[11px] font-bold text-slate-700 uppercase mb-1">${it.desc}</p>
                         <span class="text-[8px] font-black px-1.5 py-0.5 rounded ${it.conta==='banco'?'bg-blue-50 text-blue-500':'bg-emerald-50 text-emerald-500'} uppercase">${it.conta === 'banco' ? 'Inter' : 'Vivo'}</span>
                     </div>
                 </div>
@@ -211,35 +197,29 @@
             </div>`;
 
         data.R.forEach(it => {
-            tR_mes += it.valor;
-            if(it.ok) (it.conta==='banco' ? sAtualInter += it.valor : sAtualVivo += it.valor);
-            if(currentFilter === 'all' || it.conta === currentFilter) {
+            tR += Number(it.valor);
+            if(it.ok) (it.conta==='banco' ? sInter += Number(it.valor) : sVivo += Number(it.valor));
+            if(currentFilter === 'all' || it.conta === currentFilter) 
                 document.getElementById(it.ok ? 'listR_conf' : 'listR_pend').innerHTML += row(it, 'R');
-                cR++;
-            }
         });
 
         data.P.forEach(it => {
-            tP_mes += it.valor;
-            if(it.ok) (it.conta==='banco' ? sAtualInter -= it.valor : sAtualVivo -= it.valor);
-            if(currentFilter === 'all' || it.conta === currentFilter) {
+            tP += Number(it.valor);
+            if(it.ok) (it.conta==='banco' ? sInter -= Number(it.valor) : sVivo -= Number(it.valor));
+            if(currentFilter === 'all' || it.conta === currentFilter) 
                 document.getElementById(it.ok ? 'listP_conf' : 'listP_pend').innerHTML += row(it, 'P');
-                cP++;
-            }
         });
 
-        // ATUALIZAÇÃO DOS VALORES NA TELA
-        document.getElementById('totalR').innerText = formatBRL(tR_mes);
-        document.getElementById('totalP').innerText = formatBRL(tP_mes);
-        document.getElementById('labelBanco').innerText = formatBRL(sAtualInter);
-        document.getElementById('labelVivo').innerText = formatBRL(sAtualVivo);
+        // ATUALIZAÇÃO DOS SALDOS COM GARANTIA MATEMÁTICA
+        document.getElementById('totalR').innerText = formatBRL(tR);
+        document.getElementById('totalP').innerText = formatBRL(tP);
+        document.getElementById('labelBanco').innerText = formatBRL(sInter);
+        document.getElementById('labelVivo').innerText = formatBRL(sVivo);
         
-        // FÓRMULA DO SALDO PROJETADO: (Saldos Iniciais + Receitas Totais) - Despesas Totais
-        const projetado = (Number(data.initBanco) + Number(data.initVivo) + tR_mes) - tP_mes;
-        document.getElementById('totalSaldo').innerText = formatBRL(projetado);
+        // CÁLCULO FINAL: Saldo Projetado leva em conta TUDO (pendente e confirmado)
+        const projetadoFinal = (Number(data.initBanco || 0) + Number(data.initVivo || 0) + tR) - tP;
+        document.getElementById('totalSaldo').innerText = formatBRL(projetadoFinal);
         
-        document.getElementById('countR').innerText = cR;
-        document.getElementById('countP').innerText = cP;
         lucide.createIcons();
     }
 
@@ -262,19 +242,6 @@
         if(!confirm("Excluir?")) return;
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         db[key][type] = db[key][type].filter(x=>x.id!==id);
-        await setDoc(doc(db_fire, "financeiro", key), db[key]);
-    };
-
-    window.showTransferPopup = async () => {
-        const vStr = prompt("Valor:"); if(!vStr) return;
-        const v = parseBRL(vStr), op = prompt("1: Inter -> Vivo | 2: Vivo -> Inter"), key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`, dia = new Date().getDate();
-        if(op==='1'){ 
-            db[key].P.push({id:Date.now(),dia,desc:"TRANSF -> VIVO",valor:v,ok:true,conta:'banco'}); 
-            db[key].R.push({id:Date.now()+1,dia,desc:"TRANSF <- INTER",valor:v,ok:true,conta:'vivo'}); 
-        } else if(op==='2'){ 
-            db[key].P.push({id:Date.now(),dia,desc:"TRANSF -> INTER",valor:v,ok:true,conta:'vivo'}); 
-            db[key].R.push({id:Date.now()+1,dia,desc:"TRANSF <- VIVO",valor:v,ok:true,conta:'banco'}); 
-        }
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
     };
 
