@@ -3,55 +3,19 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro v2.3</title>
+    <title>Financeiro v2.4 - Editável</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
         body { background-color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; color: #0f172a; }
-        
         .sidebar-dark { background: #0f172a; color: white; border-radius: 24px; }
-        
-        .input-premium {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            color: white;
-            padding: 10px;
-            font-weight: 600;
-        }
-
-        .card-item {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            margin-bottom: 8px;
-        }
-
-        .badge-day {
-            background: #f1f5f9;
-            color: #0f172a;
-            font-family: 'JetBrains Mono', monospace;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-weight: 800;
-        }
-
+        .input-premium { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; color: white; padding: 10px; font-weight: 600; }
+        .card-item { background: white; border: 1px solid #e2e8f0; border-radius: 14px; margin-bottom: 8px; transition: all 0.2s; }
+        .badge-day { background: #f1f5f9; color: #0f172a; font-family: 'JetBrains Mono', monospace; padding: 2px 8px; border-radius: 6px; font-weight: 800; }
         .done { opacity: 0.5; filter: grayscale(0.8); }
-        
-        /* Ajuste de Scroll para Dashboard */
-        @media (min-width: 1024px) {
-            .main-container { height: 100vh; overflow: hidden; }
-            .scroll-column { height: calc(100vh - 180px); overflow-y: auto; padding-right: 8px; }
-        }
-
-        .saldo-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 10px;
-            margin-top: 8px;
-        }
+        .saldo-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 10px; margin-top: 8px; }
+        @media (min-width: 1024px) { .main-container { height: 100vh; overflow: hidden; } .scroll-column { height: calc(100vh - 180px); overflow-y: auto; padding-right: 8px; } }
     </style>
 </head>
 <body class="p-4 lg:p-6">
@@ -60,15 +24,17 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
         
         <aside class="lg:col-span-3 flex flex-col h-full">
-            <div class="sidebar-dark p-6 flex-1 flex flex-col">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="bg-blue-600 p-2 rounded-lg">
-                        <i data-lucide="wallet" class="text-white w-5 h-5"></i>
+            <div class="sidebar-dark p-6 flex-1 flex flex-col shadow-2xl">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-blue-600 p-2 rounded-lg"><i data-lucide="wallet" class="text-white w-5 h-5"></i></div>
+                        <h1 class="text-lg font-black tracking-tighter">FINANCEIRO <span class="text-blue-500 text-sm">v2.4</span></h1>
                     </div>
-                    <h1 class="text-lg font-black tracking-tighter">FINANCEIRO <span class="text-blue-500 text-sm">v2.3</span></h1>
                 </div>
 
-                <div class="space-y-4 mb-8">
+                <div id="form-container" class="space-y-4 mb-8">
+                    <input type="hidden" id="edit_id">
+                    <input type="hidden" id="edit_type">
                     <div class="grid grid-cols-2 gap-2">
                         <input type="number" id="f_dia" class="input-premium text-center" placeholder="Dia">
                         <input type="number" id="f_parc" value="1" class="input-premium text-center">
@@ -76,13 +42,17 @@
                     <input type="text" id="f_desc" class="input-premium w-full uppercase" placeholder="DESCRIÇÃO">
                     <select id="f_conta" class="input-premium w-full text-xs">
                         <option value="banco">🏦 BANCO INTER</option>
-                        <option value="caixa">💵 EM MÃO</option>
+                        <option value="caixa">💵 EM MÃO (CAIXA)</option>
                     </select>
                     <input type="text" id="f_valor" class="input-premium w-full text-xl font-black text-blue-400 text-center" placeholder="R$ 0,00">
                     
-                    <div class="grid grid-cols-2 gap-2">
-                        <button id="btnAddR" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl transition-all">ENTRADA</button>
-                        <button id="btnAddP" class="bg-slate-700 hover:bg-slate-600 text-white font-black py-3 rounded-xl transition-all">SAÍDA</button>
+                    <div id="btns-normal" class="grid grid-cols-2 gap-2">
+                        <button id="btnAddR" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl">ENTRADA</button>
+                        <button id="btnAddP" class="bg-slate-700 hover:bg-slate-600 text-white font-black py-3 rounded-xl">SAÍDA</button>
+                    </div>
+                    <div id="btns-edit" class="hidden grid grid-cols-1 gap-2">
+                        <button id="btnSaveEdit" class="bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-xl">SALVAR ALTERAÇÃO</button>
+                        <button onclick="cancelEdit()" class="text-xs text-slate-400 font-bold uppercase underline">Cancelar</button>
                     </div>
                 </div>
 
@@ -91,10 +61,8 @@
                         <select id="f_mes" class="bg-transparent text-[10px] font-bold uppercase outline-none text-slate-500"></select>
                         <select id="f_ano" class="bg-transparent text-[10px] font-bold outline-none text-slate-500"></select>
                     </div>
-                    
                     <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Saldo Projetado</p>
                     <h2 id="totalSaldo" class="text-2xl font-black text-white mb-4">R$ 0,00</h2>
-
                     <div class="space-y-2">
                         <div class="saldo-card flex justify-between items-center">
                             <span class="text-[9px] font-bold text-slate-400 uppercase">Banco Inter</span>
@@ -110,33 +78,20 @@
         </aside>
 
         <main class="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-6">
-            
             <div class="flex flex-col">
                 <div class="bg-white p-4 rounded-2xl border border-slate-200 mb-4 flex justify-between items-center">
                     <span class="text-[10px] font-black text-slate-400 uppercase">Receitas</span>
                     <h3 id="totalR" class="text-xl font-black text-emerald-600">R$ 0,00</h3>
                 </div>
-                <div class="scroll-column">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase mb-3 px-1">Pendentes</p>
-                    <div id="listR_pend"></div>
-                    <p class="text-[10px] font-bold text-slate-300 uppercase mt-6 mb-3 px-1">Confirmadas</p>
-                    <div id="listR_conf"></div>
-                </div>
+                <div class="scroll-column"><div id="listR_pend"></div><div id="listR_conf"></div></div>
             </div>
-
             <div class="flex flex-col">
                 <div class="bg-white p-4 rounded-2xl border border-slate-200 mb-4 flex justify-between items-center">
                     <span class="text-[10px] font-black text-slate-400 uppercase">Despesas</span>
                     <h3 id="totalP" class="text-xl font-black text-rose-600">R$ 0,00</h3>
                 </div>
-                <div class="scroll-column">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase mb-3 px-1">A Pagar</p>
-                    <div id="listP_pend"></div>
-                    <p class="text-[10px] font-bold text-slate-300 uppercase mt-6 mb-3 px-1">Quitadas</p>
-                    <div id="listP_conf"></div>
-                </div>
+                <div class="scroll-column"><div id="listP_pend"></div><div id="listP_conf"></div></div>
             </div>
-
         </main>
     </div>
 </div>
@@ -170,18 +125,15 @@
 
     async function init() {
         const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-        const mS = document.getElementById('f_mes');
-        const aS = document.getElementById('f_ano');
-        const n = new Date();
+        const mS = document.getElementById('f_mes'), aS = document.getElementById('f_ano'), n = new Date();
         meses.forEach((m, i) => mS.innerHTML += `<option value="${i}">${m}</option>`);
         for (let y = n.getFullYear() + 1; y >= 2024; y--) aS.innerHTML += `<option value="${y}">${y}</option>`;
         mS.value = n.getMonth(); aS.value = n.getFullYear();
         mS.onchange = render; aS.onchange = render;
-        
         document.getElementById('f_valor').oninput = (e) => mask(e.target);
         document.getElementById('btnAddR').onclick = () => add('R');
         document.getElementById('btnAddP').onclick = () => add('P');
-
+        document.getElementById('btnSaveEdit').onclick = saveEdit;
         const s = await getDocs(collection(db_fire, "financeiro"));
         s.forEach(d => db[d.id] = d.data());
         render();
@@ -189,15 +141,12 @@
 
     function render() {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        if (!db[key]) db[key] = { R: [], P: [], saldoIniCaixa: 0, saldoIniBanco: 0 };
+        if (!db[key]) db[key] = { R: [], P: [] };
         const data = db[key];
-
-        const ids = ['listR_pend', 'listR_conf', 'listP_pend', 'listP_conf'];
-        ids.forEach(id => document.getElementById(id).innerHTML = '');
-
+        ['listR_pend', 'listR_conf', 'listP_pend', 'listP_conf'].forEach(id => document.getElementById(id).innerHTML = '');
         let tr=0, tp=0, sc=0, sb=0;
 
-        const card = (it, type) => `
+        const row = (it, type) => `
             <div class="card-item flex items-center justify-between p-3 ${it.ok ? 'done' : ''}">
                 <div class="flex items-center gap-3">
                     <span class="badge-day">${String(it.dia).padStart(2,'0')}</span>
@@ -206,21 +155,21 @@
                         <p class="text-[9px] font-black text-slate-400 uppercase mt-1.5">${it.conta === 'banco' ? 'Inter' : 'Caixa'}</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3">
-                    <span class="text-xs font-black ${type==='R'?'text-emerald-600':'text-rose-600'}">${formatBRL(it.valor)}</span>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-black ${type==='R'?'text-emerald-600':'text-rose-600'} mr-2">${formatBRL(it.valor)}</span>
+                    <button onclick="window.editItem('${type}', ${it.id})" class="p-2 text-slate-400 hover:text-blue-500"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
                     <input type="checkbox" ${it.ok?'checked':''} onchange="window.tk('${type}', ${it.id})" class="w-5 h-5 accent-blue-600 cursor-pointer">
-                    <button onclick="window.del('${type}', ${it.id})" class="text-slate-200 hover:text-rose-500"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+                    <button onclick="window.del('${type}', ${it.id})" class="p-2 text-slate-200 hover:text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                 </div>
-            </div>
-        `;
+            </div>`;
 
         data.R.sort((a,b)=>a.dia-b.dia).forEach(it => {
             tr += it.valor; if(it.ok) (it.conta==='caixa'?sc+=it.valor:sb+=it.valor);
-            document.getElementById(it.ok?'listR_conf':'listR_pend').innerHTML += card(it, 'R');
+            document.getElementById(it.ok?'listR_conf':'listR_pend').innerHTML += row(it, 'R');
         });
         data.P.sort((a,b)=>a.dia-b.dia).forEach(it => {
             tp += it.valor; if(it.ok) (it.conta==='caixa'?sc-=it.valor:sb-=it.valor);
-            document.getElementById(it.ok?'listP_conf':'listP_pend').innerHTML += card(it, 'P');
+            document.getElementById(it.ok?'listP_conf':'listP_pend').innerHTML += row(it, 'P');
         });
 
         document.getElementById('totalR').innerText = formatBRL(tr);
@@ -232,30 +181,56 @@
     }
 
     async function add(type) {
-        const d = document.getElementById('f_desc').value.toUpperCase();
-        const v = parseBRL(document.getElementById('f_valor').value);
-        const dia = parseInt(document.getElementById('f_dia').value) || 1;
-        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
+        const d = document.getElementById('f_desc').value.toUpperCase(), v = parseBRL(document.getElementById('f_valor').value), dia = parseInt(document.getElementById('f_dia').value) || 1, key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         if(!d || v <= 0) return;
         db[key][type].push({ id: Date.now(), dia, desc: d, valor: v, ok: false, conta: document.getElementById('f_conta').value });
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
+        document.getElementById('f_desc').value = ''; document.getElementById('f_valor').value = '';
         render();
     }
 
-    window.tk = async (type, id) => {
+    window.editItem = (type, id) => {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         const it = db[key][type].find(x=>x.id===id);
-        it.ok = !it.ok;
+        document.getElementById('edit_id').value = id;
+        document.getElementById('edit_type').value = type;
+        document.getElementById('f_dia').value = it.dia;
+        document.getElementById('f_desc').value = it.desc;
+        document.getElementById('f_conta').value = it.conta;
+        document.getElementById('f_valor').value = formatBRL(it.valor);
+        document.getElementById('btns-normal').classList.add('hidden');
+        document.getElementById('btns-edit').classList.remove('hidden');
+    };
+
+    async function saveEdit() {
+        const id = parseInt(document.getElementById('edit_id').value), type = document.getElementById('edit_type').value, key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
+        const it = db[key][type].find(x=>x.id===id);
+        it.dia = parseInt(document.getElementById('f_dia').value);
+        it.desc = document.getElementById('f_desc').value.toUpperCase();
+        it.conta = document.getElementById('f_conta').value;
+        it.valor = parseBRL(document.getElementById('f_valor').value);
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
-        render();
+        cancelEdit(); render();
+    }
+
+    window.cancelEdit = () => {
+        document.getElementById('edit_id').value = '';
+        document.getElementById('f_desc').value = ''; document.getElementById('f_valor').value = '';
+        document.getElementById('btns-normal').classList.remove('hidden');
+        document.getElementById('btns-edit').classList.add('hidden');
+    };
+
+    window.tk = async (type, id) => {
+        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
+        const it = db[key][type].find(x=>x.id===id); it.ok = !it.ok;
+        await setDoc(doc(db_fire, "financeiro", key), db[key]); render();
     };
 
     window.del = async (type, id) => {
         if(!confirm("Excluir?")) return;
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         db[key][type] = db[key][type].filter(x=>x.id!==id);
-        await setDoc(doc(db_fire, "financeiro", key), db[key]);
-        render();
+        await setDoc(doc(db_fire, "financeiro", key), db[key]); render();
     };
 
     init();
