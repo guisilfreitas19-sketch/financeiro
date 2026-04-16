@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro v5.1 - Fix</title>
+    <title>Metra Cloud v5.2 - Correção de Saldo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
         .scroll-list { height: calc(100vh - 360px); overflow-y: auto; }
         .filter-btn { padding: 4px 12px; border-radius: 8px; font-size: 9px; font-weight: 800; text-transform: uppercase; border: 1px solid #e2e8f0; background: white; color: #64748b; }
         .filter-btn.active { background: #0f172a; color: white; border-color: #0f172a; }
-        .caixa-item { background: #f1f5f9; padding: 8px 12px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .caixa-item { background: #ffffff; padding: 8px 12px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
     </style>
 </head>
 <body class="p-3 lg:p-4">
@@ -28,7 +28,7 @@
         <aside class="lg:col-span-3 h-full">
             <div class="sidebar-dark p-5 flex flex-col shadow-2xl">
                 <div class="flex items-center justify-between mb-4">
-                    <h1 class="text-sm font-black italic tracking-tighter text-white">METRA CLOUD <span class="text-blue-500">v5.1</span></h1>
+                    <h1 class="text-sm font-black italic tracking-tighter text-white">METRA CLOUD <span class="text-blue-500">v5.2</span></h1>
                     <button onclick="window.showTransferPopup()" class="bg-slate-800 p-1.5 rounded-lg text-blue-400 hover:bg-slate-700"><i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i></button>
                 </div>
 
@@ -61,49 +61,59 @@
         <main class="lg:col-span-9 flex flex-col h-full overflow-hidden">
             <div class="month-summary flex justify-between items-center shadow-md">
                 <div>
-                    <p class="text-blue-100 text-[9px] font-bold uppercase tracking-widest">Saldo Projetado Final</p>
-                    <h2 id="totalSaldo" class="text-3xl font-black">R$ 0,00</h2>
+                    <p class="text-blue-100 text-[9px] font-bold uppercase tracking-widest">Saldo Projetado Final (Mês)</p>
+                    <h2 id="totalSaldo" class="text-3xl font-black italic">R$ 0,00</h2>
                 </div>
                 <div class="flex gap-8">
                     <div class="text-right border-l border-white/10 pl-8">
-                        <p class="text-blue-100 text-[8px] font-bold uppercase">Entradas</p>
+                        <p class="text-blue-100 text-[8px] font-bold uppercase">Total Entradas</p>
                         <p id="totalR" class="text-base font-black text-emerald-300">R$ 0,00</p>
                     </div>
                     <div class="text-right border-l border-white/10 pl-8">
-                        <p class="text-blue-100 text-[8px] font-bold uppercase">Saídas</p>
+                        <p class="text-blue-100 text-[8px] font-bold uppercase">Total Saídas</p>
                         <p id="totalP" class="text-base font-black text-rose-300">R$ 0,00</p>
                     </div>
                 </div>
             </div>
 
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
-                <div class="bg-white p-1.5 rounded-xl border border-slate-200 flex gap-1 self-start shadow-sm">
+            <div class="flex flex-col md:flex-row gap-4 mb-4 items-center">
+                <div class="bg-white p-1.5 rounded-xl border border-slate-200 flex gap-1 shadow-sm">
                     <button onclick="window.setFilter('all')" id="btn-f-all" class="filter-btn active">Tudo</button>
                     <button onclick="window.setFilter('banco')" id="btn-f-banco" class="filter-btn">Inter</button>
                     <button onclick="window.setFilter('vivo')" id="btn-f-vivo" class="filter-btn">Vivo</button>
                 </div>
-                <div class="flex-1 grid grid-cols-2 gap-3">
-                    <div class="caixa-item flex justify-between items-center">
-                        <span class="text-[9px] font-black text-slate-400 uppercase">Banco Inter</span>
-                        <h4 id="labelBanco" class="text-sm font-black text-slate-800">R$ 0,00</h4>
+                <div class="flex-1 grid grid-cols-2 gap-3 w-full">
+                    <div class="caixa-item flex justify-between items-center border-l-4 border-l-blue-500">
+                        <div>
+                            <span class="text-[8px] font-black text-slate-400 uppercase block">Saldo Atual Inter</span>
+                            <h4 id="labelBanco" class="text-sm font-black text-slate-800 leading-tight">R$ 0,00</h4>
+                        </div>
+                        <i data-lucide="landmark" class="w-4 h-4 text-slate-200"></i>
                     </div>
-                    <div class="caixa-item flex justify-between items-center">
-                        <span class="text-[9px] font-black text-slate-400 uppercase">Dinheiro Vivo</span>
-                        <h4 id="labelVivo" class="text-sm font-black text-slate-800">R$ 0,00</h4>
+                    <div class="caixa-item flex justify-between items-center border-l-4 border-l-emerald-500">
+                        <div>
+                            <span class="text-[8px] font-black text-slate-400 uppercase block">Saldo Atual Vivo</span>
+                            <h4 id="labelVivo" class="text-sm font-black text-slate-800 leading-tight">R$ 0,00</h4>
+                        </div>
+                        <i data-lucide="banknote" class="w-4 h-4 text-slate-200"></i>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full overflow-hidden">
                 <div class="flex flex-col">
-                    <h3 class="text-[9px] font-black text-slate-400 uppercase mb-2 px-1">Receitas</h3>
+                    <h3 class="text-[9px] font-black text-slate-400 uppercase mb-2 px-1 flex justify-between">
+                        Fluxo de Receitas <span id="countR" class="bg-slate-200 text-slate-600 px-1.5 rounded">0</span>
+                    </h3>
                     <div id="listR_wrapper" class="scroll-list">
                         <div id="listR_pend"></div>
                         <div id="listR_conf" class="mt-2 border-t border-slate-100 pt-2"></div>
                     </div>
                 </div>
                 <div class="flex flex-col">
-                    <h3 class="text-[9px] font-black text-slate-400 uppercase mb-2 px-1">Despesas</h3>
+                    <h3 class="text-[9px] font-black text-slate-400 uppercase mb-2 px-1 flex justify-between">
+                        Fluxo de Despesas <span id="countP" class="bg-slate-200 text-slate-600 px-1.5 rounded">0</span>
+                    </h3>
                     <div id="listP_wrapper" class="scroll-list">
                         <div id="listP_pend"></div>
                         <div id="listP_conf" class="mt-2 border-t border-slate-100 pt-2"></div>
@@ -116,7 +126,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDocs, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCi8znMRngui3EI6tODeuczGcUV2o3U90c",
@@ -151,9 +161,11 @@
         document.getElementById('btnAddR').onclick = () => add('R');
         document.getElementById('btnAddP').onclick = () => add('P');
         
-        const s = await getDocs(collection(db_fire, "financeiro"));
-        s.forEach(d => db[d.id] = d.data());
-        render();
+        // Listener em tempo real para o Firebase
+        onSnapshot(collection(db_fire, "financeiro"), (s) => {
+            s.forEach(d => db[d.id] = d.data());
+            render();
+        });
     }
 
     window.setFilter = (f) => {
@@ -165,63 +177,117 @@
 
     function render() {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        if (!db[key]) db[key] = { R: [], P: [], initBanco:0, initVivo:0 };
+        if (!db[key]) db[key] = { R: [], P: [], initBanco: 0, initVivo: 0 };
         const data = db[key];
         
         ['listR_pend', 'listR_conf', 'listP_pend', 'listP_conf'].forEach(id => document.getElementById(id).innerHTML = '');
-        let tr=0, tp=0, sv=data.initVivo||0, sb=data.initBanco||0;
+        
+        // Variáveis de Cálculo
+        let totalEntradasMes = 0;
+        let totalSaidasMes = 0;
+        let saldoAtualInter = data.initBanco || 0;
+        let saldoAtualVivo = data.initVivo || 0;
+        let countR = 0, countP = 0;
 
         const row = (it, type) => `
-            <div class="card-item flex items-center justify-between ${it.ok ? 'done' : ''}">
+            <div class="card-item flex items-center justify-between shadow-sm ${it.ok ? 'done' : ''}">
                 <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-black text-slate-400 min-w-[18px]">${String(it.dia).padStart(2,'0')}</span>
-                    <div><p class="text-[10px] font-bold text-slate-700 uppercase leading-none">${it.desc}</p>
-                    <p class="text-[7px] font-black text-slate-400 mt-0.5 uppercase">${it.conta === 'banco' ? 'Inter' : 'Vivo'}</p></div>
+                    <span class="text-[9px] font-black text-slate-400 w-5">${String(it.dia).padStart(2,'0')}</span>
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-700 uppercase leading-none">${it.desc}</p>
+                        <p class="text-[7px] font-black text-slate-400 mt-1 uppercase">${it.conta === 'banco' ? 'Inter' : 'Vivo'}</p>
+                    </div>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="text-[10px] font-black ${type==='R'?'text-emerald-600':'text-rose-600'}">${formatBRL(it.valor)}</span>
-                    <input type="checkbox" ${it.ok?'checked':''} onchange="window.tk('${type}', ${it.id})" class="w-3.5 h-3.5 accent-blue-600">
-                    <button onclick="window.del('${type}', ${it.id})" class="text-slate-200 hover:text-rose-500"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+                    <input type="checkbox" ${it.ok?'checked':''} onchange="window.tk('${type}', ${it.id})" class="w-4 h-4 accent-blue-600 cursor-pointer">
+                    <button onclick="window.del('${type}', ${it.id})" class="text-slate-200 hover:text-rose-500 ml-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                 </div>
             </div>`;
 
+        // Processar Entradas
         data.R.sort((a,b)=>a.dia-b.dia).forEach(it => {
-            tr += it.valor; if(it.ok) (it.conta==='vivo'?sv+=it.valor:sb+=it.valor);
-            if(currentFilter==='all' || it.conta===currentFilter) document.getElementById(it.ok?'listR_conf':'listR_pend').innerHTML += row(it, 'R');
-        });
-        data.P.sort((a,b)=>a.dia-b.dia).forEach(it => {
-            tp += it.valor; if(it.ok) (it.conta==='vivo'?sv-=it.valor:sb-=it.valor);
-            if(currentFilter==='all' || it.conta===currentFilter) document.getElementById(it.ok?'listP_conf':'listP_pend').innerHTML += row(it, 'P');
+            totalEntradasMes += it.valor;
+            if(it.ok) {
+                if(it.conta === 'banco') saldoAtualInter += it.valor;
+                else saldoAtualVivo += it.valor;
+            }
+            if(currentFilter === 'all' || it.conta === currentFilter) {
+                document.getElementById(it.ok ? 'listR_conf' : 'listR_pend').innerHTML += row(it, 'R');
+                countR++;
+            }
         });
 
-        document.getElementById('totalR').innerText = formatBRL(tr);
-        document.getElementById('totalP').innerText = formatBRL(tp);
-        document.getElementById('labelBanco').innerText = formatBRL(sb);
-        document.getElementById('labelVivo').innerText = formatBRL(sv);
-        document.getElementById('totalSaldo').innerText = formatBRL((data.initBanco + data.initVivo + tr) - tp);
+        // Processar Saídas
+        data.P.sort((a,b)=>a.dia-b.dia).forEach(it => {
+            totalSaidasMes += it.valor;
+            if(it.ok) {
+                if(it.conta === 'banco') saldoAtualInter -= it.valor;
+                else saldoAtualVivo -= it.valor;
+            }
+            if(currentFilter === 'all' || it.conta === currentFilter) {
+                document.getElementById(it.ok ? 'listP_conf' : 'listP_pend').innerHTML += row(it, 'P');
+                countP++;
+            }
+        });
+
+        // Atualizar UI
+        document.getElementById('totalR').innerText = formatBRL(totalEntradasMes);
+        document.getElementById('totalP').innerText = formatBRL(totalSaidasMes);
+        document.getElementById('labelBanco').innerText = formatBRL(saldoAtualInter);
+        document.getElementById('labelVivo').innerText = formatBRL(saldoAtualVivo);
+        
+        // Saldo Projetado = (Iniciais) + Todas Entradas - Todas Saídas
+        const projetado = (data.initBanco + data.initVivo + totalEntradasMes) - totalSaidasMes;
+        document.getElementById('totalSaldo').innerText = formatBRL(projetado);
+        
+        document.getElementById('countR').innerText = countR;
+        document.getElementById('countP').innerText = countP;
+
         lucide.createIcons();
     }
 
     async function add(type) {
-        const d = document.getElementById('f_desc').value.toUpperCase(), v = parseBRL(document.getElementById('f_valor').value), dia = parseInt(document.getElementById('f_dia').value) || 1, key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
+        const d = document.getElementById('f_desc').value.toUpperCase(), 
+              v = parseBRL(document.getElementById('f_valor').value), 
+              dia = parseInt(document.getElementById('f_dia').value) || 1, 
+              key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         if(!d || v <= 0) return;
-        if (!db[key]) db[key] = { R: [], P: [], initBanco:0, initVivo:0 };
+        if (!db[key]) db[key] = { R: [], P: [], initBanco: 0, initVivo: 0 };
         db[key][type].push({ id: Date.now(), dia, desc: d, valor: v, ok: false, conta: document.getElementById('f_conta').value });
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
-        document.getElementById('f_desc').value = ''; document.getElementById('f_valor').value = ''; render();
+        document.getElementById('f_desc').value = ''; 
+        document.getElementById('f_valor').value = ''; 
     }
 
     window.tk = async (type, id) => {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         const it = db[key][type].find(x=>x.id===id); it.ok = !it.ok;
-        await setDoc(doc(db_fire, "financeiro", key), db[key]); render();
+        await setDoc(doc(db_fire, "financeiro", key), db[key]);
     };
 
     window.del = async (type, id) => {
-        if(!confirm("Excluir?")) return;
+        if(!confirm("Excluir lançamento?")) return;
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         db[key][type] = db[key][type].filter(x=>x.id!==id);
-        await setDoc(doc(db_fire, "financeiro", key), db[key]); render();
+        await setDoc(doc(db_fire, "financeiro", key), db[key]);
+    };
+
+    window.showTransferPopup = async () => {
+        const vStr = prompt("Valor da Transferência:"); if(!vStr) return;
+        const v = parseBRL(vStr);
+        const op = prompt("1: Inter -> Vivo | 2: Vivo -> Inter");
+        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
+        const dia = new Date().getDate();
+        if(op==='1'){ 
+            db[key].P.push({id:Date.now(),dia,desc:"TRANSF -> VIVO",valor:v,ok:true,conta:'banco'}); 
+            db[key].R.push({id:Date.now()+1,dia,desc:"TRANSF <- INTER",valor:v,ok:true,conta:'vivo'}); 
+        }
+        else if(op==='2'){ 
+            db[key].P.push({id:Date.now(),dia,desc:"TRANSF -> INTER",valor:v,ok:true,conta:'vivo'}); 
+            db[key].R.push({id:Date.now()+1,dia,desc:"TRANSF <- VIVO",valor:v,ok:true,conta:'banco'}); 
+        }
+        await setDoc(doc(db_fire, "financeiro", key), db[key]);
     };
 
     init();
