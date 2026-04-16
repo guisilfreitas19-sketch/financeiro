@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro v2.7 - Premium</title>
+    <title>Financeiro v2.8 - Filtros</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
@@ -11,16 +11,15 @@
         body { background-color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; color: #0f172a; }
         .sidebar-dark { background: #0f172a; color: white; border-radius: 24px; }
         .input-premium { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; padding: 10px; font-weight: 600; font-size: 13px; }
-        .card-item { background: white; border: 1px solid #e2e8f0; border-radius: 14px; margin-bottom: 8px; transition: all 0.2s; position: relative; }
+        .card-item { background: white; border: 1px solid #e2e8f0; border-radius: 14px; margin-bottom: 8px; transition: all 0.2s; }
         .badge-day { background: #f1f5f9; color: #0f172a; font-family: 'JetBrains Mono', monospace; padding: 2px 8px; border-radius: 6px; font-weight: 800; }
         .done { opacity: 0.5; filter: grayscale(0.8); }
         .saldo-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px; }
-        
-        /* Input de edição invisível */
         .edit-mode-input { border: none; background: transparent; font-weight: 700; text-transform: uppercase; color: #1e293b; width: 100%; outline: none; border-bottom: 1px dashed #cbd5e1; }
         .edit-mode-val { border: none; background: transparent; font-weight: 900; color: inherit; width: 80px; text-align: right; outline: none; border-bottom: 1px dashed #cbd5e1; }
-        
-        @media (min-width: 1024px) { .main-container { height: 100vh; overflow: hidden; } .scroll-column { height: calc(100vh - 180px); overflow-y: auto; padding-right: 8px; } }
+        .filter-btn { padding: 6px 16px; border-radius: 10px; font-size: 10px; font-weight: 800; text-transform: uppercase; transition: all 0.2s; border: 1px solid #e2e8f0; background: white; color: #64748b; }
+        .filter-btn.active { background: #0f172a; color: white; border-color: #0f172a; shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        @media (min-width: 1024px) { .main-container { height: 100vh; overflow: hidden; } .scroll-column { height: calc(100vh - 240px); overflow-y: auto; padding-right: 8px; } }
     </style>
 </head>
 <body class="p-4 lg:p-6">
@@ -33,11 +32,9 @@
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
                         <div class="bg-blue-600 p-2 rounded-lg"><i data-lucide="wallet" class="text-white w-5 h-5"></i></div>
-                        <h1 class="text-lg font-black tracking-tighter italic">FINANCEIRO <span class="text-blue-500 text-sm">v2.7</span></h1>
+                        <h1 class="text-lg font-black tracking-tighter italic">FINANCEIRO <span class="text-blue-500 text-sm">v2.8</span></h1>
                     </div>
-                    <button onclick="window.showTransfer()" class="bg-slate-800 p-2 rounded-lg hover:bg-slate-700 transition-all text-blue-400" title="Transferência">
-                        <i data-lucide="arrow-left-right" class="w-4 h-4"></i>
-                    </button>
+                    <button onclick="window.showTransfer()" class="bg-slate-800 p-2 rounded-lg hover:bg-slate-700 text-blue-400"><i data-lucide="arrow-left-right" class="w-4 h-4"></i></button>
                 </div>
 
                 <div class="space-y-3">
@@ -51,27 +48,18 @@
                         <option value="caixa">💵 EM MÃO (CAIXA)</option>
                     </select>
                     <input type="text" id="f_valor" class="input-premium w-full text-xl font-black text-blue-400 text-center" placeholder="R$ 0,00">
-                    
                     <div class="grid grid-cols-2 gap-2">
-                        <button id="btnAddR" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl shadow-lg">ENTRADA</button>
-                        <button id="btnAddP" class="bg-slate-700 hover:bg-slate-600 text-white font-black py-3 rounded-xl shadow-lg">SAÍDA</button>
+                        <button id="btnAddR" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl">ENTRADA</button>
+                        <button id="btnAddP" class="bg-slate-700 hover:bg-slate-600 text-white font-black py-3 rounded-xl">SAÍDA</button>
                     </div>
                 </div>
 
                 <div class="mt-8 space-y-3">
                     <div class="saldo-card flex justify-between items-center border-l-4 border-l-blue-500">
-                        <div>
-                            <p class="text-[9px] font-bold text-slate-400 uppercase">Banco Inter</p>
-                            <h4 id="labelBanco" class="text-lg font-black text-white tracking-tight">R$ 0,00</h4>
-                        </div>
-                        <i data-lucide="landmark" class="text-slate-700 w-5 h-5"></i>
+                        <div><p class="text-[9px] font-bold text-slate-400 uppercase">Banco Inter</p><h4 id="labelBanco" class="text-lg font-black text-white">R$ 0,00</h4></div>
                     </div>
                     <div class="saldo-card flex justify-between items-center border-l-4 border-l-emerald-500">
-                        <div>
-                            <p class="text-[9px] font-bold text-slate-400 uppercase">Dinheiro Vivo</p>
-                            <h4 id="labelCaixa" class="text-lg font-black text-white tracking-tight">R$ 0,00</h4>
-                        </div>
-                        <i data-lucide="banknote" class="text-slate-700 w-5 h-5"></i>
+                        <div><p class="text-[9px] font-bold text-slate-400 uppercase">Dinheiro Vivo</p><h4 id="labelCaixa" class="text-lg font-black text-white">R$ 0,00</h4></div>
                     </div>
                 </div>
 
@@ -86,20 +74,28 @@
             </div>
         </aside>
 
-        <main class="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="flex flex-col">
-                <div class="bg-white p-4 rounded-2xl border border-slate-200 mb-4 flex justify-between items-center shadow-sm">
-                    <span class="text-[10px] font-black text-slate-400 uppercase">Receitas</span>
-                    <h3 id="totalR" class="text-xl font-black text-emerald-600">R$ 0,00</h3>
-                </div>
-                <div class="scroll-column"><div id="listR_pend"></div><div id="listR_conf"></div></div>
+        <main class="lg:col-span-9 flex flex-col h-full">
+            <div class="flex items-center gap-2 mb-6 bg-white p-2 rounded-2xl border border-slate-200 self-start shadow-sm">
+                <button onclick="window.setFilter('all')" id="btn-f-all" class="filter-btn active">Ver Tudo</button>
+                <button onclick="window.setFilter('banco')" id="btn-f-banco" class="filter-btn">🏦 Inter</button>
+                <button onclick="window.setFilter('caixa')" id="btn-f-caixa" class="filter-btn">💵 Caixa</button>
             </div>
-            <div class="flex flex-col">
-                <div class="bg-white p-4 rounded-2xl border border-slate-200 mb-4 flex justify-between items-center shadow-sm">
-                    <span class="text-[10px] font-black text-slate-400 uppercase">Despesas</span>
-                    <h3 id="totalP" class="text-xl font-black text-rose-600">R$ 0,00</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
+                <div class="flex flex-col">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 mb-4 flex justify-between items-center shadow-sm">
+                        <span class="text-[10px] font-black text-slate-400 uppercase">Receitas</span>
+                        <h3 id="totalR" class="text-xl font-black text-emerald-600">R$ 0,00</h3>
+                    </div>
+                    <div class="scroll-column"><div id="listR_pend"></div><div id="listR_conf"></div></div>
                 </div>
-                <div class="scroll-column"><div id="listP_pend"></div><div id="listP_conf"></div></div>
+                <div class="flex flex-col">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 mb-4 flex justify-between items-center shadow-sm">
+                        <span class="text-[10px] font-black text-slate-400 uppercase">Despesas</span>
+                        <h3 id="totalP" class="text-xl font-black text-rose-600">R$ 0,00</h3>
+                    </div>
+                    <div class="scroll-column"><div id="listP_pend"></div><div id="listP_conf"></div></div>
+                </div>
             </div>
         </main>
     </div>
@@ -120,8 +116,7 @@
 
     const app = initializeApp(firebaseConfig);
     const db_fire = getFirestore(app);
-    let db = {};
-    let editingId = null;
+    let db = {}, editingId = null, currentFilter = 'all';
 
     const formatBRL = (v) => Number(v || 0).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     const parseBRL = (t) => parseFloat(String(t || '').replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
@@ -148,6 +143,13 @@
         render();
     }
 
+    window.setFilter = (f) => {
+        currentFilter = f;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`btn-f-${f}`).classList.add('active');
+        render();
+    };
+
     function render() {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         if (!db[key]) db[key] = { R: [], P: [] };
@@ -163,19 +165,13 @@
                     <span class="badge-day">${String(it.dia).padStart(2,'0')}</span>
                     <div class="flex-1">
                         ${isEd ? `<input type="text" id="ed_d_${it.id}" class="edit-mode-input" value="${it.desc}">` : `<p class="text-[11px] font-bold text-slate-700 leading-none">${it.desc}</p>`}
-                        <div class="mt-1">
-                            ${isEd ? `<select id="ed_c_${it.id}" class="text-[9px] font-black uppercase text-blue-500 bg-transparent"><option value="banco" ${it.conta==='banco'?'selected':''}>Inter</option><option value="caixa" ${it.conta==='caixa'?'selected':''}>Caixa</option></select>` : `<p class="text-[9px] font-black text-slate-400 uppercase">${it.conta === 'banco' ? 'Inter' : 'Caixa'}</p>`}
-                        </div>
+                        <div class="mt-1">${isEd ? `<select id="ed_c_${it.id}" class="text-[9px] font-black uppercase text-blue-500 bg-transparent"><option value="banco" ${it.conta==='banco'?'selected':''}>Inter</option><option value="caixa" ${it.conta==='caixa'?'selected':''}>Caixa</option></select>` : `<p class="text-[9px] font-black text-slate-400 uppercase">${it.conta === 'banco' ? 'Inter' : 'Caixa'}</p>`}</div>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
                     ${isEd ? `<input type="text" id="ed_v_${it.id}" class="edit-mode-val" value="${formatBRL(it.valor)}" oninput="window.mLoc(this)">` : `<span class="text-xs font-black ${type==='R'?'text-emerald-600':'text-rose-600'}">${formatBRL(it.valor)}</span>`}
-                    
                     <div class="flex gap-1">
-                        ${isEd ? 
-                            `<button onclick="window.saveLoc('${type}', ${it.id})" class="p-1 text-emerald-500"><i data-lucide="check-circle" class="w-4 h-4"></i></button>` : 
-                            `<button onclick="window.setEd(${it.id})" class="p-1 text-slate-300 hover:text-blue-500"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>`
-                        }
+                        ${isEd ? `<button onclick="window.saveLoc('${type}', ${it.id})" class="p-1 text-emerald-500"><i data-lucide="check-circle" class="w-4 h-4"></i></button>` : `<button onclick="window.setEd(${it.id})" class="p-1 text-slate-300 hover:text-blue-500"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>`}
                         <input type="checkbox" ${it.ok?'checked':''} onchange="window.tk('${type}', ${it.id})" class="w-4 h-4 accent-blue-600 cursor-pointer">
                         <button onclick="window.del('${type}', ${it.id})" class="p-1 text-slate-200 hover:text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                     </div>
@@ -185,11 +181,11 @@
 
         data.R.sort((a,b)=>a.dia-b.dia).forEach(it => {
             tr += it.valor; if(it.ok) (it.conta==='caixa'?sc+=it.valor:sb+=it.valor);
-            document.getElementById(it.ok?'listR_conf':'listR_pend').innerHTML += row(it, 'R');
+            if(currentFilter === 'all' || it.conta === currentFilter) document.getElementById(it.ok?'listR_conf':'listR_pend').innerHTML += row(it, 'R');
         });
         data.P.sort((a,b)=>a.dia-b.dia).forEach(it => {
             tp += it.valor; if(it.ok) (it.conta==='caixa'?sc-=it.valor:sb-=it.valor);
-            document.getElementById(it.ok?'listP_conf':'listP_pend').innerHTML += row(it, 'P');
+            if(currentFilter === 'all' || it.conta === currentFilter) document.getElementById(it.ok?'listP_conf':'listP_pend').innerHTML += row(it, 'P');
         });
 
         document.getElementById('totalR').innerText = formatBRL(tr);
@@ -222,20 +218,13 @@
     }
 
     window.showTransfer = async () => {
-        const v = prompt("Valor da Transferência (Ex: 100,00):");
+        const v = prompt("Valor da Transferência:");
         if(!v) return;
-        const val = parseBRL(v);
-        const dir = confirm("OK para: INTER -> CAIXA\nCANCELAR para: CAIXA -> INTER");
-        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const dia = new Date().getDate();
-        
-        // Saída da conta origem
+        const val = parseBRL(v), dir = confirm("OK para: INTER -> CAIXA\nCANCEL para: CAIXA -> INTER");
+        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`, dia = new Date().getDate();
         db[key].P.push({ id: Date.now(), dia, desc: "TRANSFERÊNCIA", valor: val, ok: true, conta: dir ? 'banco' : 'caixa' });
-        // Entrada na conta destino
         db[key].R.push({ id: Date.now()+1, dia, desc: "TRANSFERÊNCIA", valor: val, ok: true, conta: dir ? 'caixa' : 'banco' });
-        
-        await setDoc(doc(db_fire, "financeiro", key), db[key]);
-        render();
+        await setDoc(doc(db_fire, "financeiro", key), db[key]); render();
     };
 
     window.tk = async (type, id) => {
