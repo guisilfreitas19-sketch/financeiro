@@ -3,75 +3,79 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Metra Cloud v5.2 - Correção de Saldo</title>
+    <title>Metra Cloud v5.3 - Ajuste Final de Saldo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; color: #0f172a; height: 100vh; overflow: hidden; }
+        body { background-color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; height: 100vh; overflow: hidden; }
         .sidebar-dark { background: #0f172a; color: white; border-radius: 24px; height: 100%; }
         .input-premium { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: white; padding: 8px; font-weight: 600; font-size: 12px; }
-        .card-item { background: white; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 5px; padding: 6px 10px; }
-        .done { opacity: 0.4; filter: grayscale(1); }
-        .month-summary { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; border-radius: 16px; padding: 14px; margin-bottom: 12px; }
-        .scroll-list { height: calc(100vh - 360px); overflow-y: auto; }
-        .filter-btn { padding: 4px 12px; border-radius: 8px; font-size: 9px; font-weight: 800; text-transform: uppercase; border: 1px solid #e2e8f0; background: white; color: #64748b; }
+        .card-item { background: white; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 4px; padding: 6px 10px; transition: all 0.2s; }
+        .done { opacity: 0.4; filter: grayscale(1); background: #f1f5f9; }
+        .month-summary { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+        .scroll-list { height: calc(100vh - 350px); overflow-y: auto; padding-right: 4px; }
+        .scroll-list::-webkit-scrollbar { width: 4px; }
+        .scroll-list::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .filter-btn { padding: 4px 14px; border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; border: 1px solid #e2e8f0; background: white; color: #64748b; }
         .filter-btn.active { background: #0f172a; color: white; border-color: #0f172a; }
-        .caixa-item { background: #ffffff; padding: 8px 12px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .caixa-card { background: white; padding: 10px 14px; border-radius: 12px; border: 1px solid #e2e8f0; }
     </style>
 </head>
 <body class="p-3 lg:p-4">
 
-<div class="max-w-[1700px] mx-auto h-full">
+<div class="max-w-[1750px] mx-auto h-full">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 h-full">
         
         <aside class="lg:col-span-3 h-full">
-            <div class="sidebar-dark p-5 flex flex-col shadow-2xl">
-                <div class="flex items-center justify-between mb-4">
-                    <h1 class="text-sm font-black italic tracking-tighter text-white">METRA CLOUD <span class="text-blue-500">v5.2</span></h1>
-                    <button onclick="window.showTransferPopup()" class="bg-slate-800 p-1.5 rounded-lg text-blue-400 hover:bg-slate-700"><i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i></button>
+            <div class="sidebar-dark p-6 flex flex-col shadow-2xl">
+                <div class="flex items-center justify-between mb-6">
+                    <h1 class="text-sm font-black tracking-tighter text-white uppercase italic">METRA CLOUD <span class="text-blue-500">v5.3</span></h1>
+                    <i data-lucide="layout-dashboard" class="w-4 h-4 text-slate-500"></i>
                 </div>
 
-                <div class="space-y-2 mb-4">
+                <div class="space-y-3 mb-6">
                     <div class="grid grid-cols-2 gap-2">
                         <input type="number" id="f_dia" class="input-premium text-center" placeholder="Dia">
                         <input type="number" id="f_parc" value="1" class="input-premium text-center">
                     </div>
                     <input type="text" id="f_desc" class="input-premium w-full uppercase" placeholder="DESCRIÇÃO">
-                    <select id="f_conta" class="input-premium w-full text-xs">
+                    <select id="f_conta" class="input-premium w-full text-xs cursor-pointer">
                         <option value="banco">🏦 BANCO INTER</option>
                         <option value="vivo">💵 DINHEIRO VIVO</option>
                     </select>
-                    <input type="text" id="f_valor" class="input-premium w-full text-lg font-black text-blue-400 text-center" placeholder="R$ 0,00">
+                    <input type="text" id="f_valor" class="input-premium w-full text-xl font-black text-blue-400 text-center" placeholder="R$ 0,00">
                     <div class="grid grid-cols-2 gap-2">
-                        <button id="btnAddR" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black py-2.5 rounded-xl uppercase text-[10px]">Entrada</button>
-                        <button id="btnAddP" class="bg-slate-700 hover:bg-slate-600 text-white font-black py-2.5 rounded-xl uppercase text-[10px]">Saída</button>
+                        <button id="btnAddR" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl uppercase text-[10px] transition-all">Entrada</button>
+                        <button id="btnAddP" class="bg-slate-700 hover:bg-slate-600 text-white font-black py-3 rounded-xl uppercase text-[10px] transition-all">Saída</button>
                     </div>
                 </div>
 
-                <div class="mt-auto pt-4 border-t border-slate-800">
-                    <div class="flex gap-2">
-                        <select id="f_mes" class="bg-transparent text-[10px] font-bold uppercase text-slate-500 outline-none"></select>
-                        <select id="f_ano" class="bg-transparent text-[10px] font-bold text-slate-500 outline-none"></select>
+                <div class="mt-auto pt-4 border-t border-slate-800 flex justify-between">
+                    <div class="flex gap-3">
+                        <select id="f_mes" class="bg-transparent text-[11px] font-bold uppercase text-slate-400 outline-none cursor-pointer"></select>
+                        <select id="f_ano" class="bg-transparent text-[11px] font-bold text-slate-400 outline-none cursor-pointer"></select>
                     </div>
+                    <button onclick="window.showTransferPopup()" class="text-slate-500 hover:text-white"><i data-lucide="repeat" class="w-4 h-4"></i></button>
                 </div>
             </div>
         </aside>
 
-        <main class="lg:col-span-9 flex flex-col h-full overflow-hidden">
-            <div class="month-summary flex justify-between items-center shadow-md">
+        <main class="lg:col-span-9 flex flex-col h-full">
+            
+            <div class="month-summary flex justify-between items-center shadow-lg">
                 <div>
-                    <p class="text-blue-100 text-[9px] font-bold uppercase tracking-widest">Saldo Projetado Final (Mês)</p>
-                    <h2 id="totalSaldo" class="text-3xl font-black italic">R$ 0,00</h2>
+                    <p class="text-blue-100 text-[10px] font-extrabold uppercase tracking-widest mb-1">Saldo Projetado (Final do Mês)</p>
+                    <h2 id="totalSaldo" class="text-4xl font-black italic">R$ 0,00</h2>
                 </div>
-                <div class="flex gap-8">
-                    <div class="text-right border-l border-white/10 pl-8">
-                        <p class="text-blue-100 text-[8px] font-bold uppercase">Total Entradas</p>
-                        <p id="totalR" class="text-base font-black text-emerald-300">R$ 0,00</p>
+                <div class="flex gap-10">
+                    <div class="text-right border-l border-white/20 pl-10">
+                        <p class="text-blue-100 text-[9px] font-bold uppercase mb-1">Total Receitas</p>
+                        <p id="totalR" class="text-xl font-black text-emerald-300">R$ 0,00</p>
                     </div>
-                    <div class="text-right border-l border-white/10 pl-8">
-                        <p class="text-blue-100 text-[8px] font-bold uppercase">Total Saídas</p>
-                        <p id="totalP" class="text-base font-black text-rose-300">R$ 0,00</p>
+                    <div class="text-right border-l border-white/20 pl-10">
+                        <p class="text-blue-100 text-[9px] font-bold uppercase mb-1">Total Despesas</p>
+                        <p id="totalP" class="text-xl font-black text-rose-300">R$ 0,00</p>
                     </div>
                 </div>
             </div>
@@ -82,41 +86,45 @@
                     <button onclick="window.setFilter('banco')" id="btn-f-banco" class="filter-btn">Inter</button>
                     <button onclick="window.setFilter('vivo')" id="btn-f-vivo" class="filter-btn">Vivo</button>
                 </div>
+                
                 <div class="flex-1 grid grid-cols-2 gap-3 w-full">
-                    <div class="caixa-item flex justify-between items-center border-l-4 border-l-blue-500">
+                    <div class="caixa-card flex justify-between items-center border-l-4 border-l-blue-500 shadow-sm">
                         <div>
-                            <span class="text-[8px] font-black text-slate-400 uppercase block">Saldo Atual Inter</span>
-                            <h4 id="labelBanco" class="text-sm font-black text-slate-800 leading-tight">R$ 0,00</h4>
+                            <span class="text-[9px] font-black text-slate-400 uppercase">Saldo em Conta (Inter)</span>
+                            <h4 id="labelBanco" class="text-base font-black text-slate-800">R$ 0,00</h4>
                         </div>
-                        <i data-lucide="landmark" class="w-4 h-4 text-slate-200"></i>
+                        <div class="bg-blue-50 p-2 rounded-lg text-blue-500"><i data-lucide="landmark" class="w-4 h-4"></i></div>
                     </div>
-                    <div class="caixa-item flex justify-between items-center border-l-4 border-l-emerald-500">
+                    <div class="caixa-card flex justify-between items-center border-l-4 border-l-emerald-500 shadow-sm">
                         <div>
-                            <span class="text-[8px] font-black text-slate-400 uppercase block">Saldo Atual Vivo</span>
-                            <h4 id="labelVivo" class="text-sm font-black text-slate-800 leading-tight">R$ 0,00</h4>
+                            <span class="text-[9px] font-black text-slate-400 uppercase">Saldo em Mãos (Vivo)</span>
+                            <h4 id="labelVivo" class="text-base font-black text-slate-800">R$ 0,00</h4>
                         </div>
-                        <i data-lucide="banknote" class="w-4 h-4 text-slate-200"></i>
+                        <div class="bg-emerald-50 p-2 rounded-lg text-emerald-500"><i data-lucide="banknote" class="w-4 h-4"></i></div>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full overflow-hidden">
                 <div class="flex flex-col">
-                    <h3 class="text-[9px] font-black text-slate-400 uppercase mb-2 px-1 flex justify-between">
-                        Fluxo de Receitas <span id="countR" class="bg-slate-200 text-slate-600 px-1.5 rounded">0</span>
-                    </h3>
+                    <div class="flex justify-between items-center mb-2 px-1">
+                        <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-tighter">Fluxo de Receitas</h3>
+                        <span id="countR" class="text-[9px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">0</span>
+                    </div>
                     <div id="listR_wrapper" class="scroll-list">
                         <div id="listR_pend"></div>
-                        <div id="listR_conf" class="mt-2 border-t border-slate-100 pt-2"></div>
+                        <div id="listR_conf" class="mt-4 border-t border-dashed border-slate-200 pt-3"></div>
                     </div>
                 </div>
+                
                 <div class="flex flex-col">
-                    <h3 class="text-[9px] font-black text-slate-400 uppercase mb-2 px-1 flex justify-between">
-                        Fluxo de Despesas <span id="countP" class="bg-slate-200 text-slate-600 px-1.5 rounded">0</span>
-                    </h3>
+                    <div class="flex justify-between items-center mb-2 px-1">
+                        <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-tighter">Fluxo de Despesas</h3>
+                        <span id="countP" class="text-[9px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">0</span>
+                    </div>
                     <div id="listP_wrapper" class="scroll-list">
                         <div id="listP_pend"></div>
-                        <div id="listP_conf" class="mt-2 border-t border-slate-100 pt-2"></div>
+                        <div id="listP_conf" class="mt-4 border-t border-dashed border-slate-200 pt-3"></div>
                     </div>
                 </div>
             </div>
@@ -126,7 +134,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDocs, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCi8znMRngui3EI6tODeuczGcUV2o3U90c",
@@ -161,7 +169,6 @@
         document.getElementById('btnAddR').onclick = () => add('R');
         document.getElementById('btnAddP').onclick = () => add('P');
         
-        // Listener em tempo real para o Firebase
         onSnapshot(collection(db_fire, "financeiro"), (s) => {
             s.forEach(d => db[d.id] = d.data());
             render();
@@ -182,82 +189,67 @@
         
         ['listR_pend', 'listR_conf', 'listP_pend', 'listP_conf'].forEach(id => document.getElementById(id).innerHTML = '');
         
-        // Variáveis de Cálculo
-        let totalEntradasMes = 0;
-        let totalSaidasMes = 0;
-        let saldoAtualInter = data.initBanco || 0;
-        let saldoAtualVivo = data.initVivo || 0;
-        let countR = 0, countP = 0;
+        let tR_mes = 0, tP_mes = 0;
+        let sAtualInter = data.initBanco || 0;
+        let sAtualVivo = data.initVivo || 0;
+        let cR = 0, cP = 0;
 
         const row = (it, type) => `
-            <div class="card-item flex items-center justify-between shadow-sm ${it.ok ? 'done' : ''}">
-                <div class="flex items-center gap-2">
-                    <span class="text-[9px] font-black text-slate-400 w-5">${String(it.dia).padStart(2,'0')}</span>
+            <div class="card-item flex items-center justify-between ${it.ok ? 'done' : ''}">
+                <div class="flex items-center gap-3">
+                    <span class="text-[10px] font-black text-slate-400 w-5">${String(it.dia).padStart(2,'0')}</span>
                     <div>
-                        <p class="text-[10px] font-bold text-slate-700 uppercase leading-none">${it.desc}</p>
-                        <p class="text-[7px] font-black text-slate-400 mt-1 uppercase">${it.conta === 'banco' ? 'Inter' : 'Vivo'}</p>
+                        <p class="text-[11px] font-bold text-slate-700 uppercase leading-none mb-1">${it.desc}</p>
+                        <span class="text-[8px] font-black px-1.5 py-0.5 rounded ${it.conta==='banco'?'bg-blue-50 text-blue-500':'bg-emerald-50 text-emerald-500'} uppercase">${it.conta === 'banco' ? 'Inter' : 'Vivo'}</span>
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-black ${type==='R'?'text-emerald-600':'text-rose-600'}">${formatBRL(it.valor)}</span>
+                <div class="flex items-center gap-3">
+                    <span class="text-[11px] font-black ${type==='R'?'text-emerald-600':'text-rose-600'}">${formatBRL(it.valor)}</span>
                     <input type="checkbox" ${it.ok?'checked':''} onchange="window.tk('${type}', ${it.id})" class="w-4 h-4 accent-blue-600 cursor-pointer">
-                    <button onclick="window.del('${type}', ${it.id})" class="text-slate-200 hover:text-rose-500 ml-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                    <button onclick="window.del('${type}', ${it.id})" class="text-slate-200 hover:text-rose-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                 </div>
             </div>`;
 
-        // Processar Entradas
-        data.R.sort((a,b)=>a.dia-b.dia).forEach(it => {
-            totalEntradasMes += it.valor;
-            if(it.ok) {
-                if(it.conta === 'banco') saldoAtualInter += it.valor;
-                else saldoAtualVivo += it.valor;
-            }
+        data.R.forEach(it => {
+            tR_mes += it.valor;
+            if(it.ok) (it.conta==='banco' ? sAtualInter += it.valor : sAtualVivo += it.valor);
             if(currentFilter === 'all' || it.conta === currentFilter) {
                 document.getElementById(it.ok ? 'listR_conf' : 'listR_pend').innerHTML += row(it, 'R');
-                countR++;
+                cR++;
             }
         });
 
-        // Processar Saídas
-        data.P.sort((a,b)=>a.dia-b.dia).forEach(it => {
-            totalSaidasMes += it.valor;
-            if(it.ok) {
-                if(it.conta === 'banco') saldoAtualInter -= it.valor;
-                else saldoAtualVivo -= it.valor;
-            }
+        data.P.forEach(it => {
+            tP_mes += it.valor;
+            if(it.ok) (it.conta==='banco' ? sAtualInter -= it.valor : sAtualVivo -= it.valor);
             if(currentFilter === 'all' || it.conta === currentFilter) {
                 document.getElementById(it.ok ? 'listP_conf' : 'listP_pend').innerHTML += row(it, 'P');
-                countP++;
+                cP++;
             }
         });
 
-        // Atualizar UI
-        document.getElementById('totalR').innerText = formatBRL(totalEntradasMes);
-        document.getElementById('totalP').innerText = formatBRL(totalSaidasMes);
-        document.getElementById('labelBanco').innerText = formatBRL(saldoAtualInter);
-        document.getElementById('labelVivo').innerText = formatBRL(saldoAtualVivo);
+        // ATUALIZAÇÃO DOS VALORES NA TELA
+        document.getElementById('totalR').innerText = formatBRL(tR_mes);
+        document.getElementById('totalP').innerText = formatBRL(tP_mes);
+        document.getElementById('labelBanco').innerText = formatBRL(sAtualInter);
+        document.getElementById('labelVivo').innerText = formatBRL(sAtualVivo);
         
-        // Saldo Projetado = (Iniciais) + Todas Entradas - Todas Saídas
-        const projetado = (data.initBanco + data.initVivo + totalEntradasMes) - totalSaidasMes;
+        // FÓRMULA DO SALDO PROJETADO: (Saldos Iniciais + Receitas Totais) - Despesas Totais
+        const projetado = (Number(data.initBanco) + Number(data.initVivo) + tR_mes) - tP_mes;
         document.getElementById('totalSaldo').innerText = formatBRL(projetado);
         
-        document.getElementById('countR').innerText = countR;
-        document.getElementById('countP').innerText = countP;
-
+        document.getElementById('countR').innerText = cR;
+        document.getElementById('countP').innerText = cP;
         lucide.createIcons();
     }
 
     async function add(type) {
-        const d = document.getElementById('f_desc').value.toUpperCase(), 
-              v = parseBRL(document.getElementById('f_valor').value), 
-              dia = parseInt(document.getElementById('f_dia').value) || 1, 
-              key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
+        const d = document.getElementById('f_desc').value.toUpperCase(), v = parseBRL(document.getElementById('f_valor').value), dia = parseInt(document.getElementById('f_dia').value) || 1, key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         if(!d || v <= 0) return;
         if (!db[key]) db[key] = { R: [], P: [], initBanco: 0, initVivo: 0 };
         db[key][type].push({ id: Date.now(), dia, desc: d, valor: v, ok: false, conta: document.getElementById('f_conta').value });
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
-        document.getElementById('f_desc').value = ''; 
-        document.getElementById('f_valor').value = ''; 
+        document.getElementById('f_desc').value = ''; document.getElementById('f_valor').value = '';
     }
 
     window.tk = async (type, id) => {
@@ -267,23 +259,19 @@
     };
 
     window.del = async (type, id) => {
-        if(!confirm("Excluir lançamento?")) return;
+        if(!confirm("Excluir?")) return;
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         db[key][type] = db[key][type].filter(x=>x.id!==id);
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
     };
 
     window.showTransferPopup = async () => {
-        const vStr = prompt("Valor da Transferência:"); if(!vStr) return;
-        const v = parseBRL(vStr);
-        const op = prompt("1: Inter -> Vivo | 2: Vivo -> Inter");
-        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const dia = new Date().getDate();
+        const vStr = prompt("Valor:"); if(!vStr) return;
+        const v = parseBRL(vStr), op = prompt("1: Inter -> Vivo | 2: Vivo -> Inter"), key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`, dia = new Date().getDate();
         if(op==='1'){ 
             db[key].P.push({id:Date.now(),dia,desc:"TRANSF -> VIVO",valor:v,ok:true,conta:'banco'}); 
             db[key].R.push({id:Date.now()+1,dia,desc:"TRANSF <- INTER",valor:v,ok:true,conta:'vivo'}); 
-        }
-        else if(op==='2'){ 
+        } else if(op==='2'){ 
             db[key].P.push({id:Date.now(),dia,desc:"TRANSF -> INTER",valor:v,ok:true,conta:'vivo'}); 
             db[key].R.push({id:Date.now()+1,dia,desc:"TRANSF <- VIVO",valor:v,ok:true,conta:'banco'}); 
         }
