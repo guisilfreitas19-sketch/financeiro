@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro v4.0 - Gestão Mensal</title>
+    <title>Financeiro v4.5 - Guilherme</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
@@ -15,11 +15,11 @@
         .card-item { background: white; border: 1px solid #e2e8f0; border-radius: 14px; margin-bottom: 8px; transition: all 0.2s; }
         .badge-day { background: #f1f5f9; color: #0f172a; font-family: 'JetBrains Mono', monospace; padding: 2px 8px; border-radius: 6px; font-weight: 800; min-width: 35px; text-align: center; }
         .done { opacity: 0.5; filter: grayscale(0.8); }
-        .saldo-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px; }
+        .saldo-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 10px; }
         .filter-btn { padding: 6px 16px; border-radius: 10px; font-size: 10px; font-weight: 800; text-transform: uppercase; border: 1px solid #e2e8f0; background: white; color: #64748b; }
         .filter-btn.active { background: #0f172a; color: white; border-color: #0f172a; }
         .month-summary { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; border-radius: 20px; padding: 20px; margin-bottom: 24px; }
-        @media (min-width: 1024px) { .main-container { height: 100vh; overflow: hidden; } .scroll-column { height: calc(100vh - 360px); overflow-y: auto; padding-right: 8px; } }
+        @media (min-width: 1024px) { .main-container { height: 100vh; overflow: hidden; } .scroll-column { height: calc(100vh - 350px); overflow-y: auto; padding-right: 8px; } }
     </style>
 </head>
 <body class="p-4 lg:p-6">
@@ -32,9 +32,9 @@
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
                         <div class="bg-blue-600 p-2 rounded-lg"><i data-lucide="wallet" class="text-white w-5 h-5"></i></div>
-                        <h1 class="text-lg font-black italic">FINANCEIRO <span class="text-blue-500 text-xs">v4.0</span></h1>
+                        <h1 class="text-lg font-black italic">FINANCEIRO <span class="text-blue-500 text-xs">v4.5</span></h1>
                     </div>
-                    <button onclick="window.showTransferPopup()" class="bg-slate-800 p-2 rounded-lg text-blue-400 hover:bg-slate-700 transition-colors">
+                    <button onclick="window.showTransferPopup()" class="bg-slate-800 p-2 rounded-lg text-blue-400 hover:bg-slate-700">
                         <i data-lucide="arrow-left-right" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -42,12 +42,12 @@
                 <div class="space-y-3 mb-6">
                     <div class="grid grid-cols-2 gap-2">
                         <input type="number" id="f_dia" class="input-premium text-center" placeholder="Dia">
-                        <input type="number" id="f_parc" value="1" class="input-premium text-center" title="Parcelas">
+                        <input type="number" id="f_parc" value="1" class="input-premium text-center">
                     </div>
                     <input type="text" id="f_desc" class="input-premium w-full uppercase" placeholder="DESCRIÇÃO">
                     <select id="f_conta" class="input-premium w-full text-xs">
                         <option value="banco">🏦 BANCO INTER</option>
-                        <option value="caixa">💵 EM MÃO (CAIXA)</option>
+                        <option value="vivo">💵 DINHEIRO VIVO</option>
                     </select>
                     <input type="text" id="f_valor" class="input-premium w-full text-xl font-black text-blue-400 text-center" placeholder="R$ 0,00">
                     <div class="grid grid-cols-2 gap-2">
@@ -56,7 +56,7 @@
                     </div>
                 </div>
 
-                <div class="space-y-3">
+                <div class="space-y-3 mb-6">
                     <div class="saldo-card border-l-4 border-l-blue-500">
                         <div class="flex justify-between items-start mb-1">
                             <p class="text-[9px] font-bold text-slate-400 uppercase italic">Banco Inter</p>
@@ -71,15 +71,15 @@
                         <div class="flex justify-between items-start mb-1">
                             <p class="text-[9px] font-bold text-slate-400 uppercase italic">Dinheiro Vivo</p>
                             <div class="flex items-center gap-2">
-                                <button onclick="window.showReajuste('caixa')" class="text-slate-500 hover:text-white"><i data-lucide="wrench" class="w-3 h-3"></i></button>
-                                <input type="text" id="init_caixa" class="input-init" placeholder="Início R$ 0" onblur="window.updateInit()">
+                                <button onclick="window.showReajuste('vivo')" class="text-slate-500 hover:text-white"><i data-lucide="wrench" class="w-3 h-3"></i></button>
+                                <input type="text" id="init_vivo" class="input-init" placeholder="Início R$ 0" onblur="window.updateInit()">
                             </div>
                         </div>
-                        <h4 id="labelCaixa" class="text-lg font-black text-white">R$ 0,00</h4>
+                        <h4 id="labelVivo" class="text-lg font-black text-white">R$ 0,00</h4>
                     </div>
                 </div>
 
-                <div class="mt-auto pt-6 border-t border-slate-800">
+                <div class="mt-auto pt-4 border-t border-slate-800">
                     <div class="flex items-center gap-2 mb-2">
                         <select id="f_mes" class="bg-transparent text-[10px] font-bold uppercase outline-none text-slate-500"></select>
                         <select id="f_ano" class="bg-transparent text-[10px] font-bold outline-none text-slate-500"></select>
@@ -89,19 +89,19 @@
         </aside>
 
         <main class="lg:col-span-9 flex flex-col h-full">
-            <div class="month-summary shadow-xl shadow-blue-500/10 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="month-summary shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
                 <div>
                     <p class="text-blue-100 text-xs font-bold uppercase tracking-widest mb-1">Saldo Projetado Final</p>
                     <h2 id="totalSaldo" class="text-4xl font-black">R$ 0,00</h2>
                 </div>
                 <div class="flex gap-8 border-l border-white/10 pl-8">
                     <div class="text-center">
-                        <p class="text-blue-100 text-[10px] font-bold uppercase mb-1">Total Entradas</p>
-                        <p id="totalR" class="text-xl font-black">R$ 0,00</p>
+                        <p class="text-blue-100 text-[10px] font-bold uppercase mb-1">Entradas</p>
+                        <p id="totalR" class="text-xl font-black text-emerald-300">R$ 0,00</p>
                     </div>
                     <div class="text-center">
-                        <p class="text-blue-100 text-[10px] font-bold uppercase mb-1">Total Saídas</p>
-                        <p id="totalP" class="text-xl font-black text-blue-200">R$ 0,00</p>
+                        <p class="text-blue-100 text-[10px] font-bold uppercase mb-1">Saídas</p>
+                        <p id="totalP" class="text-xl font-black text-rose-300">R$ 0,00</p>
                     </div>
                 </div>
             </div>
@@ -109,16 +109,16 @@
             <div class="flex items-center gap-2 mb-6 bg-white p-2 rounded-2xl border border-slate-200 self-start shadow-sm">
                 <button onclick="window.setFilter('all')" id="btn-f-all" class="filter-btn active">Tudo</button>
                 <button onclick="window.setFilter('banco')" id="btn-f-banco" class="filter-btn">🏦 Inter</button>
-                <button onclick="window.setFilter('caixa')" id="btn-f-caixa" class="filter-btn">💵 Caixa</button>
+                <button onclick="window.setFilter('vivo')" id="btn-f-vivo" class="filter-btn">💵 Vivo</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full overflow-hidden">
                 <div class="flex flex-col h-full">
-                    <h3 class="text-[11px] font-black text-slate-400 uppercase mb-4 px-2 tracking-tighter">Fluxo de Receitas</h3>
+                    <h3 class="text-[11px] font-black text-slate-400 uppercase mb-4 px-2">Receitas</h3>
                     <div class="scroll-column"><div id="listR_pend"></div><div id="listR_conf"></div></div>
                 </div>
                 <div class="flex flex-col h-full">
-                    <h3 class="text-[11px] font-black text-slate-400 uppercase mb-4 px-2 tracking-tighter">Fluxo de Despesas</h3>
+                    <h3 class="text-[11px] font-black text-slate-400 uppercase mb-4 px-2">Despesas</h3>
                     <div class="scroll-column"><div id="listP_pend"></div><div id="listP_conf"></div></div>
                 </div>
             </div>
@@ -171,74 +171,67 @@
     }
 
     window.showTransferPopup = async () => {
-        const valor = prompt("Valor da Transferência:");
-        if(!valor) return;
-        const v = parseBRL(valor);
-        const op = prompt("Escolha a direção:\n1 - Banco Inter para Caixa\n2 - Caixa para Banco Inter");
-        
+        const vStr = prompt("Valor da Transferência:");
+        if(!vStr) return;
+        const v = parseBRL(vStr);
+        const op = prompt("Direção:\n1 - Banco Inter para Dinheiro Vivo\n2 - Dinheiro Vivo para Banco Inter");
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         const dia = new Date().getDate();
         
         if(op === '1') {
-            db[key].P.push({ id: Date.now(), dia, desc: "TRANSFERÊNCIA (SAÍDA)", valor: v, ok: true, conta: 'banco' });
-            db[key].R.push({ id: Date.now()+1, dia, desc: "TRANSFERÊNCIA (ENTRADA)", valor: v, ok: true, conta: 'caixa' });
+            db[key].P.push({ id: Date.now(), dia, desc: "TRANSF: INTER -> VIVO", valor: v, ok: true, conta: 'banco' });
+            db[key].R.push({ id: Date.now()+1, dia, desc: "TRANSF: INTER -> VIVO", valor: v, ok: true, conta: 'vivo' });
         } else if(op === '2') {
-            db[key].P.push({ id: Date.now(), dia, desc: "TRANSFERÊNCIA (SAÍDA)", valor: v, ok: true, conta: 'caixa' });
-            db[key].R.push({ id: Date.now()+1, dia, desc: "TRANSFERÊNCIA (ENTRADA)", valor: v, ok: true, conta: 'banco' });
-        } else {
-            return alert("Opção inválida");
-        }
+            db[key].P.push({ id: Date.now(), dia, desc: "TRANSF: VIVO -> INTER", valor: v, ok: true, conta: 'vivo' });
+            db[key].R.push({ id: Date.now()+1, dia, desc: "TRANSF: VIVO -> INTER", valor: v, ok: true, conta: 'banco' });
+        } else return;
         
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
         render();
     };
 
     window.showReajuste = async (conta) => {
-        const extrato = prompt(`Valor REAL atual no ${conta === 'banco' ? 'Inter' : 'Caixa'}:`);
+        const extrato = prompt(`Valor REAL no ${conta === 'banco' ? 'Banco Inter' : 'Dinheiro Vivo'}:`);
         if(!extrato) return;
         const vReal = parseBRL(extrato);
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         const data = db[key];
-        
-        let sSist = (conta === 'banco' ? data.initBanco : data.initCaixa) || 0;
+        let sSist = (conta === 'banco' ? data.initBanco : data.initVivo) || 0;
         data.R.forEach(it => { if(it.ok && it.conta === conta) sSist += it.valor; });
         data.P.forEach(it => { if(it.ok && it.conta === conta) sSist -= it.valor; });
-
         const diff = vReal - sSist;
         if (Math.abs(diff) < 0.01) return alert("Saldo já bate!");
-
-        const tipo = diff > 0 ? 'R' : 'P';
-        data[tipo].push({ id: Date.now(), dia: new Date().getDate(), desc: "AJUSTE MANUAL", valor: Math.abs(diff), ok: true, conta: conta });
+        data[diff > 0 ? 'R' : 'P'].push({ id: Date.now(), dia: new Date().getDate(), desc: "AJUSTE SALDO", valor: Math.abs(diff), ok: true, conta });
         await setDoc(doc(db_fire, "financeiro", key), data);
         render();
     };
 
     window.updateInit = async () => {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        if(!db[key]) db[key] = { R:[], P:[], initBanco:0, initCaixa:0 };
+        if(!db[key]) db[key] = { R:[], P:[], initBanco:0, initVivo:0 };
         db[key].initBanco = parseBRL(document.getElementById('init_banco').value);
-        db[key].initCaixa = parseBRL(document.getElementById('init_caixa').value);
+        db[key].initVivo = parseBRL(document.getElementById('init_vivo').value);
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
         render();
     };
 
     function render() {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        if (!db[key]) db[key] = { R: [], P: [], initBanco:0, initCaixa:0 };
+        if (!db[key]) db[key] = { R: [], P: [], initBanco:0, initVivo:0 };
         const data = db[key];
         
         document.getElementById('init_banco').value = data.initBanco > 0 ? formatBRL(data.initBanco) : '';
-        document.getElementById('init_caixa').value = data.initCaixa > 0 ? formatBRL(data.initCaixa) : '';
+        document.getElementById('init_vivo').value = data.initVivo > 0 ? formatBRL(data.initVivo) : '';
 
         ['listR_pend', 'listR_conf', 'listP_pend', 'listP_conf'].forEach(id => document.getElementById(id).innerHTML = '');
-        let tr=0, tp=0, sc=data.initCaixa || 0, sb=data.initBanco || 0;
+        let tr=0, tp=0, sv=data.initVivo || 0, sb=data.initBanco || 0;
 
         const row = (it, type) => `
             <div class="card-item flex items-center justify-between p-3 ${it.ok ? 'done' : ''}">
                 <div class="flex items-center gap-3">
                     <span class="badge-day">${String(it.dia).padStart(2,'0')}</span>
                     <div><p class="text-[11px] font-bold text-slate-700 uppercase leading-none">${it.desc}</p>
-                    <p class="text-[9px] font-black text-slate-400 uppercase mt-1">${it.conta === 'banco' ? 'Inter' : 'Caixa'}</p></div>
+                    <p class="text-[9px] font-black text-slate-400 uppercase mt-1">${it.conta === 'banco' ? 'Banco Inter' : 'Dinheiro Vivo'}</p></div>
                 </div>
                 <div class="flex items-center gap-3">
                     <span class="text-xs font-black ${type==='R'?'text-emerald-600':'text-rose-600'}">${formatBRL(it.valor)}</span>
@@ -250,19 +243,19 @@
             </div>`;
 
         data.R.sort((a,b)=>a.dia-b.dia).forEach(it => {
-            tr += it.valor; if(it.ok) (it.conta==='caixa'?sc+=it.valor:sb+=it.valor);
+            tr += it.valor; if(it.ok) (it.conta==='vivo'?sv+=it.valor:sb+=it.valor);
             if(currentFilter === 'all' || it.conta === currentFilter) document.getElementById(it.ok?'listR_conf':'listR_pend').innerHTML += row(it, 'R');
         });
         data.P.sort((a,b)=>a.dia-b.dia).forEach(it => {
-            tp += it.valor; if(it.ok) (it.conta==='caixa'?sc-=it.valor:sb-=it.valor);
+            tp += it.valor; if(it.ok) (it.conta==='vivo'?sv-=it.valor:sb-=it.valor);
             if(currentFilter === 'all' || it.conta === currentFilter) document.getElementById(it.ok?'listP_conf':'listP_pend').innerHTML += row(it, 'P');
         });
 
         document.getElementById('totalR').innerText = formatBRL(tr);
         document.getElementById('totalP').innerText = formatBRL(tp);
         document.getElementById('labelBanco').innerText = formatBRL(sb);
-        document.getElementById('labelCaixa').innerText = formatBRL(sc);
-        document.getElementById('totalSaldo').innerText = formatBRL((data.initBanco + data.initCaixa + tr) - tp);
+        document.getElementById('labelVivo').innerText = formatBRL(sv);
+        document.getElementById('totalSaldo').innerText = formatBRL((data.initBanco + data.initVivo + tr) - tp);
         lucide.createIcons();
     }
 
@@ -276,7 +269,7 @@
     async function add(type) {
         const d = document.getElementById('f_desc').value.toUpperCase(), v = parseBRL(document.getElementById('f_valor').value), dia = parseInt(document.getElementById('f_dia').value) || 1, key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         if(!d || v <= 0) return;
-        if (!db[key]) db[key] = { R: [], P: [], initBanco:0, initCaixa:0 };
+        if (!db[key]) db[key] = { R: [], P: [], initBanco:0, initVivo:0 };
         db[key][type].push({ id: Date.now(), dia, desc: d, valor: v, ok: false, conta: document.getElementById('f_conta').value });
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
         document.getElementById('f_desc').value = ''; document.getElementById('f_valor').value = ''; render();
