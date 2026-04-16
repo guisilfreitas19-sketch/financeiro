@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro v2.5 - Otimizado</title>
+    <title>Financeiro v2.6 - Edição no Local</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
@@ -14,8 +14,8 @@
         .card-item { background: white; border: 1px solid #e2e8f0; border-radius: 14px; margin-bottom: 8px; transition: all 0.2s; }
         .badge-day { background: #f1f5f9; color: #0f172a; font-family: 'JetBrains Mono', monospace; padding: 2px 8px; border-radius: 6px; font-weight: 800; }
         .done { opacity: 0.5; filter: grayscale(0.8); }
-        .saldo-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; transition: all 0.3s; }
-        .editing-mode { border: 2px solid #3b82f6 !important; background: rgba(59, 130, 246, 0.05) !important; }
+        .saldo-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; }
+        .edit-inline-input { border: 1px solid #3b82f6; border-radius: 6px; padding: 2px 6px; font-size: 11px; font-weight: bold; width: 100%; text-transform: uppercase; }
         @media (min-width: 1024px) { .main-container { height: 100vh; overflow: hidden; } .scroll-column { height: calc(100vh - 180px); overflow-y: auto; padding-right: 8px; } }
     </style>
 </head>
@@ -25,15 +25,13 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
         
         <aside class="lg:col-span-3 flex flex-col h-full">
-            <div id="sidebar-main" class="sidebar-dark p-6 flex-1 flex flex-col shadow-2xl transition-all">
+            <div class="sidebar-dark p-6 flex-1 flex flex-col shadow-2xl">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="bg-blue-600 p-2 rounded-lg"><i data-lucide="wallet" class="text-white w-5 h-5"></i></div>
-                    <h1 class="text-lg font-black tracking-tighter">FINANCEIRO <span class="text-blue-500 text-sm">v2.5</span></h1>
+                    <h1 class="text-lg font-black tracking-tighter italic">FINANCEIRO <span class="text-blue-500 text-sm">v2.6</span></h1>
                 </div>
 
-                <div id="form-container" class="space-y-4">
-                    <input type="hidden" id="edit_id">
-                    <input type="hidden" id="edit_type">
+                <div class="space-y-4">
                     <div class="grid grid-cols-2 gap-2">
                         <input type="number" id="f_dia" class="input-premium text-center" placeholder="Dia">
                         <input type="number" id="f_parc" value="1" class="input-premium text-center">
@@ -45,40 +43,33 @@
                     </select>
                     <input type="text" id="f_valor" class="input-premium w-full text-xl font-black text-blue-400 text-center" placeholder="R$ 0,00">
                     
-                    <div id="btns-normal" class="grid grid-cols-2 gap-2">
-                        <button id="btnAddR" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl">ENTRADA</button>
-                        <button id="btnAddP" class="bg-slate-700 hover:bg-slate-600 text-white font-black py-3 rounded-xl">SAÍDA</button>
-                    </div>
-                    <div id="btns-edit" class="hidden flex flex-col gap-2">
-                        <button id="btnSaveEdit" class="bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-xl">SALVAR ALTERAÇÃO</button>
-                        <button onclick="cancelEdit()" class="text-[10px] text-slate-400 font-bold uppercase underline">Cancelar Edição</button>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="btnAddR" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl transition-all">ENTRADA</button>
+                        <button id="btnAddP" class="bg-slate-700 hover:bg-slate-600 text-white font-black py-3 rounded-xl transition-all">SAÍDA</button>
                     </div>
                 </div>
 
                 <div class="mt-8 space-y-3">
-                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Saldos por Conta</p>
                     <div class="saldo-card flex justify-between items-center border-l-4 border-l-blue-500">
                         <div>
                             <p class="text-[9px] font-bold text-slate-400 uppercase">Banco Inter</p>
                             <h4 id="labelBanco" class="text-lg font-black text-white">R$ 0,00</h4>
                         </div>
-                        <i data-lucide="landmark" class="text-slate-700 w-5 h-5"></i>
                     </div>
                     <div class="saldo-card flex justify-between items-center border-l-4 border-l-emerald-500">
                         <div>
                             <p class="text-[9px] font-bold text-slate-400 uppercase">Dinheiro Vivo</p>
                             <h4 id="labelCaixa" class="text-lg font-black text-white">R$ 0,00</h4>
                         </div>
-                        <i data-lucide="banknote" class="text-slate-700 w-5 h-5"></i>
                     </div>
                 </div>
 
                 <div class="mt-auto pt-6 border-t border-slate-800">
-                    <div class="flex items-center gap-2 mb-4">
+                    <div class="flex items-center gap-2 mb-2">
                         <select id="f_mes" class="bg-transparent text-[10px] font-bold uppercase outline-none text-slate-500"></select>
                         <select id="f_ano" class="bg-transparent text-[10px] font-bold outline-none text-slate-500"></select>
                     </div>
-                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Total Projetado</p>
+                    <p class="text-[10px] font-black text-slate-500 uppercase">Total Projetado</p>
                     <h2 id="totalSaldo" class="text-2xl font-black text-white">R$ 0,00</h2>
                 </div>
             </div>
@@ -119,6 +110,7 @@
     const app = initializeApp(firebaseConfig);
     const db_fire = getFirestore(app);
     let db = {};
+    let editingId = null;
 
     const formatBRL = (v) => Number(v || 0).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     const parseBRL = (t) => parseFloat(String(t || '').replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
@@ -140,7 +132,6 @@
         document.getElementById('f_valor').oninput = (e) => mask(e.target);
         document.getElementById('btnAddR').onclick = () => add('R');
         document.getElementById('btnAddP').onclick = () => add('P');
-        document.getElementById('btnSaveEdit').onclick = saveEdit;
         const s = await getDocs(collection(db_fire, "financeiro"));
         s.forEach(d => db[d.id] = d.data());
         render();
@@ -153,22 +144,44 @@
         ['listR_pend', 'listR_conf', 'listP_pend', 'listP_conf'].forEach(id => document.getElementById(id).innerHTML = '');
         let tr=0, tp=0, sc=0, sb=0;
 
-        const row = (it, type) => `
-            <div class="card-item flex items-center justify-between p-3 ${it.ok ? 'done' : ''}">
-                <div class="flex items-center gap-3">
+        const row = (it, type) => {
+            const isEditing = editingId === it.id;
+            return `
+            <div class="card-item flex items-center justify-between p-3 ${it.ok ? 'done' : ''} ${isEditing ? 'ring-2 ring-blue-400' : ''}">
+                <div class="flex items-center gap-3 w-full">
                     <span class="badge-day">${String(it.dia).padStart(2,'0')}</span>
-                    <div>
-                        <p class="text-[11px] font-bold uppercase text-slate-700 leading-none">${it.desc}</p>
-                        <p class="text-[9px] font-black text-slate-400 uppercase mt-1.5">${it.conta === 'banco' ? 'Inter' : 'Caixa'}</p>
+                    <div class="flex-1">
+                        ${isEditing ? 
+                            `<input type="text" id="edit_desc_${it.id}" class="edit-inline-input" value="${it.desc}">` : 
+                            `<p class="text-[11px] font-bold uppercase text-slate-700 leading-none">${it.desc}</p>`
+                        }
+                        <div class="flex items-center gap-2 mt-1">
+                            ${isEditing ? 
+                                `<select id="edit_conta_${it.id}" class="text-[9px] border rounded font-black uppercase text-blue-500">
+                                    <option value="banco" ${it.conta==='banco'?'selected':''}>Inter</option>
+                                    <option value="caixa" ${it.conta==='caixa'?'selected':''}>Caixa</option>
+                                </select>` : 
+                                `<p class="text-[9px] font-black text-slate-400 uppercase">${it.conta === 'banco' ? 'Inter' : 'Caixa'}</p>`
+                            }
+                        </div>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="text-xs font-black ${type==='R'?'text-emerald-600':'text-rose-600'} mr-2">${formatBRL(it.valor)}</span>
-                    <button onclick="window.editItem('${type}', ${it.id})" class="p-2 text-slate-300 hover:text-blue-500 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+                    ${isEditing ? 
+                        `<input type="text" id="edit_valor_${it.id}" class="edit-inline-input text-right w-24" value="${formatBRL(it.valor)}" oninput="window.mLocal(this)">` : 
+                        `<span class="text-xs font-black ${type==='R'?'text-emerald-600':'text-rose-600'} mr-2">${formatBRL(it.valor)}</span>`
+                    }
+                    
+                    ${isEditing ? 
+                        `<button onclick="window.saveLocal('${type}', ${it.id})" class="p-2 text-emerald-500"><i data-lucide="check-circle-2" class="w-5 h-5"></i></button>` : 
+                        `<button onclick="window.setEditing(${it.id})" class="p-2 text-slate-300 hover:text-blue-500"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>`
+                    }
+                    
                     <input type="checkbox" ${it.ok?'checked':''} onchange="window.tk('${type}', ${it.id})" class="w-5 h-5 accent-blue-600 cursor-pointer">
-                    <button onclick="window.del('${type}', ${it.id})" class="p-2 text-slate-200 hover:text-rose-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                    <button onclick="window.del('${type}', ${it.id})" class="p-2 text-slate-200 hover:text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                 </div>
             </div>`;
+        };
 
         data.R.sort((a,b)=>a.dia-b.dia).forEach(it => {
             tr += it.valor; if(it.ok) (it.conta==='caixa'?sc+=it.valor:sb+=it.valor);
@@ -187,50 +200,27 @@
         lucide.createIcons();
     }
 
+    window.setEditing = (id) => { editingId = id; render(); };
+    window.mLocal = (i) => mask(i);
+
+    window.saveLocal = async (type, id) => {
+        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
+        const it = db[key][type].find(x=>x.id===id);
+        it.desc = document.getElementById(`edit_desc_${id}`).value.toUpperCase();
+        it.conta = document.getElementById(`edit_conta_${id}`).value;
+        it.valor = parseBRL(document.getElementById(`edit_valor_${id}`).value);
+        await setDoc(doc(db_fire, "financeiro", key), db[key]);
+        editingId = null; render();
+    };
+
     async function add(type) {
         const d = document.getElementById('f_desc').value.toUpperCase(), v = parseBRL(document.getElementById('f_valor').value), dia = parseInt(document.getElementById('f_dia').value) || 1, key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         if(!d || v <= 0) return;
         if (!db[key]) db[key] = { R: [], P: [] };
         db[key][type].push({ id: Date.now(), dia, desc: d, valor: v, ok: false, conta: document.getElementById('f_conta').value });
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
-        document.getElementById('f_desc').value = ''; document.getElementById('f_valor').value = '';
-        render();
+        document.getElementById('f_desc').value = ''; document.getElementById('f_valor').value = ''; render();
     }
-
-    window.editItem = (type, id) => {
-        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const it = db[key][type].find(x=>x.id===id);
-        document.getElementById('edit_id').value = id;
-        document.getElementById('edit_type').value = type;
-        document.getElementById('f_dia').value = it.dia;
-        document.getElementById('f_desc').value = it.desc;
-        document.getElementById('f_conta').value = it.conta;
-        document.getElementById('f_valor').value = formatBRL(it.valor);
-        document.getElementById('btns-normal').classList.add('hidden');
-        document.getElementById('btns-edit').classList.remove('hidden');
-        document.getElementById('sidebar-main').classList.add('editing-mode');
-    };
-
-    async function saveEdit() {
-        const id = parseInt(document.getElementById('edit_id').value), type = document.getElementById('edit_type').value, key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const it = db[key][type].find(x=>x.id===id);
-        if(it) {
-            it.dia = parseInt(document.getElementById('f_dia').value) || 1;
-            it.desc = document.getElementById('f_desc').value.toUpperCase();
-            it.conta = document.getElementById('f_conta').value;
-            it.valor = parseBRL(document.getElementById('f_valor').value);
-            await setDoc(doc(db_fire, "financeiro", key), db[key]);
-        }
-        window.cancelEdit(); render();
-    }
-
-    window.cancelEdit = () => {
-        document.getElementById('edit_id').value = '';
-        document.getElementById('f_desc').value = ''; document.getElementById('f_valor').value = '';
-        document.getElementById('btns-normal').classList.remove('hidden');
-        document.getElementById('btns-edit').classList.add('hidden');
-        document.getElementById('sidebar-main').classList.remove('editing-mode');
-    };
 
     window.tk = async (type, id) => {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
@@ -239,7 +229,7 @@
     };
 
     window.del = async (type, id) => {
-        if(!confirm("Deseja excluir este lançamento?")) return;
+        if(!confirm("Excluir lançamento?")) return;
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         db[key][type] = db[key][type].filter(x=>x.id!==id);
         await setDoc(doc(db_fire, "financeiro", key), db[key]); render();
