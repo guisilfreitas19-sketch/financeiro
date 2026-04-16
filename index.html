@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro v2.9 - Edição Completa</title>
+    <title>Financeiro v3.0 - Saldo Inicial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
@@ -11,19 +11,15 @@
         body { background-color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; color: #0f172a; }
         .sidebar-dark { background: #0f172a; color: white; border-radius: 24px; }
         .input-premium { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; padding: 10px; font-weight: 600; font-size: 13px; }
+        .input-init { background: rgba(255, 255, 255, 0.03); border: none; color: #94a3b8; font-size: 11px; font-weight: 700; width: 80px; text-align: right; outline: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .card-item { background: white; border: 1px solid #e2e8f0; border-radius: 14px; margin-bottom: 8px; transition: all 0.2s; }
         .badge-day { background: #f1f5f9; color: #0f172a; font-family: 'JetBrains Mono', monospace; padding: 2px 8px; border-radius: 6px; font-weight: 800; min-width: 35px; text-align: center; }
         .done { opacity: 0.5; filter: grayscale(0.8); }
         .saldo-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px; }
-        
-        /* Estilo de Edição Limpa */
         .edit-mode-input { border: none; background: transparent; font-weight: 700; text-transform: uppercase; color: #1e293b; width: 100%; outline: none; border-bottom: 1px dashed #3b82f6; }
         .edit-mode-val { border: none; background: transparent; font-weight: 900; color: inherit; width: 90px; text-align: right; outline: none; border-bottom: 1px dashed #3b82f6; }
-        .edit-mode-day { border: none; background: #dbeafe; font-weight: 800; color: #1e40af; width: 35px; text-align: center; border-radius: 4px; outline: none; }
-        
         .filter-btn { padding: 6px 16px; border-radius: 10px; font-size: 10px; font-weight: 800; text-transform: uppercase; transition: all 0.2s; border: 1px solid #e2e8f0; background: white; color: #64748b; }
         .filter-btn.active { background: #0f172a; color: white; border-color: #0f172a; }
-        
         @media (min-width: 1024px) { .main-container { height: 100vh; overflow: hidden; } .scroll-column { height: calc(100vh - 240px); overflow-y: auto; padding-right: 8px; } }
     </style>
 </head>
@@ -37,14 +33,12 @@
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
                         <div class="bg-blue-600 p-2 rounded-lg"><i data-lucide="wallet" class="text-white w-5 h-5"></i></div>
-                        <h1 class="text-lg font-black tracking-tighter italic">FINANCEIRO <span class="text-blue-500 text-sm">v2.9</span></h1>
+                        <h1 class="text-lg font-black tracking-tighter italic">FINANCEIRO <span class="text-blue-500 text-sm">v3.0</span></h1>
                     </div>
-                    <button onclick="window.showTransfer()" class="bg-slate-800 p-2 rounded-lg hover:bg-slate-700 text-blue-400" title="Transferência">
-                        <i data-lucide="arrow-left-right" class="w-4 h-4"></i>
-                    </button>
+                    <button onclick="window.showTransfer()" class="bg-slate-800 p-2 rounded-lg hover:bg-slate-700 text-blue-400"><i data-lucide="arrow-left-right" class="w-4 h-4"></i></button>
                 </div>
 
-                <div class="space-y-3">
+                <div class="space-y-3 mb-6">
                     <div class="grid grid-cols-2 gap-2">
                         <input type="number" id="f_dia" class="input-premium text-center" placeholder="Dia">
                         <input type="number" id="f_parc" value="1" class="input-premium text-center">
@@ -56,19 +50,25 @@
                     </select>
                     <input type="text" id="f_valor" class="input-premium w-full text-xl font-black text-blue-400 text-center" placeholder="R$ 0,00">
                     <div class="grid grid-cols-2 gap-2">
-                        <button id="btnAddR" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl shadow-lg">ENTRADA</button>
-                        <button id="btnAddP" class="bg-slate-700 hover:bg-slate-600 text-white font-black py-3 rounded-xl shadow-lg">SAÍDA</button>
+                        <button id="btnAddR" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl">ENTRADA</button>
+                        <button id="btnAddP" class="bg-slate-700 hover:bg-slate-600 text-white font-black py-3 rounded-xl">SAÍDA</button>
                     </div>
                 </div>
 
-                <div class="mt-8 space-y-3">
-                    <div class="saldo-card flex justify-between items-center border-l-4 border-l-blue-500">
-                        <div><p class="text-[9px] font-bold text-slate-400 uppercase">Banco Inter</p><h4 id="labelBanco" class="text-lg font-black text-white">R$ 0,00</h4></div>
-                        <i data-lucide="landmark" class="text-slate-700 w-4 h-4"></i>
+                <div class="space-y-3">
+                    <div class="saldo-card border-l-4 border-l-blue-500">
+                        <div class="flex justify-between items-start mb-1">
+                            <p class="text-[9px] font-bold text-slate-400 uppercase">Banco Inter</p>
+                            <input type="text" id="init_banco" class="input-init" placeholder="Início R$ 0" onblur="window.updateInit()">
+                        </div>
+                        <h4 id="labelBanco" class="text-lg font-black text-white">R$ 0,00</h4>
                     </div>
-                    <div class="saldo-card flex justify-between items-center border-l-4 border-l-emerald-500">
-                        <div><p class="text-[9px] font-bold text-slate-400 uppercase">Dinheiro Vivo</p><h4 id="labelCaixa" class="text-lg font-black text-white">R$ 0,00</h4></div>
-                        <i data-lucide="banknote" class="text-slate-700 w-4 h-4"></i>
+                    <div class="saldo-card border-l-4 border-l-emerald-500">
+                        <div class="flex justify-between items-start mb-1">
+                            <p class="text-[9px] font-bold text-slate-400 uppercase">Dinheiro Vivo</p>
+                            <input type="text" id="init_caixa" class="input-init" placeholder="Início R$ 0" onblur="window.updateInit()">
+                        </div>
+                        <h4 id="labelCaixa" class="text-lg font-black text-white">R$ 0,00</h4>
                     </div>
                 </div>
 
@@ -77,13 +77,13 @@
                         <select id="f_mes" class="bg-transparent text-[10px] font-bold uppercase outline-none text-slate-500"></select>
                         <select id="f_ano" class="bg-transparent text-[10px] font-bold outline-none text-slate-500"></select>
                     </div>
-                    <p class="text-[10px] font-black text-slate-500 uppercase">Saldo Projetado</p>
+                    <p class="text-[10px] font-black text-slate-500 uppercase">Saldo Final Projetado</p>
                     <h2 id="totalSaldo" class="text-2xl font-black text-white">R$ 0,00</h2>
                 </div>
             </div>
         </aside>
 
-        <main class="lg:col-span-9 flex flex-col">
+        <main class="lg:col-span-9 flex flex-col h-full">
             <div class="flex items-center gap-2 mb-6 bg-white p-2 rounded-2xl border border-slate-200 self-start shadow-sm">
                 <button onclick="window.setFilter('all')" id="btn-f-all" class="filter-btn active">Tudo</button>
                 <button onclick="window.setFilter('banco')" id="btn-f-banco" class="filter-btn">🏦 Inter</button>
@@ -144,40 +144,48 @@
         for (let y = n.getFullYear() + 1; y >= 2024; y--) aS.innerHTML += `<option value="${y}">${y}</option>`;
         mS.value = n.getMonth(); aS.value = n.getFullYear();
         mS.onchange = render; aS.onchange = render;
+        
         document.getElementById('f_valor').oninput = (e) => mask(e.target);
+        document.getElementById('init_banco').oninput = (e) => mask(e.target);
+        document.getElementById('init_caixa').oninput = (e) => mask(e.target);
+        
         document.getElementById('btnAddR').onclick = () => add('R');
         document.getElementById('btnAddP').onclick = () => add('P');
+        
         const s = await getDocs(collection(db_fire, "financeiro"));
         s.forEach(d => db[d.id] = d.data());
         render();
     }
 
-    window.setFilter = (f) => {
-        currentFilter = f;
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(`btn-f-${f}`).classList.add('active');
+    window.updateInit = async () => {
+        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
+        if(!db[key]) db[key] = { R:[], P:[], initBanco:0, initCaixa:0 };
+        db[key].initBanco = parseBRL(document.getElementById('init_banco').value);
+        db[key].initCaixa = parseBRL(document.getElementById('init_caixa').value);
+        await setDoc(doc(db_fire, "financeiro", key), db[key]);
         render();
     };
 
     function render() {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        if (!db[key]) db[key] = { R: [], P: [] };
+        if (!db[key]) db[key] = { R: [], P: [], initBanco:0, initCaixa:0 };
         const data = db[key];
+        
+        document.getElementById('init_banco').value = data.initBanco > 0 ? formatBRL(data.initBanco) : '';
+        document.getElementById('init_caixa').value = data.initCaixa > 0 ? formatBRL(data.initCaixa) : '';
+
         ['listR_pend', 'listR_conf', 'listP_pend', 'listP_conf'].forEach(id => document.getElementById(id).innerHTML = '');
-        let tr=0, tp=0, sc=0, sb=0;
+        let tr=0, tp=0, sc=data.initCaixa || 0, sb=data.initBanco || 0;
 
         const row = (it, type) => {
             const isEd = editingId === it.id;
             return `
             <div class="card-item flex items-center justify-between p-3 ${it.ok ? 'done' : ''}">
                 <div class="flex items-center gap-3 flex-1">
-                    ${isEd ? 
-                        `<input type="number" id="ed_dia_${it.id}" class="edit-mode-day" value="${it.dia}">` : 
-                        `<span class="badge-day">${String(it.dia).padStart(2,'0')}</span>`
-                    }
+                    <span class="badge-day">${String(it.dia).padStart(2,'0')}</span>
                     <div class="flex-1">
                         ${isEd ? `<input type="text" id="ed_d_${it.id}" class="edit-mode-input" value="${it.desc}">` : `<p class="text-[11px] font-bold text-slate-700 leading-none uppercase">${it.desc}</p>`}
-                        <div class="mt-1">${isEd ? `<select id="ed_c_${it.id}" class="text-[9px] font-black uppercase text-blue-500 bg-transparent"><option value="banco" ${it.conta==='banco'?'selected':''}>Inter</option><option value="caixa" ${it.conta==='caixa'?'selected':''}>Caixa</option></select>` : `<p class="text-[9px] font-black text-slate-400 uppercase">${it.conta === 'banco' ? 'Inter' : 'Caixa'}</p>`}</div>
+                        <div class="mt-1"><p class="text-[9px] font-black text-slate-400 uppercase">${it.conta === 'banco' ? 'Inter' : 'Caixa'}</p></div>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
@@ -202,20 +210,25 @@
 
         document.getElementById('totalR').innerText = formatBRL(tr);
         document.getElementById('totalP').innerText = formatBRL(tp);
-        document.getElementById('totalSaldo').innerText = formatBRL(tr - tp);
+        document.getElementById('totalSaldo').innerText = formatBRL((data.initBanco + data.initCaixa + tr) - tp);
         document.getElementById('labelBanco').innerText = formatBRL(sb);
         document.getElementById('labelCaixa').innerText = formatBRL(sc);
         lucide.createIcons();
     }
+
+    window.setFilter = (f) => {
+        currentFilter = f;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`btn-f-${f}`).classList.add('active');
+        render();
+    };
 
     window.setEd = (id) => { editingId = id; render(); };
     window.mLoc = (i) => mask(i);
     window.saveLoc = async (type, id) => {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         const it = db[key][type].find(x=>x.id===id);
-        it.dia = parseInt(document.getElementById(`ed_dia_${id}`).value) || it.dia;
         it.desc = document.getElementById(`ed_d_${id}`).value.toUpperCase();
-        it.conta = document.getElementById(`ed_c_${id}`).value;
         it.valor = parseBRL(document.getElementById(`ed_v_${id}`).value);
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
         editingId = null; render();
@@ -224,7 +237,7 @@
     async function add(type) {
         const d = document.getElementById('f_desc').value.toUpperCase(), v = parseBRL(document.getElementById('f_valor').value), dia = parseInt(document.getElementById('f_dia').value) || 1, key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         if(!d || v <= 0) return;
-        if (!db[key]) db[key] = { R: [], P: [] };
+        if (!db[key]) db[key] = { R: [], P: [], initBanco:0, initCaixa:0 };
         db[key][type].push({ id: Date.now(), dia, desc: d, valor: v, ok: false, conta: document.getElementById('f_conta').value });
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
         document.getElementById('f_desc').value = ''; document.getElementById('f_valor').value = ''; render();
