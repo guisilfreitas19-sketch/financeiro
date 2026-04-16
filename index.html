@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro v3.0 - Saldo Inicial</title>
+    <title>Financeiro v3.1 - Ajuste de Saldo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
@@ -16,8 +16,6 @@
         .badge-day { background: #f1f5f9; color: #0f172a; font-family: 'JetBrains Mono', monospace; padding: 2px 8px; border-radius: 6px; font-weight: 800; min-width: 35px; text-align: center; }
         .done { opacity: 0.5; filter: grayscale(0.8); }
         .saldo-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px; }
-        .edit-mode-input { border: none; background: transparent; font-weight: 700; text-transform: uppercase; color: #1e293b; width: 100%; outline: none; border-bottom: 1px dashed #3b82f6; }
-        .edit-mode-val { border: none; background: transparent; font-weight: 900; color: inherit; width: 90px; text-align: right; outline: none; border-bottom: 1px dashed #3b82f6; }
         .filter-btn { padding: 6px 16px; border-radius: 10px; font-size: 10px; font-weight: 800; text-transform: uppercase; transition: all 0.2s; border: 1px solid #e2e8f0; background: white; color: #64748b; }
         .filter-btn.active { background: #0f172a; color: white; border-color: #0f172a; }
         @media (min-width: 1024px) { .main-container { height: 100vh; overflow: hidden; } .scroll-column { height: calc(100vh - 240px); overflow-y: auto; padding-right: 8px; } }
@@ -33,7 +31,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
                         <div class="bg-blue-600 p-2 rounded-lg"><i data-lucide="wallet" class="text-white w-5 h-5"></i></div>
-                        <h1 class="text-lg font-black tracking-tighter italic">FINANCEIRO <span class="text-blue-500 text-sm">v3.0</span></h1>
+                        <h1 class="text-lg font-black tracking-tighter italic">FINANCEIRO <span class="text-blue-500 text-sm">v3.1</span></h1>
                     </div>
                     <button onclick="window.showTransfer()" class="bg-slate-800 p-2 rounded-lg hover:bg-slate-700 text-blue-400"><i data-lucide="arrow-left-right" class="w-4 h-4"></i></button>
                 </div>
@@ -59,14 +57,20 @@
                     <div class="saldo-card border-l-4 border-l-blue-500">
                         <div class="flex justify-between items-start mb-1">
                             <p class="text-[9px] font-bold text-slate-400 uppercase">Banco Inter</p>
-                            <input type="text" id="init_banco" class="input-init" placeholder="Início R$ 0" onblur="window.updateInit()">
+                            <div class="flex items-center gap-2">
+                                <button onclick="window.showReajuste('banco')" class="text-slate-500 hover:text-white"><i data-lucide="wrench" class="w-3 h-3"></i></button>
+                                <input type="text" id="init_banco" class="input-init" placeholder="Início R$ 0" onblur="window.updateInit()">
+                            </div>
                         </div>
                         <h4 id="labelBanco" class="text-lg font-black text-white">R$ 0,00</h4>
                     </div>
                     <div class="saldo-card border-l-4 border-l-emerald-500">
                         <div class="flex justify-between items-start mb-1">
                             <p class="text-[9px] font-bold text-slate-400 uppercase">Dinheiro Vivo</p>
-                            <input type="text" id="init_caixa" class="input-init" placeholder="Início R$ 0" onblur="window.updateInit()">
+                            <div class="flex items-center gap-2">
+                                <button onclick="window.showReajuste('caixa')" class="text-slate-500 hover:text-white"><i data-lucide="wrench" class="w-3 h-3"></i></button>
+                                <input type="text" id="init_caixa" class="input-init" placeholder="Início R$ 0" onblur="window.updateInit()">
+                            </div>
                         </div>
                         <h4 id="labelCaixa" class="text-lg font-black text-white">R$ 0,00</h4>
                     </div>
@@ -77,7 +81,6 @@
                         <select id="f_mes" class="bg-transparent text-[10px] font-bold uppercase outline-none text-slate-500"></select>
                         <select id="f_ano" class="bg-transparent text-[10px] font-bold outline-none text-slate-500"></select>
                     </div>
-                    <p class="text-[10px] font-black text-slate-500 uppercase">Saldo Final Projetado</p>
                     <h2 id="totalSaldo" class="text-2xl font-black text-white">R$ 0,00</h2>
                 </div>
             </div>
@@ -92,14 +95,14 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
                 <div>
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 mb-4 flex justify-between items-center shadow-sm">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 mb-4 flex justify-between items-center">
                         <span class="text-[10px] font-black text-slate-400 uppercase">Receitas</span>
                         <h3 id="totalR" class="text-xl font-black text-emerald-600">R$ 0,00</h3>
                     </div>
                     <div class="scroll-column"><div id="listR_pend"></div><div id="listR_conf"></div></div>
                 </div>
                 <div>
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 mb-4 flex justify-between items-center shadow-sm">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 mb-4 flex justify-between items-center">
                         <span class="text-[10px] font-black text-slate-400 uppercase">Despesas</span>
                         <h3 id="totalP" class="text-xl font-black text-rose-600">R$ 0,00</h3>
                     </div>
@@ -125,7 +128,7 @@
 
     const app = initializeApp(firebaseConfig);
     const db_fire = getFirestore(app);
-    let db = {}, editingId = null, currentFilter = 'all';
+    let db = {}, currentFilter = 'all';
 
     const formatBRL = (v) => Number(v || 0).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     const parseBRL = (t) => parseFloat(String(t || '').replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
@@ -145,10 +148,7 @@
         mS.value = n.getMonth(); aS.value = n.getFullYear();
         mS.onchange = render; aS.onchange = render;
         
-        document.getElementById('f_valor').oninput = (e) => mask(e.target);
-        document.getElementById('init_banco').oninput = (e) => mask(e.target);
-        document.getElementById('init_caixa').oninput = (e) => mask(e.target);
-        
+        document.querySelectorAll('input').forEach(i => { if(i.id.includes('valor') || i.id.includes('init')) i.oninput = () => mask(i); });
         document.getElementById('btnAddR').onclick = () => add('R');
         document.getElementById('btnAddP').onclick = () => add('P');
         
@@ -156,6 +156,36 @@
         s.forEach(d => db[d.id] = d.data());
         render();
     }
+
+    window.showReajuste = async (conta) => {
+        const extrato = prompt(`Qual o saldo ATUAL que aparece no seu ${conta === 'banco' ? 'Inter' : 'Caixa'}?`);
+        if(!extrato) return;
+        
+        const valorReal = parseBRL(extrato);
+        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
+        const data = db[key];
+        
+        // Calcular saldo atual do sistema
+        let saldoSistema = (conta === 'banco' ? data.initBanco : data.initCaixa) || 0;
+        data.R.forEach(it => { if(it.ok && it.conta === conta) saldoSistema += it.valor; });
+        data.P.forEach(it => { if(it.ok && it.conta === conta) saldoSistema -= it.valor; });
+
+        const diff = valorReal - saldoSistema;
+        if(diff === 0) return alert("O saldo já está correto!");
+
+        const tipo = diff > 0 ? 'R' : 'P';
+        data[tipo].push({
+            id: Date.now(),
+            dia: new Date().getDate(),
+            desc: "AJUSTE DE SALDO",
+            valor: Math.abs(diff),
+            ok: true,
+            conta: conta
+        });
+
+        await setDoc(doc(db_fire, "financeiro", key), data);
+        render();
+    };
 
     window.updateInit = async () => {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
@@ -177,27 +207,23 @@
         ['listR_pend', 'listR_conf', 'listP_pend', 'listP_conf'].forEach(id => document.getElementById(id).innerHTML = '');
         let tr=0, tp=0, sc=data.initCaixa || 0, sb=data.initBanco || 0;
 
-        const row = (it, type) => {
-            const isEd = editingId === it.id;
-            return `
+        const row = (it, type) => `
             <div class="card-item flex items-center justify-between p-3 ${it.ok ? 'done' : ''}">
-                <div class="flex items-center gap-3 flex-1">
+                <div class="flex items-center gap-3">
                     <span class="badge-day">${String(it.dia).padStart(2,'0')}</span>
-                    <div class="flex-1">
-                        ${isEd ? `<input type="text" id="ed_d_${it.id}" class="edit-mode-input" value="${it.desc}">` : `<p class="text-[11px] font-bold text-slate-700 leading-none uppercase">${it.desc}</p>`}
-                        <div class="mt-1"><p class="text-[9px] font-black text-slate-400 uppercase">${it.conta === 'banco' ? 'Inter' : 'Caixa'}</p></div>
+                    <div>
+                        <p class="text-[11px] font-bold text-slate-700 leading-none uppercase">${it.desc}</p>
+                        <p class="text-[9px] font-black text-slate-400 uppercase mt-1">${it.conta === 'banco' ? 'Inter' : 'Caixa'}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    ${isEd ? `<input type="text" id="ed_v_${it.id}" class="edit-mode-val" value="${formatBRL(it.valor)}" oninput="window.mLoc(this)">` : `<span class="text-xs font-black ${type==='R'?'text-emerald-600':'text-rose-600'}">${formatBRL(it.valor)}</span>`}
+                    <span class="text-xs font-black ${type==='R'?'text-emerald-600':'text-rose-600'}">${formatBRL(it.valor)}</span>
                     <div class="flex gap-1">
-                        ${isEd ? `<button onclick="window.saveLoc('${type}', ${it.id})" class="p-1 text-emerald-500"><i data-lucide="check-circle" class="w-4 h-4"></i></button>` : `<button onclick="window.setEd(${it.id})" class="p-1 text-slate-300 hover:text-blue-500"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>`}
-                        <input type="checkbox" ${it.ok?'checked':''} onchange="window.tk('${type}', ${it.id})" class="w-4 h-4 accent-blue-600 cursor-pointer">
+                        <input type="checkbox" ${it.ok?'checked':''} onchange="window.tk('${type}', ${it.id})" class="w-4 h-4 accent-blue-600">
                         <button onclick="window.del('${type}', ${it.id})" class="p-1 text-slate-200 hover:text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                     </div>
                 </div>
             </div>`;
-        };
 
         data.R.sort((a,b)=>a.dia-b.dia).forEach(it => {
             tr += it.valor; if(it.ok) (it.conta==='caixa'?sc+=it.valor:sb+=it.valor);
@@ -221,17 +247,6 @@
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(`btn-f-${f}`).classList.add('active');
         render();
-    };
-
-    window.setEd = (id) => { editingId = id; render(); };
-    window.mLoc = (i) => mask(i);
-    window.saveLoc = async (type, id) => {
-        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const it = db[key][type].find(x=>x.id===id);
-        it.desc = document.getElementById(`ed_d_${id}`).value.toUpperCase();
-        it.valor = parseBRL(document.getElementById(`ed_v_${id}`).value);
-        await setDoc(doc(db_fire, "financeiro", key), db[key]);
-        editingId = null; render();
     };
 
     async function add(type) {
