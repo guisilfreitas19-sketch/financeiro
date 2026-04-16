@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro v3.3 - Correção de Saldo</title>
+    <title>Financeiro v4.0 - Gestão Mensal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
@@ -18,7 +18,8 @@
         .saldo-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px; }
         .filter-btn { padding: 6px 16px; border-radius: 10px; font-size: 10px; font-weight: 800; text-transform: uppercase; border: 1px solid #e2e8f0; background: white; color: #64748b; }
         .filter-btn.active { background: #0f172a; color: white; border-color: #0f172a; }
-        @media (min-width: 1024px) { .main-container { height: 100vh; overflow: hidden; } .scroll-column { height: calc(100vh - 240px); overflow-y: auto; padding-right: 8px; } }
+        .month-summary { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; border-radius: 20px; padding: 20px; margin-bottom: 24px; }
+        @media (min-width: 1024px) { .main-container { height: 100vh; overflow: hidden; } .scroll-column { height: calc(100vh - 360px); overflow-y: auto; padding-right: 8px; } }
     </style>
 </head>
 <body class="p-4 lg:p-6">
@@ -31,15 +32,17 @@
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
                         <div class="bg-blue-600 p-2 rounded-lg"><i data-lucide="wallet" class="text-white w-5 h-5"></i></div>
-                        <h1 class="text-lg font-black italic">FINANCEIRO <span class="text-blue-500 text-xs">v3.3</span></h1>
+                        <h1 class="text-lg font-black italic">FINANCEIRO <span class="text-blue-500 text-xs">v4.0</span></h1>
                     </div>
-                    <button onclick="window.showTransfer()" class="bg-slate-800 p-2 rounded-lg text-blue-400"><i data-lucide="arrow-left-right" class="w-4 h-4"></i></button>
+                    <button onclick="window.showTransferPopup()" class="bg-slate-800 p-2 rounded-lg text-blue-400 hover:bg-slate-700 transition-colors">
+                        <i data-lucide="arrow-left-right" class="w-4 h-4"></i>
+                    </button>
                 </div>
 
                 <div class="space-y-3 mb-6">
                     <div class="grid grid-cols-2 gap-2">
                         <input type="number" id="f_dia" class="input-premium text-center" placeholder="Dia">
-                        <input type="number" id="f_parc" value="1" class="input-premium text-center">
+                        <input type="number" id="f_parc" value="1" class="input-premium text-center" title="Parcelas">
                     </div>
                     <input type="text" id="f_desc" class="input-premium w-full uppercase" placeholder="DESCRIÇÃO">
                     <select id="f_conta" class="input-premium w-full text-xs">
@@ -81,32 +84,41 @@
                         <select id="f_mes" class="bg-transparent text-[10px] font-bold uppercase outline-none text-slate-500"></select>
                         <select id="f_ano" class="bg-transparent text-[10px] font-bold outline-none text-slate-500"></select>
                     </div>
-                    <p class="text-[10px] font-black text-slate-500 uppercase">Projetado Final</p>
-                    <h2 id="totalSaldo" class="text-2xl font-black text-white">R$ 0,00</h2>
                 </div>
             </div>
         </aside>
 
         <main class="lg:col-span-9 flex flex-col h-full">
+            <div class="month-summary shadow-xl shadow-blue-500/10 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div>
+                    <p class="text-blue-100 text-xs font-bold uppercase tracking-widest mb-1">Saldo Projetado Final</p>
+                    <h2 id="totalSaldo" class="text-4xl font-black">R$ 0,00</h2>
+                </div>
+                <div class="flex gap-8 border-l border-white/10 pl-8">
+                    <div class="text-center">
+                        <p class="text-blue-100 text-[10px] font-bold uppercase mb-1">Total Entradas</p>
+                        <p id="totalR" class="text-xl font-black">R$ 0,00</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-blue-100 text-[10px] font-bold uppercase mb-1">Total Saídas</p>
+                        <p id="totalP" class="text-xl font-black text-blue-200">R$ 0,00</p>
+                    </div>
+                </div>
+            </div>
+
             <div class="flex items-center gap-2 mb-6 bg-white p-2 rounded-2xl border border-slate-200 self-start shadow-sm">
                 <button onclick="window.setFilter('all')" id="btn-f-all" class="filter-btn active">Tudo</button>
                 <button onclick="window.setFilter('banco')" id="btn-f-banco" class="filter-btn">🏦 Inter</button>
                 <button onclick="window.setFilter('caixa')" id="btn-f-caixa" class="filter-btn">💵 Caixa</button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
-                <div>
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 mb-4 flex justify-between items-center">
-                        <span class="text-[10px] font-black text-slate-400 uppercase">Receitas</span>
-                        <h3 id="totalR" class="text-xl font-black text-emerald-600">R$ 0,00</h3>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full overflow-hidden">
+                <div class="flex flex-col h-full">
+                    <h3 class="text-[11px] font-black text-slate-400 uppercase mb-4 px-2 tracking-tighter">Fluxo de Receitas</h3>
                     <div class="scroll-column"><div id="listR_pend"></div><div id="listR_conf"></div></div>
                 </div>
-                <div>
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 mb-4 flex justify-between items-center">
-                        <span class="text-[10px] font-black text-slate-400 uppercase">Despesas</span>
-                        <h3 id="totalP" class="text-xl font-black text-rose-600">R$ 0,00</h3>
-                    </div>
+                <div class="flex flex-col h-full">
+                    <h3 class="text-[11px] font-black text-slate-400 uppercase mb-4 px-2 tracking-tighter">Fluxo de Despesas</h3>
                     <div class="scroll-column"><div id="listP_pend"></div><div id="listP_conf"></div></div>
                 </div>
             </div>
@@ -158,36 +170,45 @@
         render();
     }
 
-    window.showReajuste = async (conta) => {
-        const extrato = prompt(`Qual o valor REAL que está na conta ${conta === 'banco' ? 'Inter' : 'Caixa'} agora?`);
-        if(!extrato) return;
+    window.showTransferPopup = async () => {
+        const valor = prompt("Valor da Transferência:");
+        if(!valor) return;
+        const v = parseBRL(valor);
+        const op = prompt("Escolha a direção:\n1 - Banco Inter para Caixa\n2 - Caixa para Banco Inter");
         
-        const valorRealDigitado = parseBRL(extrato);
+        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
+        const dia = new Date().getDate();
+        
+        if(op === '1') {
+            db[key].P.push({ id: Date.now(), dia, desc: "TRANSFERÊNCIA (SAÍDA)", valor: v, ok: true, conta: 'banco' });
+            db[key].R.push({ id: Date.now()+1, dia, desc: "TRANSFERÊNCIA (ENTRADA)", valor: v, ok: true, conta: 'caixa' });
+        } else if(op === '2') {
+            db[key].P.push({ id: Date.now(), dia, desc: "TRANSFERÊNCIA (SAÍDA)", valor: v, ok: true, conta: 'caixa' });
+            db[key].R.push({ id: Date.now()+1, dia, desc: "TRANSFERÊNCIA (ENTRADA)", valor: v, ok: true, conta: 'banco' });
+        } else {
+            return alert("Opção inválida");
+        }
+        
+        await setDoc(doc(db_fire, "financeiro", key), db[key]);
+        render();
+    };
+
+    window.showReajuste = async (conta) => {
+        const extrato = prompt(`Valor REAL atual no ${conta === 'banco' ? 'Inter' : 'Caixa'}:`);
+        if(!extrato) return;
+        const vReal = parseBRL(extrato);
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         const data = db[key];
         
-        // Calculando o saldo atual do sistema (Início + Confirmados)
-        let saldoAtualSistema = (conta === 'banco' ? data.initBanco : data.initCaixa) || 0;
-        data.R.forEach(it => { if(it.ok && it.conta === conta) saldoAtualSistema += it.valor; });
-        data.P.forEach(it => { if(it.ok && it.conta === conta) saldoAtualSistema -= it.valor; });
+        let sSist = (conta === 'banco' ? data.initBanco : data.initCaixa) || 0;
+        data.R.forEach(it => { if(it.ok && it.conta === conta) sSist += it.valor; });
+        data.P.forEach(it => { if(it.ok && it.conta === conta) sSist -= it.valor; });
 
-        const diferenca = valorRealDigitado - saldoAtualSistema;
-        
-        if (Math.abs(diferenca) < 0.01) return alert("O saldo já está batendo!");
+        const diff = vReal - sSist;
+        if (Math.abs(diff) < 0.01) return alert("Saldo já bate!");
 
-        // Se a diferença for positiva (tenho mais no banco do que no app), vira RECEITA
-        // Se a diferença for negativa (tenho menos no banco do que no app), vira DESPESA
-        const tipo = diferenca > 0 ? 'R' : 'P';
-        
-        data[tipo].push({
-            id: Date.now(),
-            dia: new Date().getDate(),
-            desc: "AJUSTE DE SALDO",
-            valor: Math.abs(diferenca),
-            ok: true,
-            conta: conta
-        });
-
+        const tipo = diff > 0 ? 'R' : 'P';
+        data[tipo].push({ id: Date.now(), dia: new Date().getDate(), desc: "AJUSTE MANUAL", valor: Math.abs(diff), ok: true, conta: conta });
         await setDoc(doc(db_fire, "financeiro", key), data);
         render();
     };
@@ -210,16 +231,14 @@
         document.getElementById('init_caixa').value = data.initCaixa > 0 ? formatBRL(data.initCaixa) : '';
 
         ['listR_pend', 'listR_conf', 'listP_pend', 'listP_conf'].forEach(id => document.getElementById(id).innerHTML = '');
-        let tr=0, tp=0, sc_real=data.initCaixa || 0, sb_real=data.initBanco || 0;
+        let tr=0, tp=0, sc=data.initCaixa || 0, sb=data.initBanco || 0;
 
         const row = (it, type) => `
             <div class="card-item flex items-center justify-between p-3 ${it.ok ? 'done' : ''}">
                 <div class="flex items-center gap-3">
                     <span class="badge-day">${String(it.dia).padStart(2,'0')}</span>
-                    <div>
-                        <p class="text-[11px] font-bold text-slate-700 uppercase leading-none">${it.desc}</p>
-                        <p class="text-[9px] font-black text-slate-400 uppercase mt-1">${it.conta === 'banco' ? 'Inter' : 'Caixa'}</p>
-                    </div>
+                    <div><p class="text-[11px] font-bold text-slate-700 uppercase leading-none">${it.desc}</p>
+                    <p class="text-[9px] font-black text-slate-400 uppercase mt-1">${it.conta === 'banco' ? 'Inter' : 'Caixa'}</p></div>
                 </div>
                 <div class="flex items-center gap-3">
                     <span class="text-xs font-black ${type==='R'?'text-emerald-600':'text-rose-600'}">${formatBRL(it.valor)}</span>
@@ -231,20 +250,18 @@
             </div>`;
 
         data.R.sort((a,b)=>a.dia-b.dia).forEach(it => {
-            tr += it.valor; 
-            if(it.ok) (it.conta==='caixa' ? sc_real += it.valor : sb_real += it.valor);
+            tr += it.valor; if(it.ok) (it.conta==='caixa'?sc+=it.valor:sb+=it.valor);
             if(currentFilter === 'all' || it.conta === currentFilter) document.getElementById(it.ok?'listR_conf':'listR_pend').innerHTML += row(it, 'R');
         });
         data.P.sort((a,b)=>a.dia-b.dia).forEach(it => {
-            tp += it.valor; 
-            if(it.ok) (it.conta==='caixa' ? sc_real -= it.valor : sb_real -= it.valor);
+            tp += it.valor; if(it.ok) (it.conta==='caixa'?sc-=it.valor:sb-=it.valor);
             if(currentFilter === 'all' || it.conta === currentFilter) document.getElementById(it.ok?'listP_conf':'listP_pend').innerHTML += row(it, 'P');
         });
 
         document.getElementById('totalR').innerText = formatBRL(tr);
         document.getElementById('totalP').innerText = formatBRL(tp);
-        document.getElementById('labelBanco').innerText = formatBRL(sb_real);
-        document.getElementById('labelCaixa').innerText = formatBRL(sc_real);
+        document.getElementById('labelBanco').innerText = formatBRL(sb);
+        document.getElementById('labelCaixa').innerText = formatBRL(sc);
         document.getElementById('totalSaldo').innerText = formatBRL((data.initBanco + data.initCaixa + tr) - tp);
         lucide.createIcons();
     }
@@ -264,16 +281,6 @@
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
         document.getElementById('f_desc').value = ''; document.getElementById('f_valor').value = ''; render();
     }
-
-    window.showTransfer = async () => {
-        const v = prompt("Valor da Transferência:");
-        if(!v) return;
-        const val = parseBRL(v), dir = confirm("OK: INTER -> CAIXA\nCANCEL: CAIXA -> INTER");
-        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`, dia = new Date().getDate();
-        db[key].P.push({ id: Date.now(), dia, desc: "TRANSFERÊNCIA", valor: val, ok: true, conta: dir ? 'banco' : 'caixa' });
-        db[key].R.push({ id: Date.now()+1, dia, desc: "TRANSFERÊNCIA", valor: val, ok: true, conta: dir ? 'caixa' : 'banco' });
-        await setDoc(doc(db_fire, "financeiro", key), db[key]); render();
-    };
 
     window.tk = async (type, id) => {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
