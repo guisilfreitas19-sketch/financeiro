@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro v5.0 - Dashboard Fixo</title>
+    <title>Financeiro v5.1 - Fix</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
@@ -11,38 +11,31 @@
         body { background-color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; color: #0f172a; height: 100vh; overflow: hidden; }
         .sidebar-dark { background: #0f172a; color: white; border-radius: 24px; height: 100%; }
         .input-premium { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: white; padding: 8px; font-weight: 600; font-size: 12px; }
-        .input-init { background: transparent; border: none; color: #94a3b8; font-size: 10px; font-weight: 700; width: 70px; text-align: right; outline: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .card-item { background: white; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 6px; transition: all 0.2s; padding: 8px 12px; }
-        .badge-day { background: #f1f5f9; color: #0f172a; font-family: 'JetBrains Mono', monospace; padding: 1px 6px; border-radius: 4px; font-weight: 800; font-size: 11px; }
+        .card-item { background: white; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 5px; padding: 6px 10px; }
         .done { opacity: 0.4; filter: grayscale(1); }
-        .saldo-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 8px 12px; }
-        .month-summary { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; }
-        .scroll-list { height: calc(100vh - 300px); overflow-y: auto; padding-right: 4px; }
-        .scroll-list::-webkit-scrollbar { width: 4px; }
-        .scroll-list::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .month-summary { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+        .scroll-list { height: calc(100vh - 360px); overflow-y: auto; }
+        .filter-btn { padding: 4px 12px; border-radius: 8px; font-size: 9px; font-weight: 800; text-transform: uppercase; border: 1px solid #e2e8f0; background: white; color: #64748b; }
+        .filter-btn.active { background: #0f172a; color: white; border-color: #0f172a; }
+        .caixa-item { background: #f1f5f9; padding: 8px 12px; border-radius: 12px; border: 1px solid #e2e8f0; }
     </style>
 </head>
-<body class="p-4 lg:p-5">
+<body class="p-3 lg:p-4">
 
-<div class="max-w-[1650px] mx-auto h-full">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 h-full">
+<div class="max-w-[1700px] mx-auto h-full">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 h-full">
         
         <aside class="lg:col-span-3 h-full">
             <div class="sidebar-dark p-5 flex flex-col shadow-2xl">
-                <div class="flex items-center justify-between mb-5">
-                    <div class="flex items-center gap-2">
-                        <div class="bg-blue-600 p-1.5 rounded-lg"><i data-lucide="wallet" class="text-white w-4 h-4"></i></div>
-                        <h1 class="text-base font-black italic tracking-tighter text-white">FINANCEIRO <span class="text-blue-500">v5.0</span></h1>
-                    </div>
-                    <button onclick="window.showTransferPopup()" class="bg-slate-800 p-1.5 rounded-lg text-blue-400 hover:bg-slate-700">
-                        <i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i>
-                    </button>
+                <div class="flex items-center justify-between mb-4">
+                    <h1 class="text-sm font-black italic tracking-tighter text-white">METRA CLOUD <span class="text-blue-500">v5.1</span></h1>
+                    <button onclick="window.showTransferPopup()" class="bg-slate-800 p-1.5 rounded-lg text-blue-400 hover:bg-slate-700"><i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i></button>
                 </div>
 
-                <div class="space-y-2 mb-5">
+                <div class="space-y-2 mb-4">
                     <div class="grid grid-cols-2 gap-2">
                         <input type="number" id="f_dia" class="input-premium text-center" placeholder="Dia">
-                        <input type="number" id="f_parc" value="1" class="input-premium text-center" title="Parc">
+                        <input type="number" id="f_parc" value="1" class="input-premium text-center">
                     </div>
                     <input type="text" id="f_desc" class="input-premium w-full uppercase" placeholder="DESCRIÇÃO">
                     <select id="f_conta" class="input-premium w-full text-xs">
@@ -56,74 +49,61 @@
                     </div>
                 </div>
 
-                <div class="space-y-2">
-                    <div class="saldo-card border-l-4 border-l-blue-500">
-                        <div class="flex justify-between items-center mb-0.5">
-                            <span class="text-[8px] font-bold text-slate-500 uppercase italic">Banco Inter</span>
-                            <div class="flex items-center gap-1">
-                                <button onclick="window.showReajuste('banco')" class="text-slate-600 hover:text-white"><i data-lucide="wrench" class="w-2.5 h-2.5"></i></button>
-                                <input type="text" id="init_banco" class="input-init" placeholder="Início R$0" onblur="window.updateInit()">
-                            </div>
-                        </div>
-                        <h4 id="labelBanco" class="text-base font-black text-white">R$ 0,00</h4>
-                    </div>
-                    <div class="saldo-card border-l-4 border-l-emerald-500">
-                        <div class="flex justify-between items-center mb-0.5">
-                            <span class="text-[8px] font-bold text-slate-500 uppercase italic">Dinheiro Vivo</span>
-                            <div class="flex items-center gap-1">
-                                <button onclick="window.showReajuste('vivo')" class="text-slate-600 hover:text-white"><i data-lucide="wrench" class="w-2.5 h-2.5"></i></button>
-                                <input type="text" id="init_vivo" class="input-init" placeholder="Início R$0" onblur="window.updateInit()">
-                            </div>
-                        </div>
-                        <h4 id="labelVivo" class="text-base font-black text-white">R$ 0,00</h4>
-                    </div>
-                </div>
-
-                <div class="mt-auto pt-4 border-t border-slate-800 flex justify-between items-center">
+                <div class="mt-auto pt-4 border-t border-slate-800">
                     <div class="flex gap-2">
-                        <select id="f_mes" class="bg-transparent text-[10px] font-bold uppercase outline-none text-slate-500"></select>
-                        <select id="f_ano" class="bg-transparent text-[10px] font-bold outline-none text-slate-500"></select>
+                        <select id="f_mes" class="bg-transparent text-[10px] font-bold uppercase text-slate-500 outline-none"></select>
+                        <select id="f_ano" class="bg-transparent text-[10px] font-bold text-slate-500 outline-none"></select>
                     </div>
-                    <button onclick="location.reload()" class="text-slate-600 hover:text-white"><i data-lucide="refresh-cw" class="w-3 h-3"></i></button>
                 </div>
             </div>
         </aside>
 
         <main class="lg:col-span-9 flex flex-col h-full overflow-hidden">
-            <div class="month-summary shadow-lg flex justify-between items-center">
+            <div class="month-summary flex justify-between items-center shadow-md">
                 <div>
-                    <p class="text-blue-100 text-[10px] font-bold uppercase tracking-widest mb-0.5">Saldo Projetado Final</p>
+                    <p class="text-blue-100 text-[9px] font-bold uppercase tracking-widest">Saldo Projetado Final</p>
                     <h2 id="totalSaldo" class="text-3xl font-black">R$ 0,00</h2>
                 </div>
-                <div class="flex gap-10 border-l border-white/10 pl-10">
-                    <div class="text-right">
-                        <p class="text-blue-100 text-[9px] font-bold uppercase mb-0.5">Total Recebido</p>
-                        <p id="totalR" class="text-lg font-black text-emerald-300">R$ 0,00</p>
+                <div class="flex gap-8">
+                    <div class="text-right border-l border-white/10 pl-8">
+                        <p class="text-blue-100 text-[8px] font-bold uppercase">Entradas</p>
+                        <p id="totalR" class="text-base font-black text-emerald-300">R$ 0,00</p>
                     </div>
-                    <div class="text-right">
-                        <p class="text-blue-100 text-[9px] font-bold uppercase mb-0.5">Total Pago</p>
-                        <p id="totalP" class="text-lg font-black text-rose-300">R$ 0,00</p>
+                    <div class="text-right border-l border-white/10 pl-8">
+                        <p class="text-blue-100 text-[8px] font-bold uppercase">Saídas</p>
+                        <p id="totalP" class="text-base font-black text-rose-300">R$ 0,00</p>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 h-full overflow-hidden">
-                <div class="flex flex-col">
-                    <div class="flex items-center justify-between mb-3 px-1">
-                        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Fluxo de Receitas</h3>
-                        <span id="countR" class="text-[9px] font-bold bg-slate-200 px-2 py-0.5 rounded-full">0</span>
+            <div class="flex flex-col md:flex-row gap-4 mb-4">
+                <div class="bg-white p-1.5 rounded-xl border border-slate-200 flex gap-1 self-start shadow-sm">
+                    <button onclick="window.setFilter('all')" id="btn-f-all" class="filter-btn active">Tudo</button>
+                    <button onclick="window.setFilter('banco')" id="btn-f-banco" class="filter-btn">Inter</button>
+                    <button onclick="window.setFilter('vivo')" id="btn-f-vivo" class="filter-btn">Vivo</button>
+                </div>
+                <div class="flex-1 grid grid-cols-2 gap-3">
+                    <div class="caixa-item flex justify-between items-center">
+                        <span class="text-[9px] font-black text-slate-400 uppercase">Banco Inter</span>
+                        <h4 id="labelBanco" class="text-sm font-black text-slate-800">R$ 0,00</h4>
                     </div>
+                    <div class="caixa-item flex justify-between items-center">
+                        <span class="text-[9px] font-black text-slate-400 uppercase">Dinheiro Vivo</span>
+                        <h4 id="labelVivo" class="text-sm font-black text-slate-800">R$ 0,00</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full overflow-hidden">
+                <div class="flex flex-col">
+                    <h3 class="text-[9px] font-black text-slate-400 uppercase mb-2 px-1">Receitas</h3>
                     <div id="listR_wrapper" class="scroll-list">
                         <div id="listR_pend"></div>
                         <div id="listR_conf" class="mt-2 border-t border-slate-100 pt-2"></div>
                     </div>
                 </div>
-
                 <div class="flex flex-col">
-                    <div class="flex items-center justify-between mb-3 px-1">
-                        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Fluxo de Despesas</h3>
-                        <span id="countP" class="text-[9px] font-bold bg-slate-200 px-2 py-0.5 rounded-full">0</span>
-                    </div>
+                    <h3 class="text-[9px] font-black text-slate-400 uppercase mb-2 px-1">Despesas</h3>
                     <div id="listP_wrapper" class="scroll-list">
                         <div id="listP_pend"></div>
                         <div id="listP_conf" class="mt-2 border-t border-slate-100 pt-2"></div>
@@ -149,17 +129,10 @@
 
     const app = initializeApp(firebaseConfig);
     const db_fire = getFirestore(app);
-    let db = {};
+    let db = {}, currentFilter = 'all';
 
     const formatBRL = (v) => Number(v || 0).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     const parseBRL = (t) => parseFloat(String(t || '').replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
-
-    function mask(i) {
-        let v = i.value.replace(/\D/g, '');
-        v = (v/100).toFixed(2).replace('.', ',');
-        v = v.replace(/(\d)(\d{3})(\d{3}),/g, '$1.$2.$3,').replace(/(\d)(\d{3}),/g, '$1.$2,');
-        i.value = v === '0,00' ? '' : 'R$ ' + v;
-    }
 
     async function init() {
         const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
@@ -169,7 +142,12 @@
         mS.value = n.getMonth(); aS.value = n.getFullYear();
         mS.onchange = render; aS.onchange = render;
         
-        document.querySelectorAll('input').forEach(i => { if(i.id.includes('valor') || i.id.includes('init')) i.oninput = () => mask(i); });
+        document.getElementById('f_valor').oninput = function() {
+            let v = this.value.replace(/\D/g, ''); v = (v/100).toFixed(2).replace('.', ',');
+            v = v.replace(/(\d)(\d{3})(\d{3}),/g, '$1.$2.$3,').replace(/(\d)(\d{3}),/g, '$1.$2,');
+            this.value = v === '0,00' ? '' : 'R$ ' + v;
+        };
+
         document.getElementById('btnAddR').onclick = () => add('R');
         document.getElementById('btnAddP').onclick = () => add('P');
         
@@ -178,34 +156,11 @@
         render();
     }
 
-    window.showTransferPopup = async () => {
-        const vStr = prompt("Valor:"); if(!vStr) return;
-        const v = parseBRL(vStr);
-        const op = prompt("1: Inter -> Vivo | 2: Vivo -> Inter");
-        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const dia = new Date().getDate();
-        if(op==='1'){ db[key].P.push({id:Date.now(),dia,desc:"TRANSF -> VIVO",valor:v,ok:true,conta:'banco'}); db[key].R.push({id:Date.now()+1,dia,desc:"TRANSF <- INTER",valor:v,ok:true,conta:'vivo'}); }
-        else if(op==='2'){ db[key].P.push({id:Date.now(),dia,desc:"TRANSF -> INTER",valor:v,ok:true,conta:'vivo'}); db[key].R.push({id:Date.now()+1,dia,desc:"TRANSF <- VIVO",valor:v,ok:true,conta:'banco'}); }
-        await setDoc(doc(db_fire, "financeiro", key), db[key]); render();
-    };
-
-    window.showReajuste = async (conta) => {
-        const ext = prompt(`Saldo Real no ${conta==='banco'?'Inter':'Vivo'}:`); if(!ext) return;
-        const vReal = parseBRL(ext), key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`, data = db[key];
-        let sSist = (conta==='banco'?data.initBanco:data.initVivo)||0;
-        data.R.forEach(it=>{if(it.ok && it.conta===conta) sSist+=it.valor});
-        data.P.forEach(it=>{if(it.ok && it.conta===conta) sSist-=it.valor});
-        const diff = vReal - sSist; if(Math.abs(diff)<0.01) return alert("Bateu!");
-        data[diff>0?'R':'P'].push({id:Date.now(),dia:new Date().getDate(),desc:"AJUSTE SALDO",valor:Math.abs(diff),ok:true,conta});
-        await setDoc(doc(db_fire, "financeiro", key), data); render();
-    };
-
-    window.updateInit = async () => {
-        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        if(!db[key]) db[key] = { R:[], P:[], initBanco:0, initVivo:0 };
-        db[key].initBanco = parseBRL(document.getElementById('init_banco').value);
-        db[key].initVivo = parseBRL(document.getElementById('init_vivo').value);
-        await setDoc(doc(db_fire, "financeiro", key), db[key]); render();
+    window.setFilter = (f) => {
+        currentFilter = f;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`btn-f-${f}`).classList.add('active');
+        render();
     };
 
     function render() {
@@ -213,21 +168,18 @@
         if (!db[key]) db[key] = { R: [], P: [], initBanco:0, initVivo:0 };
         const data = db[key];
         
-        document.getElementById('init_banco').value = data.initBanco > 0 ? formatBRL(data.initBanco) : '';
-        document.getElementById('init_vivo').value = data.initVivo > 0 ? formatBRL(data.initVivo) : '';
-
         ['listR_pend', 'listR_conf', 'listP_pend', 'listP_conf'].forEach(id => document.getElementById(id).innerHTML = '');
         let tr=0, tp=0, sv=data.initVivo||0, sb=data.initBanco||0;
 
         const row = (it, type) => `
             <div class="card-item flex items-center justify-between ${it.ok ? 'done' : ''}">
                 <div class="flex items-center gap-2">
-                    <span class="badge-day">${String(it.dia).padStart(2,'0')}</span>
-                    <div><p class="text-[10px] font-bold text-slate-700 uppercase leading-tight">${it.desc}</p>
-                    <p class="text-[8px] font-black text-slate-400 uppercase">${it.conta === 'banco' ? 'Inter' : 'Vivo'}</p></div>
+                    <span class="text-[10px] font-black text-slate-400 min-w-[18px]">${String(it.dia).padStart(2,'0')}</span>
+                    <div><p class="text-[10px] font-bold text-slate-700 uppercase leading-none">${it.desc}</p>
+                    <p class="text-[7px] font-black text-slate-400 mt-0.5 uppercase">${it.conta === 'banco' ? 'Inter' : 'Vivo'}</p></div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="text-[11px] font-black ${type==='R'?'text-emerald-600':'text-rose-600'}">${formatBRL(it.valor)}</span>
+                    <span class="text-[10px] font-black ${type==='R'?'text-emerald-600':'text-rose-600'}">${formatBRL(it.valor)}</span>
                     <input type="checkbox" ${it.ok?'checked':''} onchange="window.tk('${type}', ${it.id})" class="w-3.5 h-3.5 accent-blue-600">
                     <button onclick="window.del('${type}', ${it.id})" class="text-slate-200 hover:text-rose-500"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
                 </div>
@@ -235,21 +187,28 @@
 
         data.R.sort((a,b)=>a.dia-b.dia).forEach(it => {
             tr += it.valor; if(it.ok) (it.conta==='vivo'?sv+=it.valor:sb+=it.valor);
-            document.getElementById(it.ok?'listR_conf':'listR_pend').innerHTML += row(it, 'R');
+            if(currentFilter==='all' || it.conta===currentFilter) document.getElementById(it.ok?'listR_conf':'listR_pend').innerHTML += row(it, 'R');
         });
         data.P.sort((a,b)=>a.dia-b.dia).forEach(it => {
             tp += it.valor; if(it.ok) (it.conta==='vivo'?sv-=it.valor:sb-=it.valor);
-            document.getElementById(it.ok?'listP_conf':'listP_pend').innerHTML += row(it, 'P');
+            if(currentFilter==='all' || it.conta===currentFilter) document.getElementById(it.ok?'listP_conf':'listP_pend').innerHTML += row(it, 'P');
         });
 
-        document.getElementById('countR').innerText = data.R.length;
-        document.getElementById('countP').innerText = data.P.length;
         document.getElementById('totalR').innerText = formatBRL(tr);
         document.getElementById('totalP').innerText = formatBRL(tp);
         document.getElementById('labelBanco').innerText = formatBRL(sb);
         document.getElementById('labelVivo').innerText = formatBRL(sv);
         document.getElementById('totalSaldo').innerText = formatBRL((data.initBanco + data.initVivo + tr) - tp);
         lucide.createIcons();
+    }
+
+    async function add(type) {
+        const d = document.getElementById('f_desc').value.toUpperCase(), v = parseBRL(document.getElementById('f_valor').value), dia = parseInt(document.getElementById('f_dia').value) || 1, key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
+        if(!d || v <= 0) return;
+        if (!db[key]) db[key] = { R: [], P: [], initBanco:0, initVivo:0 };
+        db[key][type].push({ id: Date.now(), dia, desc: d, valor: v, ok: false, conta: document.getElementById('f_conta').value });
+        await setDoc(doc(db_fire, "financeiro", key), db[key]);
+        document.getElementById('f_desc').value = ''; document.getElementById('f_valor').value = ''; render();
     }
 
     window.tk = async (type, id) => {
@@ -264,15 +223,6 @@
         db[key][type] = db[key][type].filter(x=>x.id!==id);
         await setDoc(doc(db_fire, "financeiro", key), db[key]); render();
     };
-
-    async function add(type) {
-        const d = document.getElementById('f_desc').value.toUpperCase(), v = parseBRL(document.getElementById('f_valor').value), dia = parseInt(document.getElementById('f_dia').value) || 1, key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        if(!d || v <= 0) return;
-        if (!db[key]) db[key] = { R: [], P: [], initBanco:0, initVivo:0 };
-        db[key][type].push({ id: Date.now(), dia, desc: d, valor: v, ok: false, conta: document.getElementById('f_conta').value });
-        await setDoc(doc(db_fire, "financeiro", key), db[key]);
-        document.getElementById('f_desc').value = ''; document.getElementById('f_valor').value = ''; render();
-    }
 
     init();
 </script>
