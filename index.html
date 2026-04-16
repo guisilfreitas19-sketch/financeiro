@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro v5.5</title>
+    <title>Financeiro v5.6</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -28,7 +28,7 @@
         <aside class="lg:col-span-3 h-full">
             <div class="sidebar-dark p-6 flex flex-col shadow-2xl">
                 <div class="flex items-center justify-between mb-6">
-                    <h1 class="text-sm font-black tracking-tighter text-white uppercase italic">FINANCEIRO <span class="text-blue-500 text-[10px]">v5.5</span></h1>
+                    <h1 class="text-sm font-black tracking-tighter text-white uppercase italic">FINANCEIRO <span class="text-blue-500 text-[10px]">v5.6</span></h1>
                     <i data-lucide="wallet" class="w-4 h-4 text-slate-500"></i>
                 </div>
 
@@ -144,6 +144,9 @@
     const formatBRL = (v) => Number(v || 0).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     const parseBRL = (t) => parseFloat(String(t || '').replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
 
+    const isBanco = (it) => it && it.conta === 'banco';
+    const isVivo = (it) => it && it.conta === 'vivo';
+
     async function init() {
         const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
         const mS = document.getElementById('f_mes'), aS = document.getElementById('f_ano'), n = new Date();
@@ -193,17 +196,17 @@
         const data = db[key];
         let fluxoConfirmado = 0;
 
-        const pertenceConta = (it) => {
-            if (ehBanco) return it.conta === 'banco';
-            return it.conta !== 'banco';
+        const pertenceContaAjuste = (it) => {
+            if (ehBanco) return isBanco(it);
+            return !isBanco(it);
         };
 
         data.R.forEach(it => {
-            if (it.ok && pertenceConta(it)) fluxoConfirmado += Number(it.valor || 0);
+            if (it.ok && pertenceContaAjuste(it)) fluxoConfirmado += Number(it.valor || 0);
         });
 
         data.P.forEach(it => {
-            if (it.ok && pertenceConta(it)) fluxoConfirmado -= Number(it.valor || 0);
+            if (it.ok && pertenceContaAjuste(it)) fluxoConfirmado -= Number(it.valor || 0);
         });
 
         db[key][campo] = saldoReal - fluxoConfirmado;
@@ -236,11 +239,11 @@
                     <span class="text-[10px] font-black text-slate-400 w-5">${String(it.dia).padStart(2,'0')}</span>
                     <div>
                         <p class="text-[11px] font-bold text-slate-700 uppercase mb-1">${it.desc}</p>
-                        <span class="text-[8px] font-black px-1.5 py-0.5 rounded ${it.conta==='banco'?'bg-blue-50 text-blue-500':'bg-emerald-50 text-emerald-500'} uppercase">${it.conta === 'banco' ? 'Inter' : 'Vivo'}</span>
+                        <span class="text-[8px] font-black px-1.5 py-0.5 rounded ${isBanco(it) ? 'bg-blue-50 text-blue-500' : 'bg-emerald-50 text-emerald-500'} uppercase">${isBanco(it) ? 'Inter' : 'Vivo'}</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <span class="text-[11px] font-black ${type==='R'?'text-emerald-600':'text-rose-600'}">${formatBRL(it.valor)}</span>
+                    <span class="text-[11px] font-black ${type === 'R' ? 'text-emerald-600' : 'text-rose-600'}">${formatBRL(it.valor)}</span>
                     <input type="checkbox" ${it.ok ? 'checked' : ''} onchange="window.tk('${type}', ${it.id})" class="w-4 h-4 accent-blue-600 cursor-pointer">
                     <button onclick="window.del('${type}', ${it.id})" class="text-slate-200 hover:text-rose-500">
                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
@@ -250,22 +253,36 @@
 
         data.R.forEach(it => {
             tR += Number(it.valor || 0);
+
             if (it.ok) {
-                if (it.conta === 'banco') sInter += Number(it.valor || 0);
+                if (isBanco(it)) sInter += Number(it.valor || 0);
                 else sVivo += Number(it.valor || 0);
             }
-            if (currentFilter === 'all' || it.conta === currentFilter) {
+
+            const mostrar =
+                currentFilter === 'all' ||
+                (currentFilter === 'banco' && isBanco(it)) ||
+                (currentFilter === 'vivo' && isVivo(it));
+
+            if (mostrar) {
                 document.getElementById(it.ok ? 'listR_conf' : 'listR_pend').innerHTML += row(it, 'R');
             }
         });
 
         data.P.forEach(it => {
             tP += Number(it.valor || 0);
+
             if (it.ok) {
-                if (it.conta === 'banco') sInter -= Number(it.valor || 0);
+                if (isBanco(it)) sInter -= Number(it.valor || 0);
                 else sVivo -= Number(it.valor || 0);
             }
-            if (currentFilter === 'all' || it.conta === currentFilter) {
+
+            const mostrar =
+                currentFilter === 'all' ||
+                (currentFilter === 'banco' && isBanco(it)) ||
+                (currentFilter === 'vivo' && isVivo(it));
+
+            if (mostrar) {
                 document.getElementById(it.ok ? 'listP_conf' : 'listP_pend').innerHTML += row(it, 'P');
             }
         });
