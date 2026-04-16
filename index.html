@@ -91,6 +91,7 @@
                             Ajustar saldo
                         </button>
                     </div>
+
                     <div class="caixa-card flex justify-between items-center border-l-4 border-l-emerald-500 shadow-sm">
                         <div>
                             <span class="text-[9px] font-black text-slate-400 uppercase">Dinheiro Vivo (Atual)</span>
@@ -146,13 +147,18 @@
     async function init() {
         const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
         const mS = document.getElementById('f_mes'), aS = document.getElementById('f_ano'), n = new Date();
+
         meses.forEach((m, i) => mS.innerHTML += `<option value="${i}">${m}</option>`);
-        for (let y = n.getFullYear() + 1; y >= 2024; y--) aS.innerHTML += `<option value="${y}">${y}</option>`;
+        for (let y = n.getFullYear() + 1; y >= 2024; y--) {
+            aS.innerHTML += `<option value="${y}">${y}</option>`;
+        }
+
         mS.value = n.getMonth();
         aS.value = n.getFullYear();
+
         mS.onchange = render;
         aS.onchange = render;
-        
+
         document.getElementById('f_valor').oninput = function() {
             let v = this.value.replace(/\D/g, '');
             v = (v / 100).toFixed(2).replace('.', ',');
@@ -162,7 +168,7 @@
 
         document.getElementById('btnAddR').onclick = () => add('R');
         document.getElementById('btnAddP').onclick = () => add('P');
-        
+
         onSnapshot(collection(db_fire, "financeiro"), (s) => {
             db = {};
             s.forEach(d => db[d.id] = d.data());
@@ -172,7 +178,7 @@
 
     window.ajustarSaldo = async (campo) => {
         const nomeConta = campo === 'initBanco' ? 'Banco Inter' : 'Dinheiro Vivo';
-        const contaTipo = campo === 'initBanco' ? 'banco' : 'vivo';
+        const ehBanco = campo === 'initBanco';
 
         const novoV = prompt(`Digite o saldo REAL atual de ${nomeConta}:`);
         if (novoV === null) return;
@@ -187,16 +193,23 @@
         const data = db[key];
         let fluxoConfirmado = 0;
 
+        const pertenceConta = (it) => {
+            if (ehBanco) return it.conta === 'banco';
+            return it.conta !== 'banco';
+        };
+
         data.R.forEach(it => {
-            if (it.ok && it.conta === contaTipo) fluxoConfirmado += Number(it.valor);
+            if (it.ok && pertenceConta(it)) fluxoConfirmado += Number(it.valor || 0);
         });
 
         data.P.forEach(it => {
-            if (it.ok && it.conta === contaTipo) fluxoConfirmado -= Number(it.valor);
+            if (it.ok && pertenceConta(it)) fluxoConfirmado -= Number(it.valor || 0);
         });
 
         db[key][campo] = saldoReal - fluxoConfirmado;
+
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
+        render();
     };
 
     window.setFilter = (f) => {
@@ -210,11 +223,11 @@
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         if (!db[key]) db[key] = { R: [], P: [], initBanco: 0, initVivo: 0 };
         const data = db[key];
-        
+
         ['listR_pend', 'listR_conf', 'listP_pend', 'listP_conf'].forEach(id => {
             document.getElementById(id).innerHTML = '';
         });
-        
+
         let tR = 0, tP = 0, sInter = Number(data.initBanco || 0), sVivo = Number(data.initVivo || 0);
 
         const row = (it, type) => `
@@ -236,10 +249,10 @@
             </div>`;
 
         data.R.forEach(it => {
-            tR += Number(it.valor);
+            tR += Number(it.valor || 0);
             if (it.ok) {
-                if (it.conta === 'banco') sInter += Number(it.valor);
-                else sVivo += Number(it.valor);
+                if (it.conta === 'banco') sInter += Number(it.valor || 0);
+                else sVivo += Number(it.valor || 0);
             }
             if (currentFilter === 'all' || it.conta === currentFilter) {
                 document.getElementById(it.ok ? 'listR_conf' : 'listR_pend').innerHTML += row(it, 'R');
@@ -247,10 +260,10 @@
         });
 
         data.P.forEach(it => {
-            tP += Number(it.valor);
+            tP += Number(it.valor || 0);
             if (it.ok) {
-                if (it.conta === 'banco') sInter -= Number(it.valor);
-                else sVivo -= Number(it.valor);
+                if (it.conta === 'banco') sInter -= Number(it.valor || 0);
+                else sVivo -= Number(it.valor || 0);
             }
             if (currentFilter === 'all' || it.conta === currentFilter) {
                 document.getElementById(it.ok ? 'listP_conf' : 'listP_pend').innerHTML += row(it, 'P');
