@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro v5.8</title>
+    <title>Financeiro v5.8 - Editável</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -20,13 +20,13 @@
         .caixa-card { background: white; padding: 10px 14px; border-radius: 12px; border: 1px solid #e2e8f0; }
         .mini-btn { font-size: 8px; font-weight: 900; text-transform: uppercase; border-radius: 6px; padding: 4px 6px; border: 1px solid #e2e8f0; background: white; color: #64748b; }
         .mini-btn:hover { background: #f8fafc; }
+        .editable:hover { text-decoration: underline; cursor: pointer; }
     </style>
 </head>
 <body class="p-3 lg:p-4">
 
 <div class="max-w-[1750px] mx-auto h-full">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 h-full">
-        
         <aside class="lg:col-span-3 h-full">
             <div class="sidebar-dark p-6 flex flex-col shadow-2xl">
                 <div class="flex items-center justify-between mb-6">
@@ -184,32 +184,17 @@
     window.ajustarSaldo = async (campo) => {
         const nomeConta = campo === 'initBanco' ? 'Banco Inter' : 'Dinheiro Vivo';
         const ehBanco = campo === 'initBanco';
-
         const novoV = prompt(`Digite o saldo REAL atual de ${nomeConta}:`);
         if (novoV === null) return;
-
-        const saldoReal = parseFloat(
-            String(novoV).replace(/\./g, '').replace(',', '.')
-        ) || 0;
-
+        const saldoReal = parseFloat(String(novoV).replace(/\./g, '').replace(',', '.')) || 0;
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         if (!db[key]) db[key] = { R: [], P: [], initBanco: 0, initVivo: 0 };
-
         const data = db[key];
         let fluxoConfirmado = 0;
-
         const pertenceConta = (it) => ehBanco ? isBanco(it) : isVivo(it);
-
-        data.R.forEach(it => {
-            if (it.ok && pertenceConta(it)) fluxoConfirmado += Number(it.valor || 0);
-        });
-
-        data.P.forEach(it => {
-            if (it.ok && pertenceConta(it)) fluxoConfirmado -= Number(it.valor || 0);
-        });
-
+        data.R.forEach(it => { if (it.ok && pertenceConta(it)) fluxoConfirmado += Number(it.valor || 0); });
+        data.P.forEach(it => { if (it.ok && pertenceConta(it)) fluxoConfirmado -= Number(it.valor || 0); });
         db[key][campo] = saldoReal - fluxoConfirmado;
-
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
         render();
     };
@@ -223,12 +208,28 @@
 
     window.trocarConta = async (type, id) => {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        if (!db[key]) return;
+        const item = db[key][type].find(x => x.id === id);
+        if (!item) return;
+        item.conta = item.conta === 'banco' ? 'vivo' : 'banco';
+        await setDoc(doc(db_fire, "financeiro", key), db[key]);
+        render();
+    };
 
+    // NOVA FUNÇÃO: EDITAR VALOR OU DESCRIÇÃO
+    window.editItem = async (type, id, campo) => {
+        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         const item = db[key][type].find(x => x.id === id);
         if (!item) return;
 
-        item.conta = item.conta === 'banco' ? 'vivo' : 'banco';
+        if (campo === 'valor') {
+            const promptV = prompt(`Novo valor para "${item.desc}":`, (item.valor).toFixed(2).replace('.', ','));
+            if (promptV === null) return;
+            const novoV = parseFloat(promptV.replace(/\./g, '').replace(',', '.')) || 0;
+            if (novoV >= 0) item.valor = novoV;
+        } else {
+            const novoD = prompt("Nova descrição:", item.desc);
+            if (novoD !== null && novoD.trim() !== "") item.desc = novoD.toUpperCase();
+        }
 
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
         render();
@@ -250,19 +251,19 @@
                 <div class="flex items-center gap-3">
                     <span class="text-[10px] font-black text-slate-400 w-5">${String(it.dia).padStart(2,'0')}</span>
                     <div>
-                        <p class="text-[11px] font-bold text-slate-700 uppercase mb-1">${it.desc}</p>
+                        <p onclick="window.editItem('${type}', ${it.id}, 'desc')" class="text-[11px] font-bold text-slate-700 uppercase mb-1 editable">${it.desc}</p>
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-[8px] font-black px-1.5 py-0.5 rounded ${isBanco(it) ? 'bg-blue-50 text-blue-500' : 'bg-emerald-50 text-emerald-500'} uppercase">
                                 ${isBanco(it) ? 'Inter' : 'Vivo'}
                             </span>
-                            <button onclick="window.trocarConta('${type}', ${it.id})" class="mini-btn">
-                                Trocar conta
-                            </button>
+                            <button onclick="window.trocarConta('${type}', ${it.id})" class="mini-btn">Trocar conta</button>
                         </div>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <span class="text-[11px] font-black ${type === 'R' ? 'text-emerald-600' : 'text-rose-600'}">${formatBRL(it.valor || 0)}</span>
+                    <span onclick="window.editItem('${type}', ${it.id}, 'valor')" class="text-[11px] font-black ${type === 'R' ? 'text-emerald-600' : 'text-rose-600'} editable">
+                        ${formatBRL(it.valor || 0)}
+                    </span>
                     <input type="checkbox" ${it.ok ? 'checked' : ''} onchange="window.tk('${type}', ${it.id})" class="w-4 h-4 accent-blue-600 cursor-pointer">
                     <button onclick="window.del('${type}', ${it.id})" class="text-slate-200 hover:text-rose-500">
                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
@@ -272,48 +273,24 @@
 
         data.R.forEach(it => {
             tR += Number(it.valor || 0);
-
-            if (it.ok) {
-                if (isBanco(it)) sInter += Number(it.valor || 0);
-                else sVivo += Number(it.valor || 0);
-            }
-
-            const mostrar =
-                currentFilter === 'all' ||
-                (currentFilter === 'banco' && isBanco(it)) ||
-                (currentFilter === 'vivo' && isVivo(it));
-
-            if (mostrar) {
-                document.getElementById(it.ok ? 'listR_conf' : 'listR_pend').innerHTML += row(it, 'R');
-            }
+            if (it.ok) { if (isBanco(it)) sInter += Number(it.valor || 0); else sVivo += Number(it.valor || 0); }
+            const mostrar = currentFilter === 'all' || (currentFilter === 'banco' && isBanco(it)) || (currentFilter === 'vivo' && isVivo(it));
+            if (mostrar) document.getElementById(it.ok ? 'listR_conf' : 'listR_pend').innerHTML += row(it, 'R');
         });
 
         data.P.forEach(it => {
             tP += Number(it.valor || 0);
-
-            if (it.ok) {
-                if (isBanco(it)) sInter -= Number(it.valor || 0);
-                else sVivo -= Number(it.valor || 0);
-            }
-
-            const mostrar =
-                currentFilter === 'all' ||
-                (currentFilter === 'banco' && isBanco(it)) ||
-                (currentFilter === 'vivo' && isVivo(it));
-
-            if (mostrar) {
-                document.getElementById(it.ok ? 'listP_conf' : 'listP_pend').innerHTML += row(it, 'P');
-            }
+            if (it.ok) { if (isBanco(it)) sInter -= Number(it.valor || 0); else sVivo -= Number(it.valor || 0); }
+            const mostrar = currentFilter === 'all' || (currentFilter === 'banco' && isBanco(it)) || (currentFilter === 'vivo' && isVivo(it));
+            if (mostrar) document.getElementById(it.ok ? 'listP_conf' : 'listP_pend').innerHTML += row(it, 'P');
         });
 
         document.getElementById('totalR').innerText = formatBRL(tR);
         document.getElementById('totalP').innerText = formatBRL(tP);
         document.getElementById('labelBanco').innerText = formatBRL(sInter);
         document.getElementById('labelVivo').innerText = formatBRL(sVivo);
-
         const projetadoFinal = (Number(data.initBanco || 0) + Number(data.initVivo || 0) + tR) - tP;
         document.getElementById('totalSaldo').innerText = formatBRL(projetadoFinal);
-
         lucide.createIcons();
     }
 
@@ -322,19 +299,9 @@
         const v = parseBRL(document.getElementById('f_valor').value);
         const dia = parseInt(document.getElementById('f_dia').value) || 1;
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-
         if (!d || v <= 0) return;
         if (!db[key]) db[key] = { R: [], P: [], initBanco: 0, initVivo: 0 };
-
-        db[key][type].push({
-            id: Date.now(),
-            dia,
-            desc: d,
-            valor: v,
-            ok: false,
-            conta: document.getElementById('f_conta').value
-        });
-
+        db[key][type].push({ id: Date.now(), dia, desc: d, valor: v, ok: false, conta: document.getElementById('f_conta').value });
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
         document.getElementById('f_desc').value = '';
         document.getElementById('f_valor').value = '';
@@ -343,9 +310,7 @@
     window.tk = async (type, id) => {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         const it = db[key][type].find(x => x.id === id);
-        if (!it) return;
-        it.ok = !it.ok;
-        await setDoc(doc(db_fire, "financeiro", key), db[key]);
+        if (it) { it.ok = !it.ok; await setDoc(doc(db_fire, "financeiro", key), db[key]); }
     };
 
     window.del = async (type, id) => {
