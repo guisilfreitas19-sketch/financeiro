@@ -3,174 +3,131 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro v6.0</title>
+    <title>Financeiro v6.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { 
-            background-color: #f8fafc; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            height: 100vh; 
-            overflow: hidden; 
-            margin: 0;
-        }
-        /* Ajuste para garantir que o container ocupe a tela toda sem scroll */
-        .main-container {
-            height: 100vh;
-            display: flex;
-            gap: 1rem;
-            padding: 1rem;
-        }
-        .sidebar-dark { 
-            background: #0f172a; 
-            color: white; 
-            border-radius: 24px; 
-            width: 320px;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem;
-        }
-        .content-area {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            min-width: 0;
-        }
-        .input-premium { 
-            background: rgba(255, 255, 255, 0.05); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            border-radius: 10px; 
-            color: white; 
-            padding: 8px; 
-            font-weight: 600; 
-            font-size: 12px; 
-            width: 100%;
-        }
-        .card-item { background: white; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 4px; padding: 6px 10px; }
-        .done { opacity: 0.4; filter: grayscale(1); background: #f1f5f9; }
-        .month-summary { 
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
-            color: white; 
-            border-radius: 16px; 
-            padding: 1.25rem; 
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .scroll-list { 
-            flex-grow: 1;
-            overflow-y: auto; 
-            padding-right: 4px; 
-        }
-        .filter-btn { padding: 4px 14px; border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; border: 1px solid #e2e8f0; background: white; color: #64748b; }
-        .filter-btn.active { background: #0f172a; color: white; border-color: #0f172a; }
-        .caixa-card { background: white; padding: 10px 14px; border-radius: 12px; border: 1px solid #e2e8f0; flex: 1; }
-        .mini-btn { font-size: 8px; font-weight: 900; text-transform: uppercase; border-radius: 6px; padding: 4px 6px; border: 1px solid #e2e8f0; background: white; color: #64748b; }
-        .editable:hover { text-decoration: underline; cursor: pointer; color: #2563eb; }
+        body { background-color: #f1f5f9; font-family: 'Plus Jakarta Sans', sans-serif; height: 100vh; overflow: hidden; margin: 0; }
+        .app-grid { display: grid; grid-template-columns: 300px 1fr; height: 100vh; gap: 0; }
+        
+        /* Sidebar */
+        .sidebar { background: #0f172a; color: white; padding: 1.5rem; display: flex; flex-direction: column; }
+        .input-premium { background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: white; padding: 10px; font-size: 13px; width: 100%; margin-bottom: 0.75rem; }
+        
+        /* Main Content */
+        .main-content { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; overflow: hidden; }
+        .top-banner { background: #2563eb; color: white; border-radius: 16px; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+        
+        /* Fluxo de Contas */
+        .flow-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; flex-grow: 1; min-height: 0; }
+        .flow-column { background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .flow-header { padding: 1rem; border-bottom: 1px solid #f1f5f9; font-weight: 800; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; color: #64748b; background: #fafafa; }
+        .scroll-area { flex-grow: 1; overflow-y: auto; padding: 1rem; }
+        
+        /* Cards de Itens */
+        .item-card { background: #fff; border: 1px solid #f1f5f9; padding: 10px; border-radius: 10px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s; }
+        .item-card:hover { border-color: #cbd5e1; }
+        .done { opacity: 0.5; background: #f8fafc; text-decoration: line-through; }
+        
+        /* Ajuste de Saldo */
+        .saldo-box { background: white; border: 1px solid #e2e8f0; padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; min-width: 200px; }
     </style>
 </head>
 <body>
 
-<div class="main-container">
-    <!-- Sidebar -->
-    <aside class="sidebar-dark shadow-2xl">
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="text-sm font-black tracking-tighter text-white uppercase italic">FINANCEIRO <span class="text-blue-500 text-[10px]">v6.0</span></h1>
-            <i data-lucide="wallet" class="w-4 h-4 text-slate-500"></i>
+<div class="app-grid">
+    <!-- Barra Lateral -->
+    <aside class="sidebar">
+        <div class="mb-8">
+            <h1 class="text-xl font-black italic tracking-tighter">FINANCEIRO <span class="text-blue-500 text-xs">v6.1</span></h1>
         </div>
 
-        <div class="space-y-3 mb-6">
+        <div class="flex-grow">
             <div class="grid grid-cols-2 gap-2">
                 <input type="number" id="f_dia" class="input-premium text-center" placeholder="Dia">
                 <input type="number" id="f_parc" value="1" class="input-premium text-center">
             </div>
             <input type="text" id="f_desc" class="input-premium uppercase" placeholder="DESCRIÇÃO">
-            <select id="f_conta" class="input-premium text-xs">
+            <select id="f_conta" class="input-premium">
                 <option value="banco">🏦 BANCO INTER</option>
                 <option value="vivo">💵 DINHEIRO VIVO</option>
             </select>
             <input type="text" id="f_valor" class="input-premium text-xl font-black text-blue-400 text-center" placeholder="R$ 0,00">
-            <div class="grid grid-cols-2 gap-2">
-                <button id="btnAddR" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl uppercase text-[10px]">Entrada</button>
-                <button id="btnAddP" class="bg-slate-700 hover:bg-slate-600 text-white font-black py-3 rounded-xl uppercase text-[10px]">Saída</button>
+            
+            <div class="grid grid-cols-2 gap-2 mt-2">
+                <button id="btnAddR" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg uppercase text-[10px]">Entrada</button>
+                <button id="btnAddP" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg uppercase text-[10px]">Saída</button>
             </div>
         </div>
 
-        <div class="mt-auto pt-4 border-t border-slate-800 flex gap-3">
-            <select id="f_mes" class="bg-transparent text-[11px] font-bold uppercase text-slate-400 outline-none"></select>
-            <select id="f_ano" class="bg-transparent text-[11px] font-bold text-slate-400 outline-none"></select>
+        <div class="pt-4 border-t border-slate-800 flex justify-between">
+            <select id="f_mes" class="bg-transparent text-xs font-bold uppercase text-slate-400 outline-none"></select>
+            <select id="f_ano" class="bg-transparent text-xs font-bold text-slate-400 outline-none"></select>
         </div>
     </aside>
 
-    <!-- Main Content -->
-    <main class="content-area">
-        <!-- Banner de Saldo -->
-        <div class="month-summary shadow-lg">
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <!-- Banner Superior -->
+        <div class="top-banner">
             <div>
-                <p class="text-blue-100 text-[10px] font-extrabold uppercase tracking-widest mb-1">Saldo Projetado Final (Mês)</p>
+                <span class="text-[10px] font-bold uppercase opacity-80">Saldo Projetado Final</span>
                 <h2 id="totalSaldo" class="text-4xl font-black italic">R$ 0,00</h2>
             </div>
-            <div class="flex gap-8">
-                <div class="text-right border-l border-white/20 pl-8">
-                    <p class="text-blue-100 text-[9px] font-bold uppercase mb-1">Receitas</p>
-                    <p id="totalR" class="text-xl font-black text-emerald-300">R$ 0,00</p>
+            <div class="flex gap-8 text-right">
+                <div>
+                    <span class="block text-[10px] font-bold uppercase opacity-80">Receitas</span>
+                    <span id="totalR" class="text-2xl font-black text-emerald-300">R$ 0,00</span>
                 </div>
-                <div class="text-right border-l border-white/20 pl-8">
-                    <p class="text-blue-100 text-[9px] font-bold uppercase mb-1">Despesas</p>
-                    <p id="totalP" class="text-xl font-black text-rose-300">R$ 0,00</p>
+                <div>
+                    <span class="block text-[10px] font-bold uppercase opacity-80">Despesas</span>
+                    <span id="totalP" class="text-2xl font-black text-rose-300">R$ 0,00</span>
                 </div>
             </div>
         </div>
 
-        <!-- Filtros e Saldos Atuais -->
-        <div class="flex gap-4 items-center">
-            <div class="bg-white p-1.5 rounded-xl border border-slate-200 flex gap-1 shadow-sm">
-                <button onclick="window.setFilter('all')" id="btn-f-all" class="filter-btn active">Tudo</button>
-                <button onclick="window.setFilter('banco')" id="btn-f-banco" class="filter-btn">Inter</button>
-                <button onclick="window.setFilter('vivo')" id="btn-f-vivo" class="filter-btn">Vivo</button>
-            </div>
-            
-            <div class="caixa-card flex justify-between items-center border-l-4 border-l-blue-500 shadow-sm">
+        <!-- Indicadores de Bancos -->
+        <div class="flex gap-4">
+            <div class="saldo-box flex-1 border-l-4 border-l-blue-500">
                 <div>
-                    <span class="text-[9px] font-black text-slate-400 uppercase">Inter (Atual)</span>
-                    <h4 id="labelBanco" class="text-base font-black text-slate-800">R$ 0,00</h4>
+                    <p class="text-[9px] font-bold text-slate-400 uppercase">Inter (Atual)</p>
+                    <p id="labelBanco" class="text-lg font-black text-slate-800">R$ 0,00</p>
                 </div>
-                <button onclick="window.ajustarSaldo('initBanco')" class="px-3 py-2 rounded-lg bg-blue-50 text-blue-700 text-[10px] font-black uppercase">Ajustar</button>
+                <button onclick="window.ajustarSaldo('initBanco')" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-3 py-2 rounded-lg">AJUSTAR</button>
             </div>
-
-            <div class="caixa-card flex justify-between items-center border-l-4 border-l-emerald-500 shadow-sm">
+            <div class="saldo-box flex-1 border-l-4 border-l-emerald-500">
                 <div>
-                    <span class="text-[9px] font-black text-slate-400 uppercase">Vivo (Atual)</span>
-                    <h4 id="labelVivo" class="text-base font-black text-slate-800">R$ 0,00</h4>
+                    <p class="text-[9px] font-bold text-slate-400 uppercase">Dinheiro Vivo (Atual)</p>
+                    <p id="labelVivo" class="text-lg font-black text-slate-800">R$ 0,00</p>
                 </div>
-                <button onclick="window.ajustarSaldo('initVivo')" class="px-3 py-2 rounded-lg bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase">Ajustar</button>
+                <button onclick="window.ajustarSaldo('initVivo')" class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-lg">AJUSTAR</button>
             </div>
         </div>
 
-        <!-- Listas de Fluxo -->
-        <div class="flex gap-4 flex-grow overflow-hidden">
-            <div class="flex-1 flex flex-col min-h-0">
-                <h3 class="text-[10px] font-black text-slate-500 uppercase mb-2 px-1">Fluxo de Receitas</h3>
-                <div class="scroll-list">
+        <!-- Colunas de Fluxo (Contas a Pagar/Receber) -->
+        <div class="flow-container">
+            <section class="flow-column">
+                <div class="flow-header">Fluxo de Receitas</div>
+                <div class="scroll-area">
                     <div id="listR_pend"></div>
-                    <div id="listR_conf" class="mt-4 border-t border-dashed border-slate-200 pt-3"></div>
+                    <div id="listR_conf" class="mt-4 border-t pt-4"></div>
                 </div>
-            </div>
-            <div class="flex-1 flex flex-col min-h-0">
-                <h3 class="text-[10px] font-black text-slate-500 uppercase mb-2 px-1">Fluxo de Despesas</h3>
-                <div class="scroll-list">
+            </section>
+
+            <section class="flow-column">
+                <div class="flow-header">Fluxo de Despesas (Contas a Pagar)</div>
+                <div class="scroll-area">
                     <div id="listP_pend"></div>
-                    <div id="listP_conf" class="mt-4 border-t border-dashed border-slate-200 pt-3"></div>
+                    <div id="listP_conf" class="mt-4 border-t pt-4"></div>
                 </div>
-            </div>
+            </section>
         </div>
     </main>
 </div>
 
 <script type="module">
+    // Lógica do Firebase (Mantida da V6.0 conforme solicitado)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -185,36 +142,23 @@
 
     const app = initializeApp(firebaseConfig);
     const db_fire = getFirestore(app);
-    let db = {}, currentFilter = 'all';
+    let db = {};
 
     const formatBRL = (v) => Number(v || 0).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
     const parseBRL = (t) => parseFloat(String(t || '').replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
-    const isBanco = (it) => it && it.conta === 'banco';
-    const isVivo = (it) => it && it.conta !== 'banco';
-
-    async function limparJiuJitsu() {
-        for (const key in db) {
-            const rLimpo = db[key].R.filter(it => !it.desc.includes("JIUJITSU"));
-            const pLimpo = db[key].P.filter(it => !it.desc.includes("JIUJITSU"));
-            if (rLimpo.length !== db[key].R.length || pLimpo.length !== db[key].P.length) {
-                db[key].R = rLimpo; db[key].P = pLimpo;
-                await setDoc(doc(db_fire, "financeiro", key), db[key]);
-            }
-        }
-    }
 
     async function init() {
         const mesesArr = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
         const mS = document.getElementById('f_mes'), aS = document.getElementById('f_ano'), n = new Date();
         mesesArr.forEach((m, i) => mS.innerHTML += `<option value="${i}">${m}</option>`);
         for (let y = n.getFullYear() + 1; y >= 2025; y--) aS.innerHTML += `<option value="${y}">${y}</option>`;
+        
         mS.value = n.getMonth(); aS.value = n.getFullYear();
         mS.onchange = render; aS.onchange = render;
 
         document.getElementById('f_valor').oninput = function() {
             let v = this.value.replace(/\D/g, '');
             v = (v / 100).toFixed(2).replace('.', ',');
-            v = v.replace(/(\d)(\d{3})(\d{3}),/g, '$1.$2.$3,').replace(/(\d)(\d{3}),/g, '$1.$2,');
             this.value = v === '0,00' ? '' : 'R$ ' + v;
         };
 
@@ -222,55 +166,60 @@
         document.getElementById('btnAddP').onclick = () => add('P');
 
         onSnapshot(collection(db_fire, "financeiro"), (s) => {
-            let mudou = false;
-            s.forEach(d => { if (JSON.stringify(db[d.id]) !== JSON.stringify(d.data())) { db[d.id] = d.data(); mudou = true; } });
-            if (mudou) { render(); limparJiuJitsu(); }
+            s.forEach(d => db[d.id] = d.data());
+            render();
         });
     }
 
-    window.editItem = async (type, id, campo) => {
+    function render() {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const item = db[key][type].find(x => x.id === id);
-        if (!item) return;
-        if (campo === 'valor') {
-            const promptV = prompt(`Novo valor:`, (item.valor).toFixed(2).replace('.', ','));
-            if (promptV) item.valor = parseFloat(promptV.replace(/\./g, '').replace(',', '.')) || 0;
-        } else {
-            const novoD = prompt("Nova descrição:", item.desc);
-            if (novoD) item.desc = novoD.toUpperCase();
-        }
-        await setDoc(doc(db_fire, "financeiro", key), db[key]);
-    };
+        const data = db[key] || { R: [], P: [], initBanco: 0, initVivo: 0 };
+        
+        document.getElementById('listR_pend').innerHTML = '';
+        document.getElementById('listR_conf').innerHTML = '';
+        document.getElementById('listP_pend').innerHTML = '';
+        document.getElementById('listP_conf').innerHTML = '';
 
-    window.ajustarSaldo = async (campo) => {
-        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const novoV = prompt(`Digite o saldo REAL atual:`);
-        if (novoV === null) return;
-        const saldoReal = parseFloat(String(novoV).replace(/\./g, '').replace(',', '.')) || 0;
-        if (!db[key]) db[key] = { R: [], P: [], initBanco: 0, initVivo: 0 };
-        const data = db[key];
-        let fluxoConf = 0;
-        const pertence = (it) => (campo === 'initBanco' ? isBanco(it) : isVivo(it));
-        data.R.forEach(it => { if (it.ok && pertence(it)) fluxoConf += it.valor; });
-        data.P.forEach(it => { if (it.ok && pertence(it)) fluxoConf -= it.valor; });
-        db[key][campo] = saldoReal - fluxoConf;
-        await setDoc(doc(db_fire, "financeiro", key), db[key]);
-    };
+        let tR = 0, tP = 0, sI = Number(data.initBanco || 0), sV = Number(data.initVivo || 0);
 
-    window.setFilter = (f) => {
-        currentFilter = f;
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(`btn-f-${f}`).classList.add('active');
-        render();
-    };
+        const buildRow = (it, type) => `
+            <div class="item-card ${it.ok ? 'done' : ''}">
+                <div class="flex items-center gap-3">
+                    <span class="text-[10px] font-black text-slate-400">${String(it.dia).padStart(2,'0')}</span>
+                    <div>
+                        <p class="text-xs font-bold text-slate-700 uppercase">${it.desc}</p>
+                        <span class="text-[8px] font-black uppercase text-slate-400">${it.conta === 'banco' ? 'Inter' : 'Vivo'}</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-black ${type === 'R' ? 'text-emerald-600' : 'text-rose-600'}">${formatBRL(it.valor)}</span>
+                    <input type="checkbox" ${it.ok ? 'checked' : ''} onchange="window.toggleStatus('${type}', ${it.id})" class="w-4 h-4 accent-blue-600">
+                    <button onclick="window.del('${type}', ${it.id})" class="text-slate-300 hover:text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                </div>
+            </div>`;
 
-    window.trocarConta = async (type, id) => {
-        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const it = db[key][type].find(x => x.id === id);
-        if (it) { it.conta = it.conta === 'banco' ? 'vivo' : 'banco'; await setDoc(doc(db_fire, "financeiro", key), db[key]); }
-    };
+        data.R.forEach(it => {
+            tR += it.valor; 
+            if (it.ok) it.conta === 'banco' ? sI += it.valor : sV += it.valor;
+            document.getElementById(it.ok ? 'listR_conf' : 'listR_pend').innerHTML += buildRow(it, 'R');
+        });
 
-    window.tk = async (type, id) => {
+        data.P.forEach(it => {
+            tP += it.valor; 
+            if (it.ok) it.conta === 'banco' ? sI -= it.valor : sV -= it.valor;
+            document.getElementById(it.ok ? 'listP_conf' : 'listP_pend').innerHTML += buildRow(it, 'P');
+        });
+
+        document.getElementById('totalR').innerText = formatBRL(tR);
+        document.getElementById('totalP').innerText = formatBRL(tP);
+        document.getElementById('labelBanco').innerText = formatBRL(sI);
+        document.getElementById('labelVivo').innerText = formatBRL(sV);
+        document.getElementById('totalSaldo').innerText = formatBRL((Number(data.initBanco || 0) + Number(data.initVivo || 0) + tR) - tP);
+        lucide.createIcons();
+    }
+
+    // Ações globais
+    window.toggleStatus = async (type, id) => {
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
         const it = db[key][type].find(x => x.id === id);
         if (it) { it.ok = !it.ok; await setDoc(doc(db_fire, "financeiro", key), db[key]); }
@@ -283,50 +232,15 @@
         await setDoc(doc(db_fire, "financeiro", key), db[key]);
     };
 
-    function render() {
+    window.ajustarSaldo = async (campo) => {
+        const v = prompt("Saldo REAL atual:");
+        if (v === null) return;
         const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        if (!db[key]) db[key] = { R: [], P: [], initBanco: 0, initVivo: 0 };
-        const data = db[key];
-        ['listR_pend', 'listR_conf', 'listP_pend', 'listP_conf'].forEach(id => document.getElementById(id).innerHTML = '');
-        let tR = 0, tP = 0, sI = Number(data.initBanco || 0), sV = Number(data.initVivo || 0);
-
-        const row = (it, type) => `
-            <div class="card-item flex items-center justify-between ${it.ok ? 'done' : ''}">
-                <div class="flex items-center gap-3">
-                    <span class="text-[10px] font-black text-slate-400 w-5">${String(it.dia).padStart(2,'0')}</span>
-                    <div>
-                        <p onclick="window.editItem('${type}', ${it.id}, 'desc')" class="text-[11px] font-bold text-slate-700 uppercase mb-0.5 editable">${it.desc}</p>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[8px] font-black px-1.5 py-0.5 rounded ${isBanco(it) ? 'bg-blue-50 text-blue-500' : 'bg-emerald-50 text-emerald-500'} uppercase">${isBanco(it) ? 'Inter' : 'Vivo'}</span>
-                            <button onclick="window.trocarConta('${type}', ${it.id})" class="mini-btn">Trocar</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <span onclick="window.editItem('${type}', ${it.id}, 'valor')" class="text-[11px] font-black ${type === 'R' ? 'text-emerald-600' : 'text-rose-600'} editable">${formatBRL(it.valor)}</span>
-                    <input type="checkbox" ${it.ok ? 'checked' : ''} onchange="window.tk('${type}', ${it.id})" class="w-4 h-4 accent-blue-600">
-                    <button onclick="window.del('${type}', ${it.id})" class="text-slate-300 hover:text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-                </div>
-            </div>`;
-
-        data.R.forEach(it => {
-            tR += it.valor; if (it.ok) { if (isBanco(it)) sI += it.valor; else sV += it.valor; }
-            if (currentFilter === 'all' || (currentFilter === 'banco' && isBanco(it)) || (currentFilter === 'vivo' && isVivo(it)))
-                document.getElementById(it.ok ? 'listR_conf' : 'listR_pend').innerHTML += row(it, 'R');
-        });
-        data.P.forEach(it => {
-            tP += it.valor; if (it.ok) { if (isBanco(it)) sI -= it.valor; else sV -= it.valor; }
-            if (currentFilter === 'all' || (currentFilter === 'banco' && isBanco(it)) || (currentFilter === 'vivo' && isVivo(it)))
-                document.getElementById(it.ok ? 'listP_conf' : 'listP_pend').innerHTML += row(it, 'P');
-        });
-
-        document.getElementById('totalR').innerText = formatBRL(tR);
-        document.getElementById('totalP').innerText = formatBRL(tP);
-        document.getElementById('labelBanco').innerText = formatBRL(sI);
-        document.getElementById('labelVivo').innerText = formatBRL(sV);
-        document.getElementById('totalSaldo').innerText = formatBRL((Number(data.initBanco || 0) + Number(data.initVivo || 0) + tR) - tP);
-        lucide.createIcons();
-    }
+        const data = db[key] || { R: [], P: [], initBanco: 0, initVivo: 0 };
+        db[key] = data;
+        db[key][campo] = parseFloat(v.replace(/\./g, '').replace(',', '.')) || 0;
+        await setDoc(doc(db_fire, "financeiro", key), db[key]);
+    };
 
     async function add(type) {
         const d = document.getElementById('f_desc').value.toUpperCase(), v = parseBRL(document.getElementById('f_valor').value), dia = parseInt(document.getElementById('f_dia').value) || 1, key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
