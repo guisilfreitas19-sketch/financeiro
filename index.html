@@ -1,297 +1,171 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Financeiro v6.2 - Premium</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soitic v14.4 - Fix & Edit</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --bg-main: #f8fafc; --sidebar: #0f172a; --card-border: #e2e8f0; }
-        body { background-color: var(--bg-main); font-family: 'Plus Jakarta Sans', sans-serif; height: 100vh; overflow: hidden; margin: 0; color: #1e293b; }
-        
-        .app-layout { display: grid; grid-template-columns: 340px 1fr; height: 100vh; }
-        
-        /* Sidebar Estilizada */
-        .sidebar { background: var(--sidebar); color: white; padding: 2rem; display: flex; flex-direction: column; box-shadow: 10px 0 30px rgba(0,0,0,0.05); }
-        .input-glass { background: rgba(255, 255, 255, 0.03); border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; padding: 12px; font-size: 14px; transition: all 0.2s; }
-        .input-glass:focus { border-color: #3b82f6; background: rgba(255, 255, 255, 0.08); outline: none; }
-        
-        /* Main Panel */
-        .main-panel { padding: 2rem; display: flex; flex-direction: column; gap: 2rem; min-width: 0; }
-        
-        /* Cards de Saldo */
-        .gradient-banner { 
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); 
-            border-radius: 24px; padding: 2rem; color: white; 
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2);
+        /* Liberando o scroll para baixo */
+        body { 
+            background-color: #000; 
+            color: #fff; 
+            font-family: 'Inter', sans-serif; 
+            overflow-y: auto !important; 
+            min-height: 100vh;
         }
-
-        /* Colunas de Fluxo */
-        .columns-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; flex-grow: 1; min-height: 0; }
-        .flow-card { background: white; border-radius: 24px; border: 1px solid var(--card-border); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
-        .flow-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #f1f5f9; background: #ffffff; display: flex; justify-content: space-between; align-items: center; }
-        
-        /* Estilo da Lista */
-        .scroll-list { flex-grow: 1; overflow-y: auto; padding: 1.25rem; }
-        .transaction-item { 
-            background: #ffffff; border: 1px solid #f1f5f9; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; 
-            display: flex; align-items: center; justify-content: space-between; transition: transform 0.1s;
-        }
-        .transaction-item:hover { transform: translateY(-2px); border-color: #cbd5e1; }
-        .transaction-item.done { opacity: 0.4; background: #f8fafc; filter: grayscale(1); }
-
-        /* Scrollbar customizada para o Light Mode */
-        .scroll-list::-webkit-scrollbar { width: 6px; }
-        .scroll-list::-webkit-scrollbar-track { background: transparent; }
-        .scroll-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .italic-force { font-style: italic !important; }
+        .podium-box { border: 2px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); border-radius: 2rem 2rem 0 0; }
+        .management-card { background: #111; border: 1px solid #333; border-radius: 1.5rem; padding: 20px; }
+        .input-label { font-size: 10px; font-weight: 900; letter-spacing: 0.1em; margin-bottom: 6px; display: block; text-transform: uppercase; }
+        .management-input { background: #000; border: 1px solid #444; color: #fff; border-radius: 10px; padding: 12px; text-align: right; width: 100%; font-weight: bold; font-family: monospace; }
+        .management-input:focus { border-color: #fbbf24; outline: none; background: #0a0a0a; }
     </style>
 </head>
-<body>
+<body class="p-4 italic-force pb-20">
 
-<div class="app-layout">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="mb-10 flex items-center gap-3">
-            <div class="bg-blue-600 p-2 rounded-xl"><i data-lucide="layout-dashboard" class="w-6 h-6 text-white"></i></div>
-            <h1 class="text-xl font-extrabold tracking-tight">FINANCEIRO <span class="text-blue-500 text-xs">v6.2</span></h1>
+    <header class="flex justify-between items-center mb-10 px-8 border-b border-white/10 pb-6">
+        <h1 class="text-3xl font-black italic uppercase">Grupo <span class="text-amber-500">Soitic</span></h1>
+        <div class="flex gap-4">
+            <button onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})" class="bg-white/10 text-white px-4 py-2 rounded-full text-[10px] uppercase">Ir para Lançamentos</button>
+            <button onclick="document.getElementById('management-section').classList.toggle('hidden')" class="bg-amber-500 text-black font-black px-6 py-2 rounded-full text-[10px] uppercase">Lançar Dados</button>
         </div>
+    </header>
 
-        <div class="space-y-4 flex-grow">
-            <div class="grid grid-cols-2 gap-3">
-                <div class="space-y-1">
-                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Dia</label>
-                    <input type="number" id="f_dia" class="input-glass text-center font-bold" placeholder="01">
-                </div>
-                <div class="space-y-1">
-                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Parc.</label>
-                    <input type="number" id="f_parc" value="1" class="input-glass text-center font-bold">
-                </div>
-            </div>
-            
-            <div class="space-y-1">
-                <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Descrição</label>
-                <input type="text" id="f_desc" class="input-glass uppercase font-semibold" placeholder="EX: MERCADO">
-            </div>
+    <main class="max-w-[1800px] mx-auto">
+        <div class="grid lg:grid-cols-2 gap-10" id="podiums-container"></div>
 
-            <div class="space-y-1">
-                <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Conta Destino</label>
-                <select id="f_conta" class="input-glass font-semibold appearance-none">
-                    <option value="banco">🏦 BANCO INTER</option>
-                    <option value="vivo">💵 DINHEIRO VIVO</option>
-                </select>
-            </div>
-
-            <div class="space-y-1">
-                <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Valor Total</label>
-                <input type="text" id="f_valor" class="input-glass text-2xl font-black text-blue-400 text-center" placeholder="R$ 0,00">
-            </div>
-            
-            <div class="grid grid-cols-2 gap-3 pt-4">
-                <button id="btnAddR" class="bg-emerald-500 hover:bg-emerald-400 text-white font-extrabold py-4 rounded-2xl uppercase text-[11px] shadow-lg shadow-emerald-900/20 transition-all">Receita</button>
-                <button id="btnAddP" class="bg-slate-700 hover:bg-slate-600 text-white font-extrabold py-4 rounded-2xl uppercase text-[11px] shadow-lg shadow-slate-900/20 transition-all">Despesa</button>
-            </div>
-        </div>
-
-        <div class="pt-6 border-t border-slate-800 flex justify-between items-center">
-            <div class="flex gap-2">
-                <select id="f_mes" class="bg-transparent text-xs font-bold uppercase text-slate-400 outline-none cursor-pointer hover:text-white"></select>
-                <select id="f_ano" class="bg-transparent text-xs font-bold text-slate-400 outline-none cursor-pointer hover:text-white"></select>
-            </div>
-            <i data-lucide="settings" class="w-4 h-4 text-slate-500"></i>
-        </div>
-    </aside>
-
-    <!-- Painel Principal -->
-    <main class="main-panel">
-        <!-- Banner de Saldo -->
-        <header class="gradient-banner">
-            <div>
-                <p class="text-blue-100 text-xs font-bold uppercase tracking-wider mb-1">Saldo Projetado em Conta</p>
-                <h2 id="totalSaldo" class="text-5xl font-black tracking-tighter">R$ 0,00</h2>
-            </div>
-            <div class="flex gap-12">
-                <div class="text-right">
-                    <p class="text-blue-100 text-[10px] font-bold uppercase mb-1">Total Entradas</p>
-                    <p id="totalR" class="text-2xl font-black text-emerald-300">R$ 0,00</p>
-                </div>
-                <div class="text-right border-l border-white/20 pl-12">
-                    <p class="text-blue-100 text-[10px] font-bold uppercase mb-1">Total Saídas</p>
-                    <p id="totalP" class="text-2xl font-black text-rose-300">R$ 0,00</p>
-                </div>
-            </div>
-        </header>
-
-        <!-- Bancos -->
-        <div class="grid grid-cols-2 gap-6">
-            <div class="bg-white p-5 rounded-3xl border border-slate-200 flex justify-between items-center shadow-sm">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center"><i data-lucide="landmark" class="text-orange-500 w-6 h-6"></i></div>
-                    <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Banco Inter</p>
-                        <p id="labelBanco" class="text-xl font-black text-slate-800">R$ 0,00</p>
-                    </div>
-                </div>
-                <button onclick="window.ajustarSaldo('initBanco')" class="text-[10px] font-extrabold text-blue-600 bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition-colors">AJUSTAR</button>
-            </div>
-            <div class="bg-white p-5 rounded-3xl border border-slate-200 flex justify-between items-center shadow-sm">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center"><i data-lucide="banknote" class="text-emerald-500 w-6 h-6"></i></div>
-                    <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Dinheiro Vivo</p>
-                        <p id="labelVivo" class="text-xl font-black text-slate-800">R$ 0,00</p>
-                    </div>
-                </div>
-                <button onclick="window.ajustarSaldo('initVivo')" class="text-[10px] font-extrabold text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl hover:bg-emerald-100 transition-colors">AJUSTAR</button>
-            </div>
-        </div>
-
-        <!-- Fluxos -->
-        <div class="columns-grid">
-            <section class="flow-card">
-                <div class="flow-header">
-                    <span class="flex items-center gap-2 font-bold text-slate-700"><i data-lucide="trending-up" class="w-4 h-4 text-emerald-500"></i> RECEITAS</span>
-                    <span class="text-[10px] bg-slate-100 px-2 py-1 rounded-md font-bold text-slate-500">MENSAL</span>
-                </div>
-                <div class="scroll-list">
-                    <div id="listR_pend"></div>
-                    <div id="listR_conf" class="mt-4 border-t border-dashed pt-4"></div>
-                </div>
-            </section>
-
-            <section class="flow-card">
-                <div class="flow-header">
-                    <span class="flex items-center gap-2 font-bold text-slate-700"><i data-lucide="trending-down" class="w-4 h-4 text-rose-500"></i> DESPESAS</span>
-                    <span class="text-[10px] bg-slate-100 px-2 py-1 rounded-md font-bold text-slate-500">CONTAS A PAGAR</span>
-                </div>
-                <div class="scroll-list">
-                    <div id="listP_pend"></div>
-                    <div id="listP_conf" class="mt-4 border-t border-dashed pt-4"></div>
-                </div>
-            </section>
-        </div>
+        <section id="management-section" class="mt-20 bg-zinc-900/80 p-8 rounded-[2.5rem] border border-white/10 shadow-2xl">
+            <h2 class="text-xs font-black text-slate-500 mb-8 uppercase tracking-widest text-center">Painel de Lançamento e Edição</h2>
+            <div id="sellers-list" class="grid md:grid-cols-2 lg:grid-cols-2 gap-6"></div>
+        </section>
     </main>
-</div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyCi8znMRngui3EI6tODeuczGcUV2o3U90c",
-        authDomain: "financeiro-guilherme-49a5b.firebaseapp.com",
-        projectId: "financeiro-guilherme-49a5b",
-        storageBucket: "financeiro-guilherme-49a5b.firebasestorage.app",
-        messagingSenderId: "61246912262",
-        appId: "1:61246912262:web:75273e5394d837e6e69087"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db_fire = getFirestore(app);
-    let db = {};
-
-    const formatBRL = (v) => Number(v || 0).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    const parseBRL = (t) => parseFloat(String(t || '').replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
-
-    async function init() {
-        const mesesArr = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-        const mS = document.getElementById('f_mes'), aS = document.getElementById('f_ano'), n = new Date();
-        mesesArr.forEach((m, i) => mS.innerHTML += `<option value="${i}">${m}</option>`);
-        for (let y = n.getFullYear() + 1; y >= 2025; y--) aS.innerHTML += `<option value="${y}">${y}</option>`;
-        mS.value = n.getMonth(); aS.value = n.getFullYear();
-        mS.onchange = render; aS.onchange = render;
-
-        document.getElementById('f_valor').oninput = function() {
-            let v = this.value.replace(/\D/g, '');
-            v = (v / 100).toFixed(2).replace('.', ',');
-            this.value = v === '0,00' ? '' : 'R$ ' + v;
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDXIjm1BOM-8dO85elFdl-CL9y80e-UaSQ",
+            authDomain: "podio-comercia.firebaseapp.com",
+            projectId: "podio-comercia",
+            storageBucket: "podio-comercia.firebasestorage.app",
+            messagingSenderId: "973336659250",
+            appId: "1:973336659250:web:5f16eb4015289837a9c32b"
         };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-        document.getElementById('btnAddR').onclick = () => add('R');
-        document.getElementById('btnAddP').onclick = () => add('P');
+        let state = { sellers: [] };
 
-        onSnapshot(collection(db_fire, "financeiro"), (s) => {
-            s.forEach(d => db[d.id] = d.data());
-            render();
+        function formatCurrency(val) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0);
+        }
+
+        // Carregar dados iniciais e escutar mudanças
+        db.ref('dashboard_v12').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                state = data;
+                // Só redesenha os inputs se o usuário NÃO estiver editando agora
+                if (!document.activeElement.classList.contains('management-input')) {
+                    renderManagement();
+                }
+                renderPodiums();
+            }
         });
-    }
 
-    function render() {
-        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const data = db[key] || { R: [], P: [], initBanco: 0, initVivo: 0 };
-        
-        ['listR_pend', 'listR_conf', 'listP_pend', 'listP_conf'].forEach(id => document.getElementById(id).innerHTML = '');
-
-        let tR = 0, tP = 0, sI = Number(data.initBanco || 0), sV = Number(data.initVivo || 0);
-
-        const buildRow = (it, type) => `
-            <div class="transaction-item ${it.ok ? 'done' : ''}">
-                <div class="flex items-center gap-4">
-                    <span class="text-xs font-black text-slate-300 bg-slate-50 w-8 h-8 flex items-center justify-center rounded-lg">${String(it.dia).padStart(2,'0')}</span>
-                    <div>
-                        <p class="text-sm font-extrabold text-slate-700 uppercase tracking-tight">${it.desc}</p>
-                        <span class="text-[9px] font-bold uppercase ${it.conta === 'banco' ? 'text-orange-500' : 'text-emerald-500'}">${it.conta === 'banco' ? 'INTER' : 'VIVO'}</span>
+        function renderManagement() {
+            const list = document.getElementById('sellers-list');
+            list.innerHTML = state.sellers.map(s => `
+                <div class="management-card">
+                    <p class="font-black text-white mb-5 uppercase italic text-lg border-b border-white/5 pb-2">${s.name}</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="input-label text-emerald-500">Vendas (R$)</span>
+                            <input type="text" 
+                                   value="${formatCurrency(s.sales)}" 
+                                   onfocus="this.select()"
+                                   oninput="maskOnly(this)"
+                                   onblur="saveToFirebase(${s.id}, 'sales', this.value)"
+                                   onkeydown="if(event.key==='Enter') this.blur()"
+                                   class="management-input">
+                        </div>
+                        <div>
+                            <span class="input-label text-blue-500">Contratos (#)</span>
+                            <input type="text" 
+                                   value="${formatCurrency(s.contracts || 0)}" 
+                                   onfocus="this.select()"
+                                   oninput="maskOnly(this)"
+                                   onblur="saveToFirebase(${s.id}, 'contracts', this.value)"
+                                   onkeydown="if(event.key==='Enter') this.blur()"
+                                   class="management-input">
+                        </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-4">
-                    <span class="text-sm font-black ${type === 'R' ? 'text-emerald-600' : 'text-rose-600'}">${formatBRL(it.valor)}</span>
-                    <input type="checkbox" ${it.ok ? 'checked' : ''} onchange="window.toggleStatus('${type}', ${it.id})" class="w-5 h-5 accent-blue-600 cursor-pointer">
-                    <button onclick="window.del('${type}', ${it.id})" class="text-slate-200 hover:text-rose-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                </div>
-            </div>`;
+            `).join('');
+        }
 
-        (data.R || []).forEach(it => {
-            tR += it.valor; if (it.ok) it.conta === 'banco' ? sI += it.valor : sV += it.valor;
-            document.getElementById(it.ok ? 'listR_conf' : 'listR_pend').innerHTML += buildRow(it, 'R');
-        });
+        // Apenas aplica a máscara visual enquanto digita
+        function maskOnly(el) {
+            let val = el.value.replace(/\D/g, "");
+            el.value = formatCurrency(parseFloat(val / 100));
+        }
 
-        (data.P || []).forEach(it => {
-            tP += it.valor; if (it.ok) it.conta === 'banco' ? sI -= it.valor : sV -= it.valor;
-            document.getElementById(it.ok ? 'listP_conf' : 'listP_pend').innerHTML += buildRow(it, 'P');
-        });
+        // Salva de fato no Firebase apenas quando sai do campo ou aperta Enter
+        function saveToFirebase(id, field, rawValue) {
+            let numericVal = parseFloat(rawValue.replace(/\D/g, "") / 100);
+            const seller = state.sellers.find(s => s.id === id);
+            
+            if (seller) {
+                seller[field] = numericVal;
+                db.ref('dashboard_v12').set(state).then(() => {
+                    console.log("Salvo com sucesso");
+                });
+            }
+        }
 
-        document.getElementById('totalR').innerText = formatBRL(tR);
-        document.getElementById('totalP').innerText = formatBRL(tP);
-        document.getElementById('labelBanco').innerText = formatBRL(sI);
-        document.getElementById('labelVivo').innerText = formatBRL(sV);
-        document.getElementById('totalSaldo').innerText = formatBRL((Number(data.initBanco || 0) + Number(data.initVivo || 0) + tR) - tP);
-        lucide.createIcons();
-    }
+        function renderPodiums() {
+            const container = document.getElementById('podiums-container');
+            const sortedSales = [...state.sellers].sort((a, b) => b.sales - a.sales);
+            const sortedContracts = [...state.sellers].sort((a, b) => (b.contracts || 0) - (a.contracts || 0));
 
-    window.toggleStatus = async (type, id) => {
-        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        const it = db[key][type].find(x => x.id === id);
-        if (it) { it.ok = !it.ok; await setDoc(doc(db_fire, "financeiro", key), db[key]); }
-    };
+            container.innerHTML = `
+                ${createPodiumHtml("RANKING VENDAS", sortedSales, 'sales', 'bg-emerald-600')}
+                ${createPodiumHtml("CONTRATOS ACEITOS", sortedContracts, 'contracts', 'bg-blue-600')}
+            `;
+        }
 
-    window.del = async (type, id) => {
-        if (!confirm("Excluir?")) return;
-        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        db[key][type] = db[key][type].filter(x => x.id !== id);
-        await setDoc(doc(db_fire, "financeiro", key), db[key]);
-    };
-
-    window.ajustarSaldo = async (campo) => {
-        const v = prompt("Saldo REAL atual:");
-        if (v === null) return;
-        const key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        if(!db[key]) db[key] = { R: [], P: [], initBanco: 0, initVivo: 0 };
-        db[key][campo] = parseFloat(v.replace(/\./g, '').replace(',', '.')) || 0;
-        await setDoc(doc(db_fire, "financeiro", key), db[key]);
-    };
-
-    async function add(type) {
-        const d = document.getElementById('f_desc').value.toUpperCase(), v = parseBRL(document.getElementById('f_valor').value), dia = parseInt(document.getElementById('f_dia').value) || 1, key = `${document.getElementById('f_mes').value}_${document.getElementById('f_ano').value}`;
-        if (!d || v <= 0) return;
-        if (!db[key]) db[key] = { R: [], P: [], initBanco: 0, initVivo: 0 };
-        db[key][type].push({ id: Date.now(), dia, desc: d, valor: v, ok: false, conta: document.getElementById('f_conta').value });
-        await setDoc(doc(db_fire, "financeiro", key), db[key]);
-        document.getElementById('f_desc').value = ''; document.getElementById('f_valor').value = '';
-    }
-
-    init();
-</script>
+        function createPodiumHtml(title, data, field, barClass) {
+            return `
+                <div class="bg-zinc-950 p-10 rounded-[3rem] border border-white/5">
+                    <h2 class="text-center text-xl font-black text-slate-500 mb-16 tracking-widest uppercase italic">${title}</h2>
+                    <div class="flex items-end justify-center gap-4 h-[350px]">
+                        <div class="w-full text-center">
+                            <span class="text-slate-400 text-sm mb-3 uppercase font-bold block">${data[1]?.name || '-'}</span>
+                            <div class="podium-box h-32 flex flex-col items-center justify-center">
+                                <span class="text-white/20 italic font-black">2º</span>
+                                <span class="text-white text-xs mt-1 font-bold">${formatCurrency(data[1]?.[field])}</span>
+                            </div>
+                        </div>
+                        <div class="w-full text-center">
+                            <span class="text-white text-2xl font-black mb-5 uppercase italic block">${data[0]?.name || '-'}</span>
+                            <div class="${barClass} h-60 rounded-t-[2rem] flex flex-col items-center justify-center transform scale-105 shadow-2xl border-t-4 border-white/20">
+                                <span class="text-6xl font-black text-white italic">1º</span>
+                                <div class="mt-4 bg-white text-black px-4 py-1 rounded font-black text-xs">${formatCurrency(data[0]?.[field])}</div>
+                            </div>
+                        </div>
+                        <div class="w-full text-center">
+                            <span class="text-slate-600 text-xs mb-3 uppercase font-bold block">${data[2]?.name || '-'}</span>
+                            <div class="podium-box h-20 flex flex-col items-center justify-center">
+                                <span class="text-white/10 italic font-black">3º</span>
+                                <span class="text-slate-500 text-[10px] mt-1 font-bold">${formatCurrency(data[2]?.[field])}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        }
+    </script>
 </body>
 </html>
